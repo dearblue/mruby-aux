@@ -34,6 +34,14 @@
 #   define MRB_FROZEN_P(S)  FALSE
 #endif
 
+#if MRUBY_RELEASE_NO < 10400
+static inline mrb_value
+mrb_str_new_capa(mrb_state *mrb, size_t capa)
+{
+    return mrb_str_buf_new(mrb, capa);
+}
+#endif
+
 #define MRBX_TUPLE(...)                                         \
     mrb_ary_new_from_values(                                    \
             mrb,                                                \
