@@ -5,6 +5,6 @@ MRuby::Gem::Specification.new("mruby-aux-scanhash") do |s|
   s.author  = "dearblue"
   s.homepage = "https://github.com/dearblue/mruby-aux-scanhash"
 
-  add_dependency "mruby-error"
-  add_dependency "mruby-string-ext"
+  add_dependency "mruby-error", core: "mruby-error"
+  add_dependency "mruby-string-ext", core: "mruby-string-ext"
 end
