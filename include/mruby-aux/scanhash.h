@@ -37,7 +37,7 @@ struct mrbx_scanhash_arg
     mrb_value initval;
 };
 
-mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, struct mrbx_scanhash_arg *args, struct mrbx_scanhash_arg *end);
+mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv);
 
 
 /**
@@ -78,10 +78,10 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, struct m
  * MRBX_SCANHASH_ARG 系の第3引数に mrb_undef_value() を与えると、省略不可キーワード引数となる
  *          MRBX_SCANHASH_ARGS("f", &f, mrb_undef_value())
  */
-#define MRBX_SCANHASH(mrb, hash, rest, ...)                                         \
-    mrbx_scanhash(mrb, (hash), (rest),                                              \
-            ((struct mrbx_scanhash_arg []){ __VA_ARGS__ }),                         \
-            MRBX_SCANHASH_ENDOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })));   \
+#define MRBX_SCANHASH(mrb, hash, rest, ...)                                             \
+    mrbx_scanhash(mrb, (hash), (rest),                                                  \
+            MRBX_SCANHASH_ELEMENTOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })),    \
+            ((struct mrbx_scanhash_arg []){ __VA_ARGS__ }));                            \
 
 /*
  * 評価順は左から右に固定される。

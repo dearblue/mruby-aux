@@ -139,7 +139,7 @@ mrbx_hash_foreach(mrb_state *mrb, mrb_value hash, int (*block)(mrb_state *, mrb_
 }
 
 mrb_value
-mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, struct mrbx_scanhash_arg *args, struct mrbx_scanhash_arg *end)
+mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv)
 {
     if (mrb_bool(rest)) {
         if (mrb_type(rest) == MRB_TT_TRUE) {
@@ -152,15 +152,15 @@ mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, struct mrbx_scanha
         rest = mrb_nil_value();
     }
 
-    mrbx_scanhash_setdefaults(args, end);
+    mrbx_scanhash_setdefaults(argv, argv + argc);
 
     hash = mrbx_scanhash_to_hash(mrb, hash);
     if (!mrb_nil_p(hash) && !mrb_bool(mrb_hash_empty_p(mrb, hash))) {
-        struct mrbx_scanhash_args argset = { args, end, rest };
+        struct mrbx_scanhash_args argset = { argv, argv + argc, rest };
         mrbx_hash_foreach(mrb, hash, mrbx_scanhash_foreach, &argset);
     }
 
-    mrbx_scanhash_check_missingkeys(mrb, args, end);
+    mrbx_scanhash_check_missingkeys(mrb, argv, argv + argc);
 
     return rest;
 }
