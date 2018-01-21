@@ -82,4 +82,16 @@ mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
     return p;
 }
 
+static inline mrb_value
+mrbx_instance_eval(mrb_state *mrb, mrb_value o, mrb_value b)
+{
+    return mrb_yield_with_class(mrb, b, 1, &b, o, NULL);
+}
+
+static inline mrb_value
+mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const mrb_value argv[])
+{
+    return mrb_yield_with_class(mrb, b, argc, argv, o, NULL);
+}
+
 #endif /* MRUBY_AUX_UTILS_H__ */
