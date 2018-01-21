@@ -108,5 +108,6 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
 #include "mruby-aux/utils.h"
+#include "mruby-aux/throw.h"
 
 #endif /* MRUBY_AUX_H__ */
