@@ -9,9 +9,6 @@
 #include <mruby/value.h>
 #include <mruby/data.h>
 
-#define ELEMENTOF(A)    (sizeof((A)) / sizeof((A)[0]))
-#define ENDOF(A)        ((A) + ELEMENTOF((A)))
-
 #define VALUE           mrb_value
 #define Qnil            mrb_nil_value()
 #define Qtrue           mrb_true_value()
@@ -108,69 +105,8 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
              const char *:  mrb_intern_cstr)    \
         (mrb, (SYM))                            \
 
-#define FUNCALL(MRB, RECV, MID, ...)                            \
-    mrb_funcall_argv(                                           \
-            (MRB), (RECV), SYMBOL((MID)),                       \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }))             \
-
-#define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)          \
-    mrb_funcall_with_block(                                     \
-            (MRB), (RECV), SYMBOL((MID)),                       \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }),             \
-            (BLOCK))                                            \
-
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
-
-#define FOREACH_LIST(TYPE, I, ...)                              \
-    for (TYPE _list_[] = { __VA_ARGS__ },                       \
-              *_list_end_ = _list_ + ELEMENTOF(_list_),         \
-              I = _list_;                                       \
-         &I < _list_end_;                                       \
-         I ++)                                                  \
-
-#define FOREACH_ALIST(TYPE, I, LIST)                            \
-    for (TYPE *_list_end_ = (LIST) + ELEMENTOF((LIST)),         \
-              I = (LIST);                                       \
-         &I < _list_end_;                                       \
-         I ++)                                                  \
-
-#define FOREACH_NLIST(TYPE, N, I, LIST)                         \
-    for (TYPE *_list_end_ = (LIST) + (N),                       \
-              I = (LIST);                                       \
-         &I < _list_end_;                                       \
-         I ++)                                                  \
-
-#define FOREACH_RARRAY(I, LIST)                                     \
-    for (const VALUE I = ARY_PTR(RArray((LIST))),                   \
-                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));  \
-         &I < _list_end_;                                           \
-         I ++)                                                      \
-
-static inline void *
-mrbx_getrefp(MRB, VALUE obj, const mrb_data_type *type)
-{
-    void *p;
-
-    Data_Get_Struct(mrb, obj, type, p);
-
-    return p;
-}
-
-static inline void *
-mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
-{
-    void *p = mrbx_getrefp(mrb, obj, type);
-
-    if (!p) {
-        mrb_raisef(mrb, E_TYPE_ERROR,
-                   "invalid initialized pointer - %S",
-                   obj);
-    }
-
-    return p;
-}
+#include "mruby-aux/utils.h"
 
 #endif /* MRUBY_AUX_H__ */
