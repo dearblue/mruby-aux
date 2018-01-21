@@ -192,24 +192,30 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
             ((const mrb_value []) { __VA_ARGS__ }),             \
             (BLOCK))                                            \
 
-#define FOREACH_LIST(I, TYPE, ...)                              \
-    for (const TYPE _list_[] = { __VA_ARGS__ },                 \
-                    *_list_end_ = _list_ + ELEMENTOF(_list_),   \
-                    I = _list_;                                 \
-         (&I) < _list_end_;                                     \
-         (&I) ++)                                               \
+#define FOREACH_LIST(TYPE, I, ...)                              \
+    for (TYPE _list_[] = { __VA_ARGS__ },                       \
+              *_list_end_ = _list_ + ELEMENTOF(_list_),         \
+              I = _list_;                                       \
+         &I < _list_end_;                                       \
+         I ++)                                                  \
 
-#define FOREACH_NLIST(I, TYPE, N, LIST)                         \
+#define FOREACH_ALIST(TYPE, I, LIST)                            \
+    for (TYPE *_list_end_ = (LIST) + ELEMENTOF((LIST)),         \
+              I = (LIST);                                       \
+         &I < _list_end_;                                       \
+         I ++)                                                  \
+
+#define FOREACH_NLIST(TYPE, N, I, LIST)                         \
     for (TYPE *_list_end_ = (LIST) + (N),                       \
               I = (LIST);                                       \
-         (&I) < _list_end_;                                     \
-         (&I) ++)                                               \
+         &I < _list_end_;                                       \
+         I ++)                                                  \
 
 #define FOREACH_RARRAY(I, LIST)                                     \
-    for (const VALUE *_list_end_ = (&I) + RARY_LEN(RArray((LIST))), \
-                     I = RARY_PTR(RArray((LIST)));                  \
-         (&I) < _list_end_;                                         \
-         (&I) ++)                                                   \
+    for (const VALUE I = ARY_PTR(RArray((LIST))),                   \
+                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));  \
+         &I < _list_end_;                                           \
+         I ++)                                                      \
 
 static inline void *
 mrbx_getrefp(MRB, VALUE obj, const mrb_data_type *type)
