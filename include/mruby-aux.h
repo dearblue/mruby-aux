@@ -21,25 +21,13 @@
 #define RTEST(O)        mrb_test(O)
 #define mrb_cObject     (mrb->object_class)
 
-#define AUX_STR_MAX     (MRB_INT_MAX - 1)
-
 #define MRB             mrb_state *mrb
 
-#if MRUBY_RELEASE_NO >= 10300
-#   define RSTR_FROZEN_P(S) MRB_FROZEN_P(S)
-#elif MRUBY_RELEASE_NO >= 10200
+#if MRUBY_RELEASE_NO < 10200
+#   define MRB_FROZEN_P(S)  FALSE
+#elif MRUBY_RELEASE_NO < 10300
 #   define MRB_FROZEN_P(S)  ((S)->tt == MRB_TT_STRING ? RSTR_FROZEN_P((S)) : FALSE)
 #else
-#   define RSTR_FROZEN_P(S) FALSE
-#   define MRB_FROZEN_P(S)  FALSE
-#endif
-
-#if MRUBY_RELEASE_NO < 10400
-static inline mrb_value
-mrb_str_new_capa(mrb_state *mrb, size_t capa)
-{
-    return mrb_str_buf_new(mrb, capa);
-}
 #endif
 
 static inline mrb_value
@@ -79,37 +67,6 @@ _aux_mrb_fixnum_value(mrb_state *mrb, mrb_int v)
               char *:               mrb_str_new_cstr,       \
               const char *:         mrb_str_new_cstr)       \
         (mrb, (V)))                                         \
-
-
-static inline struct RString *
-_aux_mrb_str_ptr(mrb_state *mrb, mrb_value v)
-{
-    if (mrb_nil_p(v)) {
-        return (struct RString *)NULL;
-    } else {
-        return mrb_str_ptr(v);
-    }
-}
-
-static inline struct RString *
-_aux_to_str_ptr(mrb_state *mrb, struct RString *p)
-{
-    return p;
-}
-
-static inline struct RString *
-_aux_mrb_str_new_cstr(mrb_state *mrb, const char *str)
-{
-    return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
-}
-
-#define RString(V)                                      \
-    _Generic((V),                                       \
-             mrb_value:             _aux_mrb_str_ptr,   \
-             struct RString *:      _aux_to_str_ptr,    \
-             char *:                _aux_mrb_str_new_cstr, \
-             const char *:          _aux_mrb_str_new_cstr) \
-        (mrb, (V))                                      \
 
 
 static inline struct RClass *
@@ -165,6 +122,7 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
             (BLOCK))                                            \
 
 #include "mruby-aux/array.h"
+#include "mruby-aux/string.h"
 
 #define FOREACH_LIST(TYPE, I, ...)                              \
     for (TYPE _list_[] = { __VA_ARGS__ },                       \
@@ -213,30 +171,6 @@ mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
     }
 
     return p;
-}
-
-static inline struct RString *
-mrbx_str_reserve(mrb_state *mrb, struct RString *str, mrb_int len)
-{
-    if (RSTR_CAPA(str) < len) {
-        mrb_int l = RSTR_LEN(str);
-        mrb_str_resize(mrb, VALUE(str), len);
-        RSTR_SET_LEN(str, l);
-    } else {
-        mrb_str_modify(mrb, str);
-    }
-
-    return str;
-}
-
-static inline struct RString *
-mrbx_str_recycle(mrb_state *mrb, struct RString *str, mrb_int len)
-{
-    if (str && !MRB_FROZEN_P(str)) {
-        return mrbx_str_reserve(mrb, str, len);
-    }
-
-    return RSTRING(mrb_str_buf_new(mrb, len));
 }
 
 #endif /* MRUBY_AUX_H__ */
