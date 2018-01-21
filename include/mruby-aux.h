@@ -42,12 +42,6 @@ mrb_str_new_capa(mrb_state *mrb, size_t capa)
 }
 #endif
 
-#define MRBX_TUPLE(...)                                         \
-    mrb_ary_new_from_values(                                    \
-            mrb,                                                \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }))             \
-
 static inline mrb_value
 _aux_mrb_obj_value(mrb_state *mrb, void *v)
 {
@@ -118,28 +112,6 @@ _aux_mrb_str_new_cstr(mrb_state *mrb, const char *str)
         (mrb, (V))                                      \
 
 
-static inline struct RArray *
-_aux_mrb_ary_ptr(mrb_state *mrb, mrb_value v)
-{
-    if (mrb_nil_p(v)) {
-        return (struct RArray *)NULL;
-    } else {
-        return mrb_ary_ptr(v);
-    }
-}
-
-static inline struct RArray *
-_aux_to_ary_ptr(mrb_state *mrb, struct RArray *p)
-{
-    return p;
-}
-
-#define RArray(V)                                   \
-    _Generic((V),                                   \
-             mrb_value:         _aux_mrb_ary_ptr,   \
-             struct RArray *:   _aux_to_ary_ptr)    \
-        (mrb, (V))                                  \
-
 static inline struct RClass *
 _aux_mrb_class_ptr(mrb_state *mrb, mrb_value v)
 {
@@ -191,6 +163,8 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
             ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
             ((const mrb_value []) { __VA_ARGS__ }),             \
             (BLOCK))                                            \
+
+#include "mruby-aux/array.h"
 
 #define FOREACH_LIST(TYPE, I, ...)                              \
     for (TYPE _list_[] = { __VA_ARGS__ },                       \
