@@ -27,6 +27,11 @@
 #else
 #endif
 
+#define MRBX_OBJ_NEW(MRB, KLASS, ...)                       \
+     mrb_obj_new(MRB, KLASS,                                \
+             ELEMENTOF(((const VALUE []) { __VA_ARGS__ })), \
+             (const VALUE []) { __VA_ARGS__ } )             \
+
 static inline mrb_value
 _aux_mrb_obj_value(mrb_state *mrb, void *v)
 {
@@ -65,25 +70,6 @@ _aux_mrb_fixnum_value(mrb_state *mrb, mrb_int v)
               const char *:         mrb_str_new_cstr)       \
         (mrb, (V)))                                         \
 
-
-static inline struct RClass *
-_aux_mrb_class_ptr(mrb_state *mrb, mrb_value v)
-{
-    return mrb_class_ptr(v);
-}
-
-static inline struct RClass *
-_aux_to_class_ptr(mrb_state *mrb, struct RClass *p)
-{
-    return p;
-}
-
-#define RClass(V)                                   \
-    _Generic((V),                                   \
-             mrb_value:         _aux_mrb_class_ptr, \
-             struct RClass *:   _aux_to_class_ptr)  \
-        (mrb, (V))                                  \
-
 static inline mrb_sym
 _aux_mrb_sym(mrb_state *mrb, mrb_value sym)
 {
@@ -107,6 +93,7 @@ _aux_symbol(mrb_state *mrb, mrb_sym sym)
 
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
+#include "mruby-aux/class.h"
 #include "mruby-aux/utils.h"
 #include "mruby-aux/throw.h"
 
