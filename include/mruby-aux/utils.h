@@ -83,6 +83,15 @@ mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
 }
 
 static inline mrb_value
+mrbx_funcall_passthrough(MRB, mrb_value recv, mrb_sym mid)
+{
+    mrb_int argc;
+    mrb_value *argv, block;
+    mrb_get_args(mrb, "*&", &argv, &argc, &block);
+    return mrb_funcall_with_block(mrb, recv, mid, argc, argv, block);
+}
+
+static inline mrb_value
 mrbx_instance_eval(mrb_state *mrb, mrb_value o, mrb_value b)
 {
     return mrb_yield_with_class(mrb, b, 1, &b, o, NULL);
