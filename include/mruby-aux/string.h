@@ -33,6 +33,7 @@ _aux_mrb_str_new_cstr(mrb_state *mrb, const char *str)
              struct RString *:      _aux_to_str_ptr,    \
              char *:                _aux_mrb_str_new_cstr, \
              const char *:          _aux_mrb_str_new_cstr) \
+        (mrb, (V))                                      \
 
 
 static inline struct RString *
@@ -58,6 +59,5 @@ mrbx_str_recycle(mrb_state *mrb, struct RString *str, mrb_int len)
 
     return RSTRING(mrb_str_buf_new(mrb, len));
 }
-        (mrb, (V))                                      \
 
 #endif /* MRUBY_AUX_STRING_H__ */
