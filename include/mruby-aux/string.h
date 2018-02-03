@@ -72,6 +72,20 @@ mrbx_str_reserve(mrb_state *mrb, struct RString *str, mrb_int len)
 }
 
 static inline struct RString *
+mrbx_str_reserve_value(mrb_state *mrb, VALUE str, mrb_int len)
+{
+    mrb_check_type(mrb, str, MRB_TT_STRING);
+
+    return mrbx_str_reserve(mrb, RSTRING(str), len);
+}
+
+#define mrbx_str_reserve(MRB, STR, LEN)         \
+    _Generic((STR),                             \
+            VALUE: mrbx_str_reserve_value,      \
+            struct RString *: mrbx_str_reserve) \
+        ((MRB), (STR), (LEN))                   \
+
+static inline struct RString *
 mrbx_str_recycle(mrb_state *mrb, struct RString *str, mrb_int len)
 {
     if (str && !MRB_FROZEN_P(str)) {
