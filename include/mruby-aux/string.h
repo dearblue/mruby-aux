@@ -105,6 +105,23 @@ mrbx_str_recycle(mrb_state *mrb, struct RString *str, size_t len)
 }
 
 static inline struct RString *
+mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
+{
+    if (mrb_nil_p(str)) {
+        return mrbx_str_recycle(mrb, NULL, len);
+    } else {
+        mrb_check_type(mrb, str, MRB_TT_STRING);
+        return mrbx_str_recycle(mrb, RSTRING(str), len);
+    }
+}
+
+#define mrbx_str_recycle(MRB, STR, LEN)         \
+    _Generic((STR),                             \
+            mrb_value: mrbx_str_recycle_value,  \
+            struct RString *: mrbx_str_recycle) \
+        ((MRB), (STR), (LEN))                   \
+
+static inline struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (!str) {
