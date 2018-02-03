@@ -99,9 +99,9 @@ mrbx_str_recycle(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (str && !MRB_FROZEN_P(str)) {
         return mrbx_str_reserve(mrb, str, len);
+    } else {
+        return RSTRING(mrb_str_buf_new(mrb, len));
     }
-
-    return RSTRING(mrb_str_buf_new(mrb, len));
 }
 
 static inline struct RString *
