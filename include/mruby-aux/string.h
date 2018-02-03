@@ -11,6 +11,7 @@ _aux_mrb_str_ptr(mrb_state *mrb, mrb_value v)
     if (mrb_nil_p(v)) {
         return (struct RString *)NULL;
     } else {
+        mrb_check_type(mrb, v, MRB_TT_STRING);
         return mrb_str_ptr(v);
     }
 }
