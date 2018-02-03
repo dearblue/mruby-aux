@@ -36,6 +36,26 @@ _aux_mrb_str_new_cstr(mrb_state *mrb, const char *str)
              const char *:          _aux_mrb_str_new_cstr) \
         (mrb, (V))                                      \
 
+static inline struct RString *
+mrbx_str_set_len(mrb_state *mrb, struct RString *dest, mrb_int len)
+{
+    RSTR_SET_LEN(dest, len);
+    return dest;
+}
+
+static inline struct RString *
+mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, mrb_int len)
+{
+    mrb_check_type(mrb, dest, MRB_TT_STRING);
+    RSTR_SET_LEN(RSTRING(dest), len);
+    return RSTRING(dest);
+}
+
+#define mrbx_str_set_len(MRB, DEST, LEN)                \
+    _Generic((DEST),                                    \
+             mrb_value:         mrbx_str_set_len_value, \
+             struct RString *:  mrbx_str_set_len)       \
+        ((MRB), (DEST), (LEN))                          \
 
 static inline struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, mrb_int len)
@@ -60,5 +80,32 @@ mrbx_str_recycle(mrb_state *mrb, struct RString *str, mrb_int len)
 
     return RSTRING(mrb_str_buf_new(mrb, len));
 }
+
+static inline struct RString *
+mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, mrb_int len)
+{
+    if (!str) {
+        return RSTRING(mrb_str_buf_new(mrb, len));
+    } else {
+        return mrbx_str_reserve(mrb, str, len);
+    }
+}
+
+static inline struct RString *
+mrbx_str_force_recycle_with_check(mrb_state *mrb, VALUE str, mrb_int len)
+{
+    if (mrb_nil_p(str)) {
+        return RSTRING(mrb_str_buf_new(mrb, len));
+    } else {
+        mrb_check_type(mrb, str, MRB_TT_STRING);
+        return mrbx_str_reserve(mrb, RString(str), len);
+    }
+}
+
+#define mrbx_str_force_recycle(MRB, STR, LEN)                       \
+    _Generic((STR),                                                 \
+            struct RString *:   mrbx_str_force_recycle,             \
+            mrb_value:          mrbx_str_force_recycle_with_check)  \
+        ((MRB), (STR), (LEN))                                       \
 
 #endif /* MRUBY_AUX_STRING_H__ */
