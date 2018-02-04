@@ -26,7 +26,7 @@ struct mrbx_scanhash_args
 {
     struct mrbx_scanhash_arg *args;
     const struct mrbx_scanhash_arg *end;
-    mrb_value rest;
+    struct RHash *receptor;
 };
 
 static void
@@ -74,8 +74,8 @@ mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, struct mrb
         }
     }
 
-    if (mrb_test(args->rest)) {
-        mrb_hash_set(mrb, args->rest, key, value);
+    if (args->receptor) {
+        mrb_hash_set(mrb, mrb_obj_value(args->receptor), key, value);
     } else {
         mrbx_scanhash_error(mrb, keyid, args->args, args->end);
     }
@@ -83,10 +83,10 @@ mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, struct mrb
     return 0;
 }
 
-static mrb_value
+static struct RHash *
 mrbx_scanhash_to_hash(mrb_state *mrb, mrb_value hash)
 {
-    if (mrb_nil_p(hash)) { return mrb_nil_value(); }
+    if (mrb_nil_p(hash)) { return NULL; }
 
     mrb_sym id_to_hash = mrb_intern_lit(mrb, "to_hash");
     mrb_value hash1 = mrb_funcall_argv(mrb, hash, id_to_hash, 0, 0);
@@ -95,7 +95,7 @@ mrbx_scanhash_to_hash(mrb_state *mrb, mrb_value hash)
                    "converted object is not a hash (<#%S>)",
                    hash);
     }
-    return hash1;
+    return RHASH(hash1);
 }
 
 static inline void
@@ -123,10 +123,10 @@ mrbx_scanhash_check_missingkeys(mrb_state *mrb, struct mrbx_scanhash_arg *args, 
 }
 
 static void
-mrbx_hash_foreach(mrb_state *mrb, mrb_value hash, int (*block)(mrb_state *, mrb_value, mrb_value, struct mrbx_scanhash_args *), struct mrbx_scanhash_args *args)
+mrbx_hash_foreach(mrb_state *mrb, struct RHash *hash, int (*block)(mrb_state *, mrb_value, mrb_value, struct mrbx_scanhash_args *), struct mrbx_scanhash_args *args)
 {
-    mrb_value keys = mrb_hash_keys(mrb, hash);
-    mrb_value values = mrb_hash_values(mrb, hash);
+    mrb_value keys = mrb_hash_keys(mrb, mrb_obj_value(hash));
+    mrb_value values = mrb_hash_values(mrb, mrb_obj_value(hash));
     const mrb_value *k = RARRAY_PTR(keys);
     const mrb_value *const kk = k + RARRAY_LEN(keys);
     const mrb_value *v = RARRAY_PTR(values);
@@ -138,31 +138,41 @@ mrbx_hash_foreach(mrb_state *mrb, mrb_value hash, int (*block)(mrb_state *, mrb_
     }
 }
 
-mrb_value
-mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv)
+static struct RHash *
+make_receptor(mrb_state *mrb, mrb_value rest)
 {
     if (mrb_bool(rest)) {
         if (mrb_type(rest) == MRB_TT_TRUE) {
-            rest = mrb_hash_new(mrb);
-        } else if (!mrb_obj_is_kind_of(mrb, rest, mrb->hash_class)) {
-            mrb_raise(mrb, E_ARGUMENT_ERROR,
-                      "`rest' is not a hash");
+            return RHASH(mrb_hash_new(mrb));
+        } else {
+            mrb_check_type(mrb, rest, MRB_TT_HASH);
+            return RHASH(rest);
         }
     } else {
-        rest = mrb_nil_value();
+        return NULL;
     }
+}
+
+mrb_value
+mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv)
+{
+    struct RHash *receptor = make_receptor(mrb, rest);
+    struct RHash *hashp = mrbx_scanhash_to_hash(mrb, hash);
 
     mrbx_scanhash_setdefaults(argv, argv + argc);
 
-    hash = mrbx_scanhash_to_hash(mrb, hash);
-    if (!mrb_nil_p(hash) && !mrb_bool(mrb_hash_empty_p(mrb, hash))) {
-        struct mrbx_scanhash_args argset = { argv, argv + argc, rest };
-        mrbx_hash_foreach(mrb, hash, mrbx_scanhash_foreach, &argset);
+    if (hashp && !mrb_bool(mrb_hash_empty_p(mrb, mrb_obj_value(hashp)))) {
+        struct mrbx_scanhash_args argset = { argv, argv + argc, receptor };
+        mrbx_hash_foreach(mrb, hashp, mrbx_scanhash_foreach, &argset);
     }
 
     mrbx_scanhash_check_missingkeys(mrb, argv, argv + argc);
 
-    return rest;
+    if (receptor) {
+        return mrb_obj_value(receptor);
+    } else {
+        return mrb_nil_value();
+    }
 }
 
 
