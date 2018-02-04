@@ -86,21 +86,17 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
 /*
  * 評価順は左から右に固定される。
  *
- * [name]   C の文字列を与える
+ * [name]   C の文字列、または mrb_sym としてのシンボルを与える
  * [dest]   キーワード引数の代入先。NULL を指定した場合、名前の確認だけして、Cレベルの変数への代入は行わない
  * [vdefault] 規定値。Qundef を指定した場合、省略不可キーワードとなる
  */
-#define MRBX_SCANHASH_ARGS(name, dest, vdefault) { mrb_intern_cstr(mrb, (name)), (dest), (vdefault), }
+#define MRBX_SCANHASH_ARG(name, dest, vdefault) { MRBX_SCANHASH_TO_SYMBOL(mrb, (name)), (dest), (vdefault), }
 
-/*
- * 評価順は左から右に固定される。
- *
- * [name]   ruby の ID をあたえる。
- * [dest]   キーワード引数の代入先。NULL を指定した場合、名前の確認だけして、Cレベルの変数への代入は行わない
- * [vdefault] 規定値。Qundef を指定した場合、省略不可キーワードとなる
- */
-#define MRBX_SCANHASH_ARGI(name, dest, vdefault) { (name), (dest), (vdefault), }
+#define MRBX_SCANHASH_ARGS(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
+#define MRBX_SCANHASH_ARGI(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
 
 MRBX_SCANHASH_CEXTERN_END
+
+#include "scanhash/_to_sym.h"
 
 #endif /* MRBX_HASHARGS_H__ */
