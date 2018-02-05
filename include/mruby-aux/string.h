@@ -132,7 +132,7 @@ mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, size_t len)
 }
 
 static inline struct RString *
-mrbx_str_force_recycle_with_check(mrb_state *mrb, mrb_value str, size_t len)
+mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
 {
     if (mrb_nil_p(str)) {
         return RSTRING(mrb_str_buf_new(mrb, len));
@@ -145,7 +145,7 @@ mrbx_str_force_recycle_with_check(mrb_state *mrb, mrb_value str, size_t len)
 #define mrbx_str_force_recycle(MRB, STR, LEN)                       \
     _Generic((STR),                                                 \
             struct RString *:   mrbx_str_force_recycle,             \
-            mrb_value:          mrbx_str_force_recycle_with_check)  \
+            mrb_value:          mrbx_str_force_recycle_value)       \
         ((MRB), (STR), (LEN))                                       \
 
 #endif /* MRUBY_AUX_STRING_H__ */
