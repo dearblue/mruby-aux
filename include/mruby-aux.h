@@ -23,7 +23,7 @@
 #if MRUBY_RELEASE_NO < 10200
 #   define MRB_FROZEN_P(S)  FALSE
 #elif MRUBY_RELEASE_NO < 10300
-#   define MRB_FROZEN_P(S)  ((S)->tt == MRB_TT_STRING ? RSTR_FROZEN_P((S)) : FALSE)
+#   define MRB_FROZEN_P(S)  (mrb_type((S)) == MRB_TT_STRING ? RSTR_FROZEN_P((S)) : FALSE)
 #else
 #endif
 
