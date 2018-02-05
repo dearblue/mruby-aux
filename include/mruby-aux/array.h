@@ -16,6 +16,7 @@ _aux_mrb_ary_ptr(mrb_state *mrb, mrb_value v)
     if (mrb_nil_p(v)) {
         return (struct RArray *)NULL;
     } else {
+        mrb_check_type(mrb, v, MRB_TT_ARRAY);
         return mrb_ary_ptr(v);
     }
 }
