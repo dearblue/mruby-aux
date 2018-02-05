@@ -5,8 +5,12 @@
 #include <mruby/variable.h>
 #include <mruby/class.h>
 
+#ifdef __cplusplus
+
+template <typename T> static inline struct RClass *_mrbx_class_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
+
 static inline struct RClass *
-_aux_mrb_class_ptr(mrb_state *mrb, mrb_value v)
+_mrbx_class_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
         return NULL;
@@ -17,16 +21,40 @@ _aux_mrb_class_ptr(mrb_state *mrb, mrb_value v)
 }
 
 static inline struct RClass *
-_aux_to_class_ptr(mrb_state *mrb, struct RClass *p)
+_mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 {
     return p;
 }
 
-#define RClass(V)                                   \
+#   define _mrbx_class_ptr(V)   _mrbx_class_ptr
+
+#else
+
+static inline struct RClass *
+_mrbx_class_ptr(mrb_state *mrb, mrb_value v)
+{
+    if (mrb_nil_p(v)) {
+        return NULL;
+    } else {
+        mrb_check_type(mrb, v, MRB_TT_CLASS);
+        return mrb_class_ptr(v);
+    }
+}
+
+static inline struct RClass *
+_mrbx_by_class_ptr(mrb_state *mrb, struct RClass *p)
+{
+    return p;
+}
+
+#define _mrbx_class_ptr(V)                          \
     _Generic((V),                                   \
-             mrb_value:         _aux_mrb_class_ptr, \
-             struct RClass *:   _aux_to_class_ptr)  \
-        (mrb, (V))                                  \
+             mrb_value:         _mrbx_class_ptr,    \
+             struct RClass *:   _mrbx_by_class_ptr) \
+
+#endif
+
+#define RClass(V) _mrbx_class_ptr(V)(mrb, (V))
 
 static inline struct RClass *
 aux_dig_class(MRB, struct RClass *c, size_t num, const char *names[])

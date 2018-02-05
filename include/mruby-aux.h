@@ -32,65 +32,81 @@
              ELEMENTOF(((const VALUE []) { __VA_ARGS__ })), \
              (const VALUE []) { __VA_ARGS__ } )             \
 
-static inline mrb_value
-_aux_mrb_obj_value(mrb_state *mrb, void *v)
-{
-    return mrb_obj_value(v);
-}
+#if __cplusplus
 
-static inline mrb_value
-_aux_to_value(mrb_state *mrb, mrb_value v)
-{
-    return v;
-}
+template <typename T> static inline mrb_value _mrbx_obj_value(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, mrb_value v) { return v; }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RString *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RException *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RData *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrb_fixnum_value(v); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb_str_new_cstr(mrb, v); }
 
-static inline mrb_value
-_aux_mrb_fixnum_value(mrb_state *mrb, mrb_int v)
-{
-    return mrb_fixnum_value(v);
-}
+#   define _mrbx_obj_value(V)   _mrbx_obj_value
 
-#define mrb_value(V)                                        \
-    (_Generic((V),                                          \
-              mrb_value:            _aux_to_value,          \
-              struct RBasic *:      _aux_mrb_obj_value,     \
-              struct RObject *:     _aux_mrb_obj_value,     \
-              struct RClass *:      _aux_mrb_obj_value,     \
-              struct RArray *:      _aux_mrb_obj_value,     \
-              struct RString *:     _aux_mrb_obj_value,     \
-              struct RProc *:       _aux_mrb_obj_value,     \
-              struct RRange *:      _aux_mrb_obj_value,     \
-              struct RFiber *:      _aux_mrb_obj_value,     \
-              struct RException *:  _aux_mrb_obj_value,     \
-              struct RData *:       _aux_mrb_obj_value,     \
-              mrb_int:              _aux_mrb_fixnum_value,  \
-              const mrb_int:        _aux_mrb_fixnum_value,  \
-              mrb_float:            mrb_float_value,        \
-              const mrb_float:      mrb_float_value,        \
-              char *:               mrb_str_new_cstr,       \
-              const char *:         mrb_str_new_cstr)       \
-        (mrb, (V)))                                         \
+#else
 
-static inline mrb_sym
-_aux_mrb_sym(mrb_state *mrb, mrb_value sym)
-{
-    return mrb_symbol(sym);
-}
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
+static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
 
-static inline mrb_sym
-_aux_symbol(mrb_state *mrb, mrb_sym sym)
-{
-    return sym;
-}
+#   define _mrbx_obj_value(V)                                   \
+        _Generic((V),                                           \
+                  mrb_value:            _mrbx_value_to_value,   \
+                  struct RBasic *:      _mrbx_obj_value,        \
+                  struct RObject *:     _mrbx_obj_value,        \
+                  struct RClass *:      _mrbx_obj_value,        \
+                  struct RArray *:      _mrbx_obj_value,        \
+                  struct RString *:     _mrbx_obj_value,        \
+                  struct RProc *:       _mrbx_obj_value,        \
+                  struct RRange *:      _mrbx_obj_value,        \
+                  struct RFiber *:      _mrbx_obj_value,        \
+                  struct RException *:  _mrbx_obj_value,        \
+                  struct RData *:       _mrbx_obj_value,        \
+                  mrb_int:              _mrbx_fixnum_value,     \
+                  const mrb_int:        _mrbx_fixnum_value,     \
+                  mrb_float:            mrb_float_value,        \
+                  const mrb_float:      mrb_float_value,        \
+                  char *:               mrb_str_new_cstr,       \
+                  const char *:         mrb_str_new_cstr)       \
 
-#define SYMBOL(SYM)                             \
-    _Generic((SYM),                             \
-             mrb_value:     _aux_mrb_sym,       \
-             mrb_sym:       _aux_symbol,        \
-             const mrb_sym: _aux_symbol,        \
-             char *:        mrb_intern_cstr,    \
-             const char *:  mrb_intern_cstr)    \
-        (mrb, (SYM))                            \
+#endif
+
+#define mrb_value(V)    _mrbx_obj_value((V))(mrb, (V))
+
+#ifdef __cplusplus
+
+template <typename T> static inline mrb_sym _mrbx_symbol(mrb_state *mrb, T sym) { static_assert(sizeof(T) < 0, "wrong type"); }
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
+
+#   define _mrbx_symbol(V)  _mrbx_symbol
+
+#else
+
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+static inline mrb_sym _mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
+
+#   define _mrbx_symbol(V)                          \
+        _Generic((V),                               \
+                 mrb_value:     _mrbx_symbol,       \
+                 mrb_sym:       _mrbx_symbol_sym,   \
+                 const mrb_sym: _mrbx_symbol_sym,   \
+                 char *:        mrb_intern_cstr,    \
+                 const char *:  mrb_intern_cstr)    \
+
+#endif
+
+#define SYMBOL(SYM)     _mrbx_symbol(SYM)(mrb, (SYM))
 
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"

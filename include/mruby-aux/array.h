@@ -10,8 +10,33 @@
             ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
             ((const mrb_value []) { __VA_ARGS__ }))             \
 
+#ifdef __cplusplus
+
+template <typename T> static inline struct RArray *_mrbx_ary_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
+
 static inline struct RArray *
-_aux_mrb_ary_ptr(mrb_state *mrb, mrb_value v)
+_mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
+{
+    if (mrb_nil_p(v)) {
+        return nullptr;
+    } else {
+        mrb_check_type(mrb, v, MRB_TT_ARRAY);
+        return mrb_ary_ptr(v);
+    }
+}
+
+static inline struct RArray *
+_mrbx_ary_ptr(mrb_state *mrb, struct RArray *p)
+{
+    return p;
+}
+
+#   define _mrbx_ary_ptr(V) _mrbx_ary_ptr
+
+#else
+
+static inline struct RArray *
+_mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
         return (struct RArray *)NULL;
@@ -22,15 +47,18 @@ _aux_mrb_ary_ptr(mrb_state *mrb, mrb_value v)
 }
 
 static inline struct RArray *
-_aux_to_ary_ptr(mrb_state *mrb, struct RArray *p)
+_mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
 {
     return p;
 }
 
-#define RArray(V)                                   \
-    _Generic((V),                                   \
-             mrb_value:         _aux_mrb_ary_ptr,   \
-             struct RArray *:   _aux_to_ary_ptr)    \
-        (mrb, (V))                                  \
+#   define _mrbx_ary_ptr(V)                             \
+        _Generic((V),                                   \
+                 mrb_value:         _mrbx_ary_ptr,      \
+                 struct RArray *:   _mrbx_by_ary_ptr)   \
+
+#endif
+
+#define RArray(V)   _mrbx_ary_ptr(V)(mrb, (V))
 
 #endif /* MRUBY_AUX_ARRAY_H__ */

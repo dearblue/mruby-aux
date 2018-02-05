@@ -5,8 +5,12 @@
 
 #define MRBX_STR_MAX    (MRB_INT_MAX - 1)
 
+#ifdef __cplusplus
+
+template <typename T> static inline struct RString *_mrbx_str_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
+
 static inline struct RString *
-_aux_mrb_str_ptr(mrb_state *mrb, mrb_value v)
+_mrbx_str_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
         return (struct RString *)NULL;
@@ -17,24 +21,54 @@ _aux_mrb_str_ptr(mrb_state *mrb, mrb_value v)
 }
 
 static inline struct RString *
-_aux_to_str_ptr(mrb_state *mrb, struct RString *p)
+_mrbx_str_ptr(mrb_state *mrb, struct RString *p)
 {
     return p;
 }
 
 static inline struct RString *
-_aux_mrb_str_new_cstr(mrb_state *mrb, const char *str)
+_mrbx_str_ptr(mrb_state *mrb, const char *str)
 {
     return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
 }
 
-#define RString(V)                                      \
+#   define _mrbx_str_ptr(V) _mrbx_str_ptr
+
+#else
+
+static inline struct RString *
+_mrbx_str_ptr(mrb_state *mrb, mrb_value v)
+{
+    if (mrb_nil_p(v)) {
+        return (struct RString *)NULL;
+    } else {
+        mrb_check_type(mrb, v, MRB_TT_STRING);
+        return mrb_str_ptr(v);
+    }
+}
+
+static inline struct RString *
+_mrbx_by_str_ptr(mrb_state *mrb, struct RString *p)
+{
+    return p;
+}
+
+static inline struct RString *
+_mrbx_str_new_cstr(mrb_state *mrb, const char *str)
+{
+    return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
+}
+
+#define _mrbx_str_ptr(V)                                \
     _Generic((V),                                       \
-             mrb_value:             _aux_mrb_str_ptr,   \
-             struct RString *:      _aux_to_str_ptr,    \
-             char *:                _aux_mrb_str_new_cstr, \
-             const char *:          _aux_mrb_str_new_cstr) \
-        (mrb, (V))                                      \
+             mrb_value:             _mrbx_str_ptr,      \
+             struct RString *:      _mrbx_by_str_ptr,   \
+             char *:                _mrbx_str_new_cstr, \
+             const char *:          _mrbx_str_new_cstr) \
+
+#endif
+
+#define RString(V)  _mrbx_str_ptr(V)(mrb, (V))
 
 static inline struct RString *
 mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
@@ -56,11 +90,23 @@ mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, size_t len)
     return mrbx_str_set_len(mrb, RSTRING(dest), len);
 }
 
-#define mrbx_str_set_len(MRB, DEST, LEN)                \
-    _Generic((DEST),                                    \
-             mrb_value:         mrbx_str_set_len_value, \
-             struct RString *:  mrbx_str_set_len)       \
-        ((MRB), (DEST), (LEN))                          \
+#if __cplusplus
+
+static inline struct RString *
+mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
+{
+    return mrbx_str_set_len_value(mrb, dest, len);
+}
+
+#else
+
+#   define mrbx_str_set_len(MRB, DEST, LEN)                 \
+        _Generic((DEST),                                    \
+                 mrb_value:         mrbx_str_set_len_value, \
+                 struct RString *:  mrbx_str_set_len)       \
+            ((MRB), (DEST), (LEN))                          \
+
+#endif
 
 static inline struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
@@ -88,11 +134,23 @@ mrbx_str_reserve_value(mrb_state *mrb, mrb_value str, size_t len)
     return mrbx_str_reserve(mrb, RSTRING(str), len);
 }
 
-#define mrbx_str_reserve(MRB, STR, LEN)         \
-    _Generic((STR),                             \
-            mrb_value: mrbx_str_reserve_value,  \
-            struct RString *: mrbx_str_reserve) \
-        ((MRB), (STR), (LEN))                   \
+#ifdef __cplusplus
+
+static inline struct RString *
+mrbx_str_reserve(mrb_state *mrb, mrb_value str, size_t len)
+{
+    return mrbx_str_reserve_value(mrb, str, len);
+}
+
+#else
+
+#   define mrbx_str_reserve(MRB, STR, LEN)          \
+        _Generic((STR),                             \
+                mrb_value: mrbx_str_reserve_value,  \
+                struct RString *: mrbx_str_reserve) \
+            ((MRB), (STR), (LEN))                   \
+
+#endif
 
 static inline struct RString *
 mrbx_str_recycle(mrb_state *mrb, struct RString *str, size_t len)
@@ -115,11 +173,23 @@ mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#define mrbx_str_recycle(MRB, STR, LEN)         \
-    _Generic((STR),                             \
-            mrb_value: mrbx_str_recycle_value,  \
-            struct RString *: mrbx_str_recycle) \
-        ((MRB), (STR), (LEN))                   \
+#if __cplusplus
+
+static inline struct RString *
+mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
+{
+    return mrbx_str_recycle_value(mrb, str, len);
+}
+
+#else
+
+#   define mrbx_str_recycle(MRB, STR, LEN)          \
+        _Generic((STR),                             \
+                mrb_value: mrbx_str_recycle_value,  \
+                struct RString *: mrbx_str_recycle) \
+            ((MRB), (STR), (LEN))                   \
+
+#endif
 
 static inline struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, size_t len)
@@ -142,10 +212,22 @@ mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#define mrbx_str_force_recycle(MRB, STR, LEN)                       \
-    _Generic((STR),                                                 \
-            struct RString *:   mrbx_str_force_recycle,             \
-            mrb_value:          mrbx_str_force_recycle_value)       \
-        ((MRB), (STR), (LEN))                                       \
+#if __cplusplus
+
+static inline struct RString *
+mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
+{
+    return mrbx_str_force_recycle_value(mrb, str, len);
+}
+
+#else
+
+#   define mrbx_str_force_recycle(MRB, STR, LEN)                    \
+        _Generic((STR),                                             \
+                struct RString *:   mrbx_str_force_recycle,         \
+                mrb_value:          mrbx_str_force_recycle_value)   \
+            ((MRB), (STR), (LEN))                                   \
+
+#endif
 
 #endif /* MRUBY_AUX_STRING_H__ */
