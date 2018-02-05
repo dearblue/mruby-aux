@@ -8,7 +8,12 @@
 static inline struct RClass *
 _aux_mrb_class_ptr(mrb_state *mrb, mrb_value v)
 {
-    return mrb_class_ptr(v);
+    if (mrb_nil_p(v)) {
+        return NULL;
+    } else {
+        mrb_check_type(mrb, v, MRB_TT_CLASS);
+        return mrb_class_ptr(v);
+    }
 }
 
 static inline struct RClass *
