@@ -16,7 +16,11 @@
 #define MRUBY_AUX_SCANHASH_TO_SYM_H_ 1
 
 #if __cplusplus
-#   define MRBX_SCANHASH_UNUSED inline
+#   if __cplusplus < 201703L
+#       define MRBX_SCANHASH_UNUSED inline
+#   else
+#       define MRBX_SCANHASH_UNUSED [[maybe_unused]]
+#   endif
 #elif defined(__GNUC__) || defined (__clang__)
 #   define MRBX_SCANHASH_UNUSED __attribute__((unused))
 #else
