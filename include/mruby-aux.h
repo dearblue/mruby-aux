@@ -62,6 +62,7 @@ _aux_mrb_fixnum_value(mrb_state *mrb, mrb_int v)
               struct RRange *:      _aux_mrb_obj_value,     \
               struct RFiber *:      _aux_mrb_obj_value,     \
               struct RException *:  _aux_mrb_obj_value,     \
+              struct RData *:       _aux_mrb_obj_value,     \
               mrb_int:              _aux_mrb_fixnum_value,  \
               const mrb_int:        _aux_mrb_fixnum_value,  \
               mrb_float:            mrb_float_value,        \
