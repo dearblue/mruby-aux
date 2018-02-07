@@ -103,4 +103,63 @@ mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const
     return mrb_yield_with_class(mrb, b, argc, argv, o, NULL);
 }
 
+/**
+ * @def mrbx_get_const_cstr
+ *
+ * オブジェクトが保持している C の文字列ポインタを取得する。
+ *
+ * C のプロトタイプ宣言風に記述すると以下の通り:
+ *  static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v);
+ *  static const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str);
+ *  static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym);
+ */
+#define mrbx_get_const_cstr(MRB, V) _mrbx_get_const_cstr((V))((MRB), (V))
+
+static inline const char *
+_mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
+{
+    if (mrb_symbol_p(v)) {
+        return mrb_sym2name(mrb, mrb_symbol(v));
+    } else if (mrb_string_p(v)) {
+        return mrb_str_to_cstr(mrb, v);
+    }
+
+    if (!mrb_nil_p(v)) {
+        mrb_raisef(mrb, E_TYPE_ERROR,
+                   "wrong value - %S (expect string, symbol or nil only)",
+                   v);
+    }
+
+    return NULL;
+}
+
+static inline const char *
+_mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
+{
+    if (str) {
+        return mrb_str_to_cstr(mrb, mrb_obj_value(str));
+    } else {
+        return NULL;
+    }
+}
+
+#ifdef __cplusplus
+
+template <typename T> static const char *_mrbx_get_const_cstr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
+static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return _mrbx_get_const_cstr_from_value(mrb, v); }
+static const char *_mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return _mrbx_get_const_cstr_from_string(mrb, str); }
+static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
+
+#   define _mrbx_get_const_cstr(V)  _mrbx_get_const_cstr
+
+#else
+
+#   define _mrbx_get_const_cstr(V)                                      \
+        _Generic((V),                                                   \
+                 mrb_value:         _mrbx_get_const_cstr_from_value,    \
+                 struct RString *:  _mrbx_get_const_cstr_from_string,   \
+                 mrb_sym:           mrb_sym2name)                       \
+
+#endif
+
 #endif /* MRUBY_AUX_UTILS_H__ */
