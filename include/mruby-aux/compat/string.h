@@ -1,6 +1,7 @@
 #ifndef MRUBY_AUX_COMPAT_STRING_H__
 #define MRUBY_AUX_COMPAT_STRING_H__ 1
 
+#include <mruby.h>
 #include <mruby/string.h>
 
 #if MRUBY_RELEASE_NO < 10200
