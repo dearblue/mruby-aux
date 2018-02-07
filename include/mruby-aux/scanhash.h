@@ -18,17 +18,7 @@
 #define MRBX_SCANHASH_ELEMENTOF(v)  (sizeof((v)) / sizeof((v)[0]))
 #define MRBX_SCANHASH_ENDOF(v)      ((v) + MRBX_SCANHASH_ELEMENTOF((v)))
 
-#if defined(__cplusplus)
-#   define MRBX_SCANHASH_CEXTERN         extern "C"
-#   define MRBX_SCANHASH_CEXTERN_BEGIN   MRBX_SCANHASH_CEXTERN {
-#   define MRBX_SCANHASH_CEXTERN_END     }
-#else
-#   define MRBX_SCANHASH_CEXTERN
-#   define MRBX_SCANHASH_CEXTERN_BEGIN
-#   define MRBX_SCANHASH_CEXTERN_END
-#endif
-
-MRBX_SCANHASH_CEXTERN_BEGIN
+MRB_BEGIN_DECL
 
 struct mrbx_scanhash_arg
 {
@@ -95,7 +85,7 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
 #define MRBX_SCANHASH_ARGS(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
 #define MRBX_SCANHASH_ARGI(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
 
-MRBX_SCANHASH_CEXTERN_END
+MRB_END_DECL
 
 #include "scanhash/_to_sym.h"
 
