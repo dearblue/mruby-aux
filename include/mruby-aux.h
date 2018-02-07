@@ -9,6 +9,24 @@
 #include <mruby/value.h>
 #include <mruby/data.h>
 
+#ifndef MRBX_UNUSED
+#   if __cplusplus
+#       if __cplusplus >= 201703L
+#           define MRBX_UNUSED [[maybe_unused]]
+#       elif defined(__GNUC__) || defined (__clang__)
+#           define MRBX_UNUSED __attribute__((unused))
+#       else
+#           define MRBX_UNUSED inline
+#       endif
+#   elif defined(__GNUC__) || defined (__clang__)
+#       define MRBX_UNUSED __attribute__((unused))
+#   elif __STDC_VERSION__ >= 199901L
+#       define MRBX_UNUSED inline
+#   else
+#       define MRBX_UNUSED
+#   endif
+#endif
+
 #define VALUE           mrb_value
 #define Qnil            mrb_nil_value()
 #define Qtrue           mrb_true_value()
