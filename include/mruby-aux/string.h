@@ -3,7 +3,13 @@
 
 #include "compat/string.h"
 
-#define MRBX_STR_MAX    (MRB_INT_MAX - 1)
+#ifndef MRBX_STR_MAX
+#   if MRB_INT_MAX < SIZE_MAX
+#       define MRBX_STR_MAX (MRB_INT_MAX - 1)
+#   else
+#       define MRBX_STR_MAX (SIZE_MAX - 1)
+#   endif
+#endif
 
 #ifdef __cplusplus
 
