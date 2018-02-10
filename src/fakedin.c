@@ -58,7 +58,7 @@ mrbx_fakedin_read_from_stream_read(mrb_state *mrb, mrb_value owner, struct mrbx_
 }
 
 static mrb_int
-mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, char **buf, mrb_int size)
+mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size)
 {
     if (!input->read.buf) {
         input->read.off = 0;
@@ -104,7 +104,7 @@ mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_faked
 }
 
 static mrb_int
-mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, char **buf, mrb_int size)
+mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size)
 {
     const mrb_int len = RSTR_LEN(input->string.buf);
 
@@ -128,7 +128,7 @@ mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_faked
 }
 
 mrb_int
-mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, char **buf, mrb_int size)
+mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size)
 {
     if (size < 0) { mrb_raise(mrb, E_RUNTIME_ERROR, "wrong fetch size"); }
     if (size == 0) { *buf = NULL; return 0; }

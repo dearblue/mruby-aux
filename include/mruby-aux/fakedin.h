@@ -43,7 +43,7 @@ struct mrbx_fakedin
 };
 
 void mrbx_fakedin_setup(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, mrb_value stream);
-mrb_int mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, char **buf, mrb_int size);
+mrb_int mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size);
 mrb_bool mrbx_fakedin_eof(struct mrbx_fakedin *input);
 int64_t mrbx_fakedin_total_in(struct mrbx_fakedin *input);
 
