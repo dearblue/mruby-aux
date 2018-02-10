@@ -5,7 +5,7 @@
 
 enum { MRBX_NEXT = -1, MRBX_STOP = -2, };
 
-typedef ssize_t mrbx_str_growup(mrb_state *mrb, char *ptr, size_t *size, void *user);
+typedef ssize_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, void *user);
 
 /*
  * str.len から先を段階的に拡張していき、その拡張部分をその都度 func に渡す。
@@ -15,6 +15,6 @@ typedef ssize_t mrbx_str_growup(mrb_state *mrb, char *ptr, size_t *size, void *u
  * MRBX_STOP で終了する。
  * MRBX_NEXT で処理を進める。
  */
-struct RString *mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_growup *func, void *user);
+struct RString *mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user);
 
 #endif /* MRUBY_AUX_STRING_GROWUP_H_ */

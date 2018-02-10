@@ -1,7 +1,7 @@
 #include <mruby-aux/string/growup.h>
 
 struct RString *
-mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_growup *func, void *user)
+mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user)
 {
 #ifdef MRB_INT16
     enum { first_growup = 256, max_growup = 1 * 1024, };
