@@ -86,7 +86,7 @@ mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_faked
         if (size == 0) {
             mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input buffer@mruby-aux"), mrb_nil_value());
 
-            input->off = -input->off;
+            input->off = ~input->off;
             *buf = NULL;
 
             return -1;
@@ -111,7 +111,7 @@ mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_faked
         if (size == 0) {
             mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input buffer@mruby-aux"), mrb_nil_value());
 
-            input->off = -input->off;
+            input->off = ~input->off;
             *buf = NULL;
 
             return -1;
@@ -148,7 +148,7 @@ int64_t
 mrbx_fakedin_total_in(struct mrbx_fakedin *input)
 {
     if (input->off < 0) {
-        return -input->off;
+        return ~input->off;
     } else {
         return input->off;
     }
