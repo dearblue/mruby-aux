@@ -8,22 +8,31 @@ mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size)
 
     mrb_str_modify(mrb, str);
 
-    if (off > len) {
-        off = 0;
-    } else {
-        if (off < 0) {
-            off += len;
-            if (off < 0) {
-                mrb_raise(mrb, E_INDEX_ERROR, "wrong string index");
-            }
-        }
+    if (off < 0) {
+        mrb_int off0 = off;
 
-        if (size < 0 || size > (len - off)) {
+        off += len;
+
+        if (off < 0) {
+            mrb_raisef(mrb, E_INDEX_ERROR,
+                       "out of string (expect %S..%S, but given %S)",
+                       mrb_fixnum_value(-len),
+                       mrb_fixnum_value(len - 1),
+                       mrb_fixnum_value(off0));
+        }
+    }
+
+    if (off > len) {
+        off = len;
+    } else {
+        if (size < 1) {
+            off = len;
+        } else if (size > (len - off)) {
             ;
         } else {
             char *p = RSTR_PTR(str);
             memcpy(p + off, p + off + size, len - (off + size));
-            off += size;
+            off = len - size;
         }
     }
 
