@@ -145,7 +145,6 @@ _mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 
 #ifdef __cplusplus
 
-template <typename T> static const char *_mrbx_get_const_cstr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
 static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return _mrbx_get_const_cstr_from_value(mrb, v); }
 static const char *_mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return _mrbx_get_const_cstr_from_string(mrb, str); }
 static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }

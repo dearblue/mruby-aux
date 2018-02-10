@@ -7,8 +7,6 @@
 
 #ifdef __cplusplus
 
-template <typename T> static inline struct RClass *_mrbx_class_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
-
 static inline struct RClass *
 _mrbx_class_ptr(mrb_state *mrb, mrb_value v)
 {

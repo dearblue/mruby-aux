@@ -52,7 +52,6 @@
 
 #if __cplusplus
 
-template <typename T> static inline mrb_value _mrbx_obj_value(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, mrb_value v) { return v; }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
@@ -102,7 +101,6 @@ static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return m
 
 #ifdef __cplusplus
 
-template <typename T> static inline mrb_sym _mrbx_symbol(mrb_state *mrb, T sym) { static_assert(sizeof(T) < 0, "wrong type"); }
 static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
 static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
 static inline mrb_sym _mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }

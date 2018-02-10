@@ -13,8 +13,6 @@
 
 #ifdef __cplusplus
 
-template <typename T> static inline struct RString *_mrbx_str_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
-
 static inline struct RString *
 _mrbx_str_ptr(mrb_state *mrb, mrb_value v)
 {

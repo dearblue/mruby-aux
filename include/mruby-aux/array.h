@@ -31,7 +31,6 @@ _mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
 
 #ifdef __cplusplus
 
-template <typename T> static MRBX_UNUSED struct RArray *_mrbx_ary_ptr(mrb_state *mrb, T v) { static_assert(sizeof(T) < 0, "wrong type"); }
 static MRBX_UNUSED struct RArray *_mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { return _mrbx_by_ary_ptr(mrb, p); }
 
 #   define _mrbx_ary_ptr(V) _mrbx_ary_ptr
