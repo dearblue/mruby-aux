@@ -2,10 +2,13 @@
 #include <mruby-aux/string/drop.h>
 #include <mruby/variable.h>
 
+#define id_iv_stream_private mrb_intern_cstr(mrb, "input stream@mruby-aux")
+#define id_iv_buffer_private mrb_intern_cstr(mrb, "input buffer@mruby-aux")
+
 void
 mrbx_fakedin_setup(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, mrb_value stream)
 {
-    mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input stream@mruby-aux"), stream);
+    mrb_iv_set(mrb, owner, id_iv_stream_private, stream);
 
     input->stream = stream;
     input->off = 0;
@@ -60,7 +63,7 @@ mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_faked
     if (!input->read.buf) {
         input->read.off = 0;
         input->read.buf = RSTRING(mrb_str_buf_new(mrb, size));
-        mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input buffer@mruby-aux"), mrb_obj_value(input->read.buf));
+        mrb_iv_set(mrb, owner, id_iv_buffer_private, mrb_obj_value(input->read.buf));
         RSTR_SET_LEN(input->read.buf, 0);
     }
 
@@ -84,7 +87,7 @@ mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value owner, struct mrbx_faked
     if (size > (len - input->read.off)) {
         size = len - input->read.off;
         if (size == 0) {
-            mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input buffer@mruby-aux"), mrb_nil_value());
+            mrb_iv_set(mrb, owner, id_iv_buffer_private, mrb_nil_value());
 
             input->off = ~input->off;
             *buf = NULL;
@@ -109,7 +112,7 @@ mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_faked
         size = len - input->string.off;
 
         if (size == 0) {
-            mrb_iv_set(mrb, owner, mrb_intern_cstr(mrb, "input buffer@mruby-aux"), mrb_nil_value());
+            mrb_iv_set(mrb, owner, id_iv_buffer_private, mrb_nil_value());
 
             input->off = ~input->off;
             *buf = NULL;
