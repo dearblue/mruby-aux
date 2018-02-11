@@ -30,25 +30,25 @@
 #ifdef __cplusplus
 
 template <typename T>
-static MRBX_SCANHASH_UNUSED mrb_sym
+MRBX_SCANHASH_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, T str)
 {
     static_assert(sizeof(T) < 0, "wrong type");
 }
 
-static MRBX_SCANHASH_UNUSED mrb_sym
+MRBX_SCANHASH_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, mrb_sym str)
 {
     return str;
 }
 
-static MRBX_SCANHASH_UNUSED mrb_sym
+MRBX_SCANHASH_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, char *str)
 {
     return mrb_intern_cstr(mrb, str);
 }
 
-static MRBX_SCANHASH_UNUSED mrb_sym
+MRBX_SCANHASH_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, const char *str)
 {
     return mrb_intern_cstr(mrb, str);
@@ -56,7 +56,7 @@ MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, const char *str)
 
 #else
 
-static MRBX_SCANHASH_UNUSED mrb_sym
+MRBX_SCANHASH_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL_symbol(mrb_state *mrb, mrb_sym sym)
 {
     return sym;
