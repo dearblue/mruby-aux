@@ -8,6 +8,10 @@
 #   define RSTR_FROZEN_P(S) FALSE
 #elif MRUBY_RELEASE_NO < 10300
 #else
+#   if MRUBY_RELEASE_NO < 10400
+#       include <mruby/class.h> /* for MRB_FLAG_IS_FROZEN in MRB_FROZEN_P() */
+#   endif
+
 #   define RSTR_FROZEN_P(S) MRB_FROZEN_P(S)
 #endif
 
