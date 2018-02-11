@@ -3,7 +3,7 @@
 
 #include "../string.h"
 
-static MRBX_UNUSED mrb_value
+MRBX_UNUSED static mrb_value
 mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
 {
     if (bytesize < 1) {
