@@ -30,8 +30,8 @@ mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size)
         } else if (size > (len - off)) {
             ;
         } else {
-            char *p = RSTR_PTR(str);
-            memcpy(p + off, p + off + size, len - (off + size));
+            char *p = RSTR_PTR(str) + off;
+            memmove(p, p + size, len - (off + size));
             off = len - size;
         }
     }
