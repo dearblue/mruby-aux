@@ -161,4 +161,26 @@ static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mr
 
 #endif
 
+MRBX_UNUSED static void
+mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
+{
+    if (max == min) {
+        mrb_raisef(mrb, E_ARGUMENT_ERROR,
+                   "wrong number of arguments (given %S, expected %S)",
+                   mrb_fixnum_value(argc),
+                   mrb_fixnum_value(min));
+    } else if (max < min) {
+        mrb_raisef(mrb, E_ARGUMENT_ERROR,
+                   "wrong number of arguments (given %S, expected %S+)",
+                   mrb_fixnum_value(argc),
+                   mrb_fixnum_value(min));
+    } else {
+        mrb_raisef(mrb, E_ARGUMENT_ERROR,
+                   "wrong number of arguments (given %S, expected %S..%S)",
+                   mrb_fixnum_value(argc),
+                   mrb_fixnum_value(min),
+                   mrb_fixnum_value(max));
+    }
+}
+
 #endif /* MRUBY_AUX_UTILS_H__ */
