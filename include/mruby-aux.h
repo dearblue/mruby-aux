@@ -50,6 +50,8 @@
              ELEMENTOF(((const VALUE []) { __VA_ARGS__ })), \
              (const VALUE []) { __VA_ARGS__ } )             \
 
+struct RIstruct;
+
 #if __cplusplus
 
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, mrb_value v) { return v; }
@@ -63,6 +65,7 @@ static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RRange *v) { retu
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RException *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RData *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrb_fixnum_value(v); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
 static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb_str_new_cstr(mrb, v); }
@@ -88,6 +91,7 @@ static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return m
                   struct RFiber *:      _mrbx_obj_value,        \
                   struct RException *:  _mrbx_obj_value,        \
                   struct RData *:       _mrbx_obj_value,        \
+                  struct RIstruct *:    _mrbx_obj_value,        \
                   mrb_int:              _mrbx_fixnum_value,     \
                   const mrb_int:        _mrbx_fixnum_value,     \
                   mrb_float:            mrb_float_value,        \
