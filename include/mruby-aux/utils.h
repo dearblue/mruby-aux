@@ -38,25 +38,25 @@
               *_list_end_ = _list_ + ELEMENTOF(_list_),         \
               I = _list_;                                       \
          &I < _list_end_;                                       \
-         I ++)                                                  \
+         &I ++)                                                 \
 
 #define FOREACH_ALIST(TYPE, I, LIST)                            \
     for (TYPE *_list_end_ = (LIST) + ELEMENTOF((LIST)),         \
               I = (LIST);                                       \
          &I < _list_end_;                                       \
-         I ++)                                                  \
+         &I ++)                                                 \
 
 #define FOREACH_NLIST(TYPE, N, I, LIST)                         \
     for (TYPE *_list_end_ = (LIST) + (N),                       \
               I = (LIST);                                       \
          &I < _list_end_;                                       \
-         I ++)                                                  \
+         &I ++)                                                 \
 
 #define FOREACH_RARRAY(I, LIST)                                     \
     for (const VALUE I = ARY_PTR(RArray((LIST))),                   \
                      *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));  \
          &I < _list_end_;                                           \
-         I ++)                                                      \
+         &I ++)                                                     \
 
 static inline void *
 mrbx_getrefp(MRB, VALUE obj, const mrb_data_type *type)
