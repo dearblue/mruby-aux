@@ -10,7 +10,7 @@ mruby ライブラリを作成する際の補助関数などを集めたライ�
   * Product quality: PROTOTYPE
   * Author: [dearblue](https://github.com/dearblue)
   * Project page: <https://github.com/dearblue/mruby-aux>
-  * Licensing: [2 clause BSD License](LICENSE)
+  * Licensing: [Creative Commons Zero License \(CC0\)](LICENSE)
   * Language feature requirements:
       * generic selection (C11) or function overloading (C++)
       * variadic macros (C99 or C++11) (__VA_ARGS__)
