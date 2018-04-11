@@ -5,6 +5,9 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.author  = "dearblue"
   s.homepage = "https://github.com/dearblue/mruby-aux"
 
+  add_dependency "mruby-error", core: "mruby-error"
+  add_dependency "mruby-string-ext", core: "mruby-string-ext"
+
   if cc.command =~ /\b(?:g?cc|clang)\d*\b/
     cc.flags << "-Wno-shift-negative-value"
     cc.flags << "-Wno-shift-count-negative"
