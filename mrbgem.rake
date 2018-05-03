@@ -1,6 +1,6 @@
 MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.summary = "auxiliary library for mruby"
-  s.version = "0.1"
+  s.version = "0.2"
   s.license = "CC0"
   s.author  = "dearblue"
   s.homepage = "https://github.com/dearblue/mruby-aux"
