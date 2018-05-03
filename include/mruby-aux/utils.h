@@ -4,14 +4,7 @@
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
-
-#ifndef ELEMENTOF
-#   define ELEMENTOF(A) (sizeof((A)) / sizeof((A)[0]))
-#endif
-
-#ifndef ENDOF
-#   define ENDOF(A)     ((A) + ELEMENTOF((A)))
-#endif
+#include "common.h"
 
 #define IMPLEMENT_ME                                \
         mrb_raisef(mrb, E_NOTIMP_ERROR,             \
