@@ -21,13 +21,6 @@
 
 #define MRB             mrb_state *mrb
 
-#if MRUBY_RELEASE_NO < 10200
-#   define MRB_FROZEN_P(S)  FALSE
-#elif MRUBY_RELEASE_NO < 10300
-#   define MRB_FROZEN_P(S)  (mrb_type((S)) == MRB_TT_STRING ? RSTR_FROZEN_P((S)) : FALSE)
-#else
-#endif
-
 #define MRBX_OBJ_NEW(MRB, KLASS, ...)                       \
      mrb_obj_new(MRB, KLASS,                                \
              ELEMENTOF(((const VALUE []) { __VA_ARGS__ })), \
