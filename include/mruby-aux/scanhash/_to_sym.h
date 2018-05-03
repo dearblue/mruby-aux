@@ -15,40 +15,30 @@
 #ifndef MRUBY_AUX_SCANHASH_TO_SYM_H_
 #define MRUBY_AUX_SCANHASH_TO_SYM_H_ 1
 
-#if __cplusplus
-#   if __cplusplus < 201703L
-#       define MRBX_SCANHASH_UNUSED inline
-#   else
-#       define MRBX_SCANHASH_UNUSED [[maybe_unused]]
-#   endif
-#elif defined(__GNUC__) || defined (__clang__)
-#   define MRBX_SCANHASH_UNUSED __attribute__((unused))
-#else
-#   define MRBX_SCANHASH_UNUSED
-#endif
+#include "../common.h"
 
 #ifdef __cplusplus
 
 template <typename T>
-MRBX_SCANHASH_UNUSED static mrb_sym
+MRBX_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, T str)
 {
     static_assert(sizeof(T) < 0, "wrong type");
 }
 
-MRBX_SCANHASH_UNUSED static mrb_sym
+MRBX_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, mrb_sym str)
 {
     return str;
 }
 
-MRBX_SCANHASH_UNUSED static mrb_sym
+MRBX_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, char *str)
 {
     return mrb_intern_cstr(mrb, str);
 }
 
-MRBX_SCANHASH_UNUSED static mrb_sym
+MRBX_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, const char *str)
 {
     return mrb_intern_cstr(mrb, str);
@@ -56,7 +46,7 @@ MRBX_SCANHASH_TO_SYMBOL(mrb_state *mrb, const char *str)
 
 #else
 
-MRBX_SCANHASH_UNUSED static mrb_sym
+MRBX_UNUSED static mrb_sym
 MRBX_SCANHASH_TO_SYMBOL_symbol(mrb_state *mrb, mrb_sym sym)
 {
     return sym;
