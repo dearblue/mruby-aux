@@ -174,14 +174,3 @@ mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struc
         return mrb_nil_value();
     }
 }
-
-
-void
-mrb_mruby_aux_scanhash_gem_init(mrb_state *mrb)
-{
-}
-
-void
-mrb_mruby_aux_scanhash_gem_final(mrb_state *mrb)
-{
-}
