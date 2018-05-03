@@ -14,9 +14,7 @@
 #include <mruby.h>
 #include <mruby/array.h>
 #include <mruby/hash.h>
-
-#define MRBX_SCANHASH_ELEMENTOF(v)  (sizeof((v)) / sizeof((v)[0]))
-#define MRBX_SCANHASH_ENDOF(v)      ((v) + MRBX_SCANHASH_ELEMENTOF((v)))
+#include "common.h"
 
 MRB_BEGIN_DECL
 
@@ -68,10 +66,10 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
  * MRBX_SCANHASH_ARG 系の第3引数に mrb_undef_value() を与えると、省略不可キーワード引数となる
  *          MRBX_SCANHASH_ARGS("f", &f, mrb_undef_value())
  */
-#define MRBX_SCANHASH(mrb, hash, rest, ...)                                             \
-    mrbx_scanhash(mrb, (hash), (rest),                                                  \
-            MRBX_SCANHASH_ELEMENTOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })),    \
-            ((struct mrbx_scanhash_arg []){ __VA_ARGS__ }));                            \
+#define MRBX_SCANHASH(mrb, hash, rest, ...)                             \
+    mrbx_scanhash(mrb, (hash), (rest),                                  \
+            ELEMENTOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })),  \
+            ((struct mrbx_scanhash_arg []){ __VA_ARGS__ }));            \
 
 /*
  * 評価順は左から右に固定される。
