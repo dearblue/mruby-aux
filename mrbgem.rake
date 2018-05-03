@@ -7,11 +7,4 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
 
   add_dependency "mruby-error", core: "mruby-error"
   add_dependency "mruby-string-ext", core: "mruby-string-ext"
-
-  if cc.command =~ /\b(?:g?cc|clang)\d*\b/
-    cc.flags << "-Wno-shift-negative-value"
-    cc.flags << "-Wno-shift-count-negative"
-    cc.flags << "-Wno-shift-count-overflow"
-    cc.flags << "-Wno-missing-braces"
-  end
 end
