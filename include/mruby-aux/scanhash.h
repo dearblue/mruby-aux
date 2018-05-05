@@ -78,13 +78,11 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
  * [dest]   キーワード引数の代入先。NULL を指定した場合、名前の確認だけして、Cレベルの変数への代入は行わない
  * [vdefault] 規定値。Qundef を指定した場合、省略不可キーワードとなる
  */
-#define MRBX_SCANHASH_ARG(name, dest, vdefault) { MRBX_SCANHASH_TO_SYMBOL(mrb, (name)), (dest), (vdefault), }
+#define MRBX_SCANHASH_ARG(name, dest, vdefault) { SYMBOL(name), (dest), (vdefault), }
 
 #define MRBX_SCANHASH_ARGS(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
 #define MRBX_SCANHASH_ARGI(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
 
 MRB_END_DECL
-
-#include "scanhash/_to_sym.h"
 
 #endif /* MRBX_HASHARGS_H__ */

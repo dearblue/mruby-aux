@@ -95,4 +95,30 @@ MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_
 #else
 #endif /* MRUBY_RELEASE_NO */
 
+
+#ifdef __cplusplus
+
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
+
+#   define _mrbx_symbol(V)  _mrbx_symbol
+
+#else
+
+static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+static inline mrb_sym _mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
+
+#   define _mrbx_symbol(V)                          \
+        _Generic((V),                               \
+                 mrb_value:     _mrbx_symbol,       \
+                 mrb_sym:       _mrbx_symbol_sym,   \
+                 const mrb_sym: _mrbx_symbol_sym,   \
+                 char *:        mrb_intern_cstr,    \
+                 const char *:  mrb_intern_cstr)    \
+
+#endif
+
+#define SYMBOL(SYM)     _mrbx_symbol(SYM)(mrb, (SYM))
+
 #endif /* MRUBY_AUX_COMMON_H */
