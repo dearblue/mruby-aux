@@ -83,6 +83,5 @@ static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return m
 #include "mruby-aux/string.h"
 #include "mruby-aux/class.h"
 #include "mruby-aux/utils.h"
-#include "mruby-aux/throw.h"
 
 #endif /* MRUBY_AUX_H__ */
