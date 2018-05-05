@@ -8,24 +8,7 @@
 #include <mruby/string.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
-
-#ifndef MRBX_UNUSED
-#   if __cplusplus
-#       if __cplusplus >= 201703L
-#           define MRBX_UNUSED [[maybe_unused]]
-#       elif defined(__GNUC__) || defined (__clang__)
-#           define MRBX_UNUSED __attribute__((unused))
-#       else
-#           define MRBX_UNUSED inline
-#       endif
-#   elif defined(__GNUC__) || defined (__clang__)
-#       define MRBX_UNUSED __attribute__((unused))
-#   elif __STDC_VERSION__ >= 199901L
-#       define MRBX_UNUSED inline
-#   else
-#       define MRBX_UNUSED
-#   endif
-#endif
+#include "mruby-aux/common.h"
 
 #define VALUE           mrb_value
 #define Qnil            mrb_nil_value()
@@ -37,13 +20,6 @@
 #define mrb_cObject     (mrb->object_class)
 
 #define MRB             mrb_state *mrb
-
-#if MRUBY_RELEASE_NO < 10200
-#   define MRB_FROZEN_P(S)  FALSE
-#elif MRUBY_RELEASE_NO < 10300
-#   define MRB_FROZEN_P(S)  (mrb_type((S)) == MRB_TT_STRING ? RSTR_FROZEN_P((S)) : FALSE)
-#else
-#endif
 
 #define MRBX_OBJ_NEW(MRB, KLASS, ...)                       \
      mrb_obj_new(MRB, KLASS,                                \
@@ -103,35 +79,9 @@ static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return m
 
 #define mrb_value(V)    _mrbx_obj_value((V))(mrb, (V))
 
-#ifdef __cplusplus
-
-static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
-static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
-static inline mrb_sym _mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
-
-#   define _mrbx_symbol(V)  _mrbx_symbol
-
-#else
-
-static inline mrb_sym _mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
-static inline mrb_sym _mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
-
-#   define _mrbx_symbol(V)                          \
-        _Generic((V),                               \
-                 mrb_value:     _mrbx_symbol,       \
-                 mrb_sym:       _mrbx_symbol_sym,   \
-                 const mrb_sym: _mrbx_symbol_sym,   \
-                 char *:        mrb_intern_cstr,    \
-                 const char *:  mrb_intern_cstr)    \
-
-#endif
-
-#define SYMBOL(SYM)     _mrbx_symbol(SYM)(mrb, (SYM))
-
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
 #include "mruby-aux/class.h"
 #include "mruby-aux/utils.h"
-#include "mruby-aux/throw.h"
 
 #endif /* MRUBY_AUX_H__ */

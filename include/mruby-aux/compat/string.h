@@ -3,6 +3,7 @@
 
 #include <mruby.h>
 #include <mruby/string.h>
+#include "../common.h"
 
 #if MRUBY_RELEASE_NO < 10200
 #   define RSTR_FROZEN_P(S) FALSE

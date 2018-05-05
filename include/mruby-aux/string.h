@@ -6,10 +6,20 @@
 #ifndef MRBX_STR_MAX
 #   if MRB_INT_MAX < SIZE_MAX
 #       define MRBX_STR_MAX (MRB_INT_MAX - 1)
+#       define mrbx_size_t ssize_t
 #   else
 #       define MRBX_STR_MAX (SIZE_MAX - 1)
+#       define mrbx_size_t mrb_int
 #   endif
 #endif
+
+MRBX_UNUSED static void
+mrbx_str_check_size(mrb_state *mrb, mrbx_size_t size)
+{
+    if (size < 0 || size > MRBX_STR_MAX) {
+        mrb_raise(mrb, E_RUNTIME_ERROR, "string length too large or negative");
+    }
+}
 
 #ifdef __cplusplus
 
