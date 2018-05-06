@@ -8,8 +8,8 @@
  *     dearblue <dearblue@users.noreply.github.com>
  */
 
-#ifndef MRBX_HASHARGS_H__
-#define MRBX_HASHARGS_H__ 1
+#ifndef MRBX_HASHARGS_H
+#define MRBX_HASHARGS_H 1
 
 #include <mruby.h>
 #include <mruby/array.h>
@@ -85,4 +85,4 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
 
 MRB_END_DECL
 
-#endif /* MRBX_HASHARGS_H__ */
+#endif /* MRBX_HASHARGS_H */

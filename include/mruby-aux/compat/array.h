@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_COMPAT_ARRAY_H__
-#define MRUBY_AUX_COMPAT_ARRAY_H__ 1
+#ifndef MRUBY_AUX_COMPAT_ARRAY_H
+#define MRUBY_AUX_COMPAT_ARRAY_H 1
 
 #include <mruby/array.h>
 #include "../common.h"
@@ -22,4 +22,4 @@
 #   define RARY_LEN(A)  ARY_LEN((A))
 #endif
 
-#endif /* MRUBY_AUX_COMPAT_ARRAY_H__ */
+#endif /* MRUBY_AUX_COMPAT_ARRAY_H */

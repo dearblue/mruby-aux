@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_H__
-#define MRUBY_AUX_H__ 1
+#ifndef MRUBY_AUX_H
+#define MRUBY_AUX_H 1
 
 #include <mruby.h>
 #include <mruby/variable.h>
@@ -28,60 +28,59 @@
 
 struct RIstruct;
 
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+MRBX_UNUSED static inline mrb_value mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
+MRBX_UNUSED static inline mrb_value mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
+
 #if __cplusplus
 
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, mrb_value v) { return v; }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RString *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RException *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RData *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrb_fixnum_value(v); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb_str_new_cstr(mrb, v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, mrb_value v) { return mrbx_value_to_value(mrb, v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RData *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrbx_fixnum_value(mrb, v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb_str_new_cstr(mrb, v); }
 
-#   define _mrbx_obj_value(V)   _mrbx_obj_value
+# define mrb_value(V)   mrbx_obj_value(mrb, (V))
 
 #else
 
-static inline mrb_value _mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-static inline mrb_value _mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
-static inline mrb_value _mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
-
-#   define _mrbx_obj_value(V)                                   \
+#   define mrb_value(V)                                         \
         _Generic((V),                                           \
-                  mrb_value:            _mrbx_value_to_value,   \
-                  struct RBasic *:      _mrbx_obj_value,        \
-                  struct RObject *:     _mrbx_obj_value,        \
-                  struct RClass *:      _mrbx_obj_value,        \
-                  struct RArray *:      _mrbx_obj_value,        \
-                  struct RString *:     _mrbx_obj_value,        \
-                  struct RProc *:       _mrbx_obj_value,        \
-                  struct RRange *:      _mrbx_obj_value,        \
-                  struct RFiber *:      _mrbx_obj_value,        \
-                  struct RException *:  _mrbx_obj_value,        \
-                  struct RData *:       _mrbx_obj_value,        \
-                  struct RIstruct *:    _mrbx_obj_value,        \
-                  mrb_int:              _mrbx_fixnum_value,     \
-                  const mrb_int:        _mrbx_fixnum_value,     \
+                  mrb_value:            mrbx_value_to_value,    \
+                  struct RBasic *:      mrbx_obj_value,         \
+                  struct RObject *:     mrbx_obj_value,         \
+                  struct RClass *:      mrbx_obj_value,         \
+                  struct RArray *:      mrbx_obj_value,         \
+                  struct RString *:     mrbx_obj_value,         \
+                  struct RProc *:       mrbx_obj_value,         \
+                  struct RRange *:      mrbx_obj_value,         \
+                  struct RFiber *:      mrbx_obj_value,         \
+                  struct RException *:  mrbx_obj_value,         \
+                  struct RData *:       mrbx_obj_value,         \
+                  struct RIstruct *:    mrbx_obj_value,         \
+                  mrb_int:              mrbx_fixnum_value,      \
+                  const mrb_int:        mrbx_fixnum_value,      \
                   mrb_float:            mrb_float_value,        \
                   const mrb_float:      mrb_float_value,        \
                   char *:               mrb_str_new_cstr,       \
-                  const char *:         mrb_str_new_cstr)       \
+                  const char *:         mrb_str_new_cstr        \
+                )(mrb, (V))                                     \
 
 #endif
-
-#define mrb_value(V)    _mrbx_obj_value((V))(mrb, (V))
 
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
 #include "mruby-aux/class.h"
 #include "mruby-aux/utils.h"
 
-#endif /* MRUBY_AUX_H__ */
+#endif /* MRUBY_AUX_H */

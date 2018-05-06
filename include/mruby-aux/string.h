@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_STRING_H__
-#define MRUBY_AUX_STRING_H__ 1
+#ifndef MRUBY_AUX_STRING_H
+#define MRUBY_AUX_STRING_H 1
 
 #include "compat/string.h"
 
@@ -21,10 +21,9 @@ mrbx_str_check_size(mrb_state *mrb, mrbx_size_t size)
     }
 }
 
-#ifdef __cplusplus
 
 static inline struct RString *
-_mrbx_str_ptr(mrb_state *mrb, mrb_value v)
+mrbx_str_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
         return (struct RString *)NULL;
@@ -35,54 +34,35 @@ _mrbx_str_ptr(mrb_state *mrb, mrb_value v)
 }
 
 static inline struct RString *
-_mrbx_str_ptr(mrb_state *mrb, struct RString *p)
+mrbx_by_str_ptr(mrb_state *mrb, struct RString *p)
 {
     return p;
 }
 
 static inline struct RString *
-_mrbx_str_ptr(mrb_state *mrb, const char *str)
+mrbx_str_new_cstr(mrb_state *mrb, const char *str)
 {
     return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
 }
 
-#   define _mrbx_str_ptr(V) _mrbx_str_ptr
+#ifdef __cplusplus
+
+static inline struct RString * mrbx_str_ptr(mrb_state *mrb, struct RString *p) { return mrbx_by_str_ptr(mrb, p); }
+static inline struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { return mrbx_str_new_cstr(mrb, str); }
 
 #else
 
-static inline struct RString *
-_mrbx_str_ptr(mrb_state *mrb, mrb_value v)
-{
-    if (mrb_nil_p(v)) {
-        return (struct RString *)NULL;
-    } else {
-        mrb_check_type(mrb, v, MRB_TT_STRING);
-        return mrb_str_ptr(v);
-    }
-}
-
-static inline struct RString *
-_mrbx_by_str_ptr(mrb_state *mrb, struct RString *p)
-{
-    return p;
-}
-
-static inline struct RString *
-_mrbx_str_new_cstr(mrb_state *mrb, const char *str)
-{
-    return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
-}
-
-#define _mrbx_str_ptr(V)                                \
+#define mrbx_str_ptr(MRB, V)                            \
     _Generic((V),                                       \
-             mrb_value:             _mrbx_str_ptr,      \
-             struct RString *:      _mrbx_by_str_ptr,   \
-             char *:                _mrbx_str_new_cstr, \
-             const char *:          _mrbx_str_new_cstr) \
+             mrb_value:             mrbx_str_ptr,       \
+             struct RString *:      mrbx_by_str_ptr,    \
+             char *:                mrbx_str_new_cstr,  \
+             const char *:          mrbx_str_new_cstr   \
+            )(MRB, V)                                   \
 
 #endif
 
-#define RString(V)  _mrbx_str_ptr(V)(mrb, (V))
+#define RString(V)  mrbx_str_ptr(mrb, (V))
 
 static inline struct RString *
 mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
@@ -244,4 +224,4 @@ mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
 
 #endif
 
-#endif /* MRUBY_AUX_STRING_H__ */
+#endif /* MRUBY_AUX_STRING_H */

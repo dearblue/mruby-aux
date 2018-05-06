@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_UTILS_H__
-#define MRUBY_AUX_UTILS_H__ 1
+#ifndef MRUBY_AUX_UTILS_H
+#define MRUBY_AUX_UTILS_H 1
 
 #include <mruby.h>
 #include <mruby/value.h>
@@ -96,6 +96,7 @@ mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const
     return mrb_yield_with_class(mrb, b, argc, argv, o, NULL);
 }
 
+#ifdef FOR_DOCUMENT_ONLY
 /**
  * @def mrbx_get_const_cstr
  *
@@ -106,10 +107,11 @@ mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const
  *  static const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str);
  *  static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym);
  */
-#define mrbx_get_const_cstr(MRB, V) _mrbx_get_const_cstr((V))((MRB), (V))
+# define mrbx_get_const_cstr(mrb, var)
+#endif
 
 static inline const char *
-_mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
+mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
 {
     if (mrb_symbol_p(v)) {
         return mrb_sym2name(mrb, mrb_symbol(v));
@@ -127,7 +129,7 @@ _mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
 }
 
 static inline const char *
-_mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
+mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 {
     if (str) {
         return mrb_str_to_cstr(mrb, mrb_obj_value(str));
@@ -138,19 +140,18 @@ _mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 
 #ifdef __cplusplus
 
-static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return _mrbx_get_const_cstr_from_value(mrb, v); }
-static const char *_mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return _mrbx_get_const_cstr_from_string(mrb, str); }
-static const char *_mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
-
-#   define _mrbx_get_const_cstr(V)  _mrbx_get_const_cstr
+static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return mrbx_get_const_cstr_from_value(mrb, v); }
+static const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return mrbx_get_const_cstr_from_string(mrb, str); }
+static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
 
 #else
 
-#   define _mrbx_get_const_cstr(V)                                      \
+#   define mrbx_get_const_cstr(MRB, V)                                  \
         _Generic((V),                                                   \
-                 mrb_value:         _mrbx_get_const_cstr_from_value,    \
-                 struct RString *:  _mrbx_get_const_cstr_from_string,   \
+                 mrb_value:         mrbx_get_const_cstr_from_value,     \
+                 struct RString *:  mrbx_get_const_cstr_from_string,    \
                  mrb_sym:           mrb_sym2name)                       \
+            (MRB, V)                                                    \
 
 #endif
 
@@ -176,4 +177,4 @@ mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
     }
 }
 
-#endif /* MRUBY_AUX_UTILS_H__ */
+#endif /* MRUBY_AUX_UTILS_H */

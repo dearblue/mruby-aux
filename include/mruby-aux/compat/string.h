@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_COMPAT_STRING_H__
-#define MRUBY_AUX_COMPAT_STRING_H__ 1
+#ifndef MRUBY_AUX_COMPAT_STRING_H
+#define MRUBY_AUX_COMPAT_STRING_H 1
 
 #include <mruby.h>
 #include <mruby/string.h>
@@ -24,4 +24,4 @@ mrb_str_new_capa(mrb_state *mrb, size_t capa)
 }
 #endif
 
-#endif /* MRUBY_AUX_COMPAT_STRING_H__ */
+#endif /* MRUBY_AUX_COMPAT_STRING_H */

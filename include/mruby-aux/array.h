@@ -1,5 +1,5 @@
-#ifndef MRUBY_AUX_ARRAY_H__
-#define MRUBY_AUX_ARRAY_H__ 1
+#ifndef MRUBY_AUX_ARRAY_H
+#define MRUBY_AUX_ARRAY_H 1
 
 #include <mruby/array.h>
 #include "compat/array.h"
@@ -10,10 +10,10 @@
             ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
             ((const mrb_value []) { __VA_ARGS__ }))             \
 
-#define RArray(V)   _mrbx_ary_ptr(V)(mrb, (V))
+#define RArray(V)   mrbx_ary_ptr(mrb, (V))
 
 MRBX_UNUSED static struct RArray *
-_mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
+mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
         return (struct RArray *)NULL;
@@ -24,24 +24,23 @@ _mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
 }
 
 MRBX_UNUSED static struct RArray *
-_mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
+mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
 {
     return p;
 }
 
 #ifdef __cplusplus
 
-MRBX_UNUSED static struct RArray *_mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { return _mrbx_by_ary_ptr(mrb, p); }
-
-#   define _mrbx_ary_ptr(V) _mrbx_ary_ptr
+MRBX_UNUSED static struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { return mrbx_by_ary_ptr(mrb, p); }
 
 #else
 
-#   define _mrbx_ary_ptr(V)                             \
-        _Generic((V),                                   \
-                 mrb_value:         _mrbx_ary_ptr,      \
-                 struct RArray *:   _mrbx_by_ary_ptr)   \
+#   define mrbx_ary_ptr(MRB, V)                     \
+        _Generic((V),                               \
+                 mrb_value:         mrbx_ary_ptr,   \
+                 struct RArray *:   mrbx_by_ary_ptr \
+                 )(MRB, V)                          \
 
 #endif
 
-#endif /* MRUBY_AUX_ARRAY_H__ */
+#endif /* MRUBY_AUX_ARRAY_H */
