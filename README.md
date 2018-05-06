@@ -32,10 +32,10 @@ MRBX_SCANHASH(mrb, user_hash_object, mrb_nil_value(),
   * Author: [dearblue](https://github.com/dearblue)
   * Project page: <https://github.com/dearblue/mruby-aux>
   * Licensing: [Creative Commons Zero License (CC0 / Public Domain)](LICENSE)
-  * Language feature requirements:
+  * Requirement language features:
       * generic selection (C11) or function overloading (C++)
-      * variadic macros (C99 or C++11) (__VA_ARGS__)
+      * variadic macros (`__VA_ARGS__`) (C99 or C++11)
       * compound literals (C99)
-      * flexible array (C99)
+      * flexible array member (C99)
       * variable length arrays (C99)
   * Dependency external mrbgems: (NONE)
