@@ -40,10 +40,32 @@ mrbx_by_str_ptr(mrb_state *mrb, struct RString *p)
     return p;
 }
 
+static inline mrb_value
+mrbx_value_str_new_lit(mrb_state *mrb, const char *str)
+{
+    return mrb_str_new_static(mrb, str, strlen(str));
+}
+
+static inline mrb_value
+mrbx_value_str_new_cstr(mrb_state *mrb, const char *str)
+{
+    if (MRBX_LITERAL_P(str)) {
+        return mrbx_value_str_new_lit(mrb, str);
+    } else {
+        return mrb_str_new_cstr(mrb, str);
+    }
+}
+
+static inline struct RString *
+mrbx_str_new_lit(mrb_state *mrb, const char *str)
+{
+    return mrb_str_ptr(mrbx_value_str_new_lit(mrb, str));
+}
+
 static inline struct RString *
 mrbx_str_new_cstr(mrb_state *mrb, const char *str)
 {
-    return mrb_str_ptr(mrb_str_new_cstr(mrb, str));
+    return mrb_str_ptr(mrbx_value_str_new_cstr(mrb, str));
 }
 
 #ifdef __cplusplus
@@ -53,13 +75,18 @@ static inline struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { r
 
 #else
 
-#define mrbx_str_ptr(MRB, V)                            \
-    _Generic((V),                                       \
-             mrb_value:             mrbx_str_ptr,       \
-             struct RString *:      mrbx_by_str_ptr,    \
-             char *:                mrbx_str_new_cstr,  \
-             const char *:          mrbx_str_new_cstr   \
-            )(MRB, V)                                   \
+# define MRBX_STR_NEW_CSTR_FUNC(CSTR)   \
+        (MRBX_LITERAL_P(CSTR) ?         \
+         mrbx_str_new_lit :             \
+         mrbx_str_new_cstr)             \
+
+# define mrbx_str_ptr(MRB, V)                                       \
+        _Generic((V),                                               \
+                 mrb_value:             mrbx_str_ptr,               \
+                 struct RString *:      mrbx_by_str_ptr,            \
+                 char *:                mrbx_str_new_cstr,          \
+                 const char *:          MRBX_STR_NEW_CSTR_FUNC(V))  \
+            (MRB, V)                                                \
 
 #endif
 

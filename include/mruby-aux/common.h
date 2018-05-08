@@ -110,15 +110,21 @@ static inline mrb_sym mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_
 
 static inline mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
 static inline mrb_sym mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
+static inline mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mrb_intern_static(mrb, str, strlen(str)); }
 
-#   define mrbx_symbol(MRB, V)                      \
-        _Generic((V),                               \
-                 mrb_value:     mrbx_symbol,        \
-                 mrb_sym:       mrbx_symbol_sym,    \
-                 const mrb_sym: mrbx_symbol_sym,    \
-                 char *:        mrb_intern_cstr,    \
-                 const char *:  mrb_intern_cstr     \
-                )(MRB, V)                           \
+#   define MRBX_SYMBOL_CSTR_FUNC(CSTR)  \
+        (MRBX_LITERAL_P(CSTR) ?         \
+         mrbx_intern_lit :              \
+         mrb_intern_cstr)               \
+
+#   define mrbx_symbol(MRB, V)                              \
+        _Generic((V),                                       \
+                 mrb_value:     mrbx_symbol,                \
+                 mrb_sym:       mrbx_symbol_sym,            \
+                 const mrb_sym: mrbx_symbol_sym,            \
+                 char *:        mrb_intern_cstr,            \
+                 const char *:  MRBX_SYMBOL_CSTR_FUNC(V))   \
+            (MRB, V)                                        \
 
 #endif
 

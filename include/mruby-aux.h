@@ -52,35 +52,39 @@ MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RData 
 MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrbx_fixnum_value(mrb, v); }
 MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb_str_new_cstr(mrb, v); }
+MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrbx_value_str_new_cstr(mrb, v); }
 
 # define mrb_value(V)   mrbx_obj_value(mrb, (V))
 
 #else
 
-#   define mrb_value(V)                                         \
-        _Generic((V),                                           \
-                  mrb_value:            mrbx_value_to_value,    \
-                  struct RBasic *:      mrbx_obj_value,         \
-                  struct RObject *:     mrbx_obj_value,         \
-                  struct RClass *:      mrbx_obj_value,         \
-                  struct RArray *:      mrbx_obj_value,         \
-                  struct RString *:     mrbx_obj_value,         \
-                  struct RProc *:       mrbx_obj_value,         \
-                  struct RRange *:      mrbx_obj_value,         \
-                  struct RFiber *:      mrbx_obj_value,         \
-                  struct RException *:  mrbx_obj_value,         \
-                  struct RData *:       mrbx_obj_value,         \
-                  struct RIstruct *:    mrbx_obj_value,         \
-                  mrb_int:              mrbx_fixnum_value,      \
-                  const mrb_int:        mrbx_fixnum_value,      \
-                  mrb_float:            mrb_float_value,        \
-                  const mrb_float:      mrb_float_value,        \
-                  char *:               mrb_str_new_cstr,       \
-                  const char *:         mrb_str_new_cstr        \
-                )(mrb, (V))                                     \
+# define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR) \
+        (MRBX_LITERAL_P(CSTR) ?             \
+         mrbx_value_str_new_lit :           \
+         mrb_str_new_cstr)                  \
+
+# define mrb_value(V)                                                       \
+        _Generic((V),                                                       \
+                 mrb_value:             mrbx_value_to_value,                \
+                 struct RBasic *:       mrbx_obj_value,                     \
+                 struct RObject *:      mrbx_obj_value,                     \
+                 struct RClass *:       mrbx_obj_value,                     \
+                 struct RArray *:       mrbx_obj_value,                     \
+                 struct RString *:      mrbx_obj_value,                     \
+                 struct RProc *:        mrbx_obj_value,                     \
+                 struct RRange *:       mrbx_obj_value,                     \
+                 struct RFiber *:       mrbx_obj_value,                     \
+                 struct RException *:   mrbx_obj_value,                     \
+                 struct RData *:        mrbx_obj_value,                     \
+                 struct RIstruct *:     mrbx_obj_value,                     \
+                 mrb_int:               mrbx_fixnum_value,                  \
+                 const mrb_int:         mrbx_fixnum_value,                  \
+                 mrb_float:             mrb_float_value,                    \
+                 const mrb_float:       mrb_float_value,                    \
+                 char *:                mrbx_str_new_cstr,                  \
+                 const char *:          MRBX_VALUE_STR_NEW_CSTR_FUNC(V))    \
+            (mrb, (V))                                                      \
 
 #endif
-
 
 #endif /* MRUBY_AUX_H */
