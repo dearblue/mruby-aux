@@ -43,7 +43,7 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 #define RClass(V) mrbx_class_ptr(mrb, (V))
 
 static inline struct RClass *
-aux_dig_class(MRB, struct RClass *c, size_t num, const char *names[])
+aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
 {
     if (!c) {
         c = mrb->object_class;

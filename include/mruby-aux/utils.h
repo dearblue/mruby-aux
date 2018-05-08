@@ -52,7 +52,7 @@
          &I ++)                                                     \
 
 static inline void *
-mrbx_getrefp(MRB, VALUE obj, const mrb_data_type *type)
+mrbx_getrefp(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
 {
     void *p;
 
@@ -62,7 +62,7 @@ mrbx_getrefp(MRB, VALUE obj, const mrb_data_type *type)
 }
 
 static inline void *
-mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
+mrbx_getref(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
 {
     void *p = mrbx_getrefp(mrb, obj, type);
 
@@ -76,7 +76,7 @@ mrbx_getref(MRB, VALUE obj, const mrb_data_type *type)
 }
 
 static inline mrb_value
-mrbx_funcall_passthrough(MRB, mrb_value recv, mrb_sym mid)
+mrbx_funcall_passthrough(mrb_state *mrb, mrb_value recv, mrb_sym mid)
 {
     mrb_int argc;
     mrb_value *argv, block;
