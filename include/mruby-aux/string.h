@@ -2,6 +2,7 @@
 #define MRUBY_AUX_STRING_H 1
 
 #include "compat/string.h"
+#include <string.h>
 
 #ifndef MRBX_STR_MAX
 #   if MRB_INT_MAX < SIZE_MAX

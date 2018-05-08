@@ -1,7 +1,6 @@
 #ifndef MRUBY_AUX_ARRAY_H
 #define MRUBY_AUX_ARRAY_H 1
 
-#include <mruby/array.h>
 #include "compat/array.h"
 
 #define MRBX_TUPLE(...)                                         \

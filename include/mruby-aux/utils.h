@@ -4,6 +4,7 @@
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
+#include <mruby/string.h>
 #include "common.h"
 
 #define IMPLEMENT_ME                                \

@@ -1,6 +1,8 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#include <string.h>
+
 #ifndef MRBX_UNUSED
 # if __cplusplus
 #  if __cplusplus >= 201703L
@@ -34,6 +36,8 @@
 #ifndef ENDOF
 # define ENDOF(A)       ((A) + ELEMENTOF((A)))
 #endif
+
+#include <mruby.h>
 
 #if MRUBY_RELEASE_NO < 10200
 # define MRB_FROZEN_P(S)  FALSE

@@ -9,6 +9,10 @@
 #include <mruby/value.h>
 #include <mruby/data.h>
 #include "mruby-aux/common.h"
+#include "mruby-aux/array.h"
+#include "mruby-aux/string.h"
+#include "mruby-aux/class.h"
+#include "mruby-aux/utils.h"
 
 #define VALUE           mrb_value
 #define Qnil            mrb_nil_value()
@@ -78,9 +82,5 @@ MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const char *v
 
 #endif
 
-#include "mruby-aux/array.h"
-#include "mruby-aux/string.h"
-#include "mruby-aux/class.h"
-#include "mruby-aux/utils.h"
 
 #endif /* MRUBY_AUX_H */

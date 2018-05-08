@@ -1,6 +1,7 @@
 #ifndef MRUBY_AUX_COMPAT_ARRAY_H
 #define MRUBY_AUX_COMPAT_ARRAY_H 1
 
+#include <mruby.h>
 #include <mruby/array.h>
 #include "../common.h"
 
