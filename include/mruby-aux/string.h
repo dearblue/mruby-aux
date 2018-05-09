@@ -14,7 +14,7 @@
 #   endif
 #endif
 
-MRBX_UNUSED static void
+MRBX_INLINE void
 mrbx_str_check_size(mrb_state *mrb, mrbx_size_t size)
 {
     if (size < 0 || size > MRBX_STR_MAX) {
@@ -23,7 +23,7 @@ mrbx_str_check_size(mrb_state *mrb, mrbx_size_t size)
 }
 
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
@@ -34,19 +34,19 @@ mrbx_str_ptr(mrb_state *mrb, mrb_value v)
     }
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_by_str_ptr(mrb_state *mrb, struct RString *p)
 {
     return p;
 }
 
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrbx_value_str_new_lit(mrb_state *mrb, const char *str)
 {
     return mrb_str_new_static(mrb, str, strlen(str));
 }
 
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrbx_value_str_new_cstr(mrb_state *mrb, const char *str)
 {
     if (MRBX_LITERAL_P(str)) {
@@ -56,13 +56,13 @@ mrbx_value_str_new_cstr(mrb_state *mrb, const char *str)
     }
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_new_lit(mrb_state *mrb, const char *str)
 {
     return mrb_str_ptr(mrbx_value_str_new_lit(mrb, str));
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_new_cstr(mrb_state *mrb, const char *str)
 {
     return mrb_str_ptr(mrbx_value_str_new_cstr(mrb, str));
@@ -70,8 +70,8 @@ mrbx_str_new_cstr(mrb_state *mrb, const char *str)
 
 #ifdef __cplusplus
 
-static inline struct RString * mrbx_str_ptr(mrb_state *mrb, struct RString *p) { return mrbx_by_str_ptr(mrb, p); }
-static inline struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { return mrbx_str_new_cstr(mrb, str); }
+MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, struct RString *p) { return mrbx_by_str_ptr(mrb, p); }
+MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { return mrbx_str_new_cstr(mrb, str); }
 
 #else
 
@@ -92,7 +92,7 @@ static inline struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { r
 
 #define RString(V)  mrbx_str_ptr(mrb, (V))
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
 {
     if (len >= MRB_INT_MAX) {
@@ -104,7 +104,7 @@ mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
     return dest;
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, size_t len)
 {
     mrb_check_type(mrb, dest, MRB_TT_STRING);
@@ -114,7 +114,7 @@ mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, size_t len)
 
 #if __cplusplus
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
 {
     return mrbx_str_set_len_value(mrb, dest, len);
@@ -130,7 +130,7 @@ mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
 
 #endif
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (RSTR_CAPA(str) < len) {
@@ -148,7 +148,7 @@ mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
     return str;
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_reserve_value(mrb_state *mrb, mrb_value str, size_t len)
 {
     mrb_check_type(mrb, str, MRB_TT_STRING);
@@ -158,7 +158,7 @@ mrbx_str_reserve_value(mrb_state *mrb, mrb_value str, size_t len)
 
 #ifdef __cplusplus
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_reserve(mrb_state *mrb, mrb_value str, size_t len)
 {
     return mrbx_str_reserve_value(mrb, str, len);
@@ -174,7 +174,7 @@ mrbx_str_reserve(mrb_state *mrb, mrb_value str, size_t len)
 
 #endif
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_recycle(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (str && !MRB_FROZEN_P(str)) {
@@ -184,7 +184,7 @@ mrbx_str_recycle(mrb_state *mrb, struct RString *str, size_t len)
     }
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
 {
     if (mrb_nil_p(str)) {
@@ -197,7 +197,7 @@ mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
 
 #if __cplusplus
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
 {
     return mrbx_str_recycle_value(mrb, str, len);
@@ -213,7 +213,7 @@ mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
 
 #endif
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (!str) {
@@ -223,7 +223,7 @@ mrbx_str_force_recycle(mrb_state *mrb, struct RString *str, size_t len)
     }
 }
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
 {
     if (mrb_nil_p(str)) {
@@ -236,7 +236,7 @@ mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
 
 #if __cplusplus
 
-static inline struct RString *
+MRBX_INLINE struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
 {
     return mrbx_str_force_recycle_value(mrb, str, len);

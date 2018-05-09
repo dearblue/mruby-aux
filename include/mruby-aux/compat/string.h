@@ -17,7 +17,7 @@
 #endif
 
 #if MRUBY_RELEASE_NO < 10400
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrb_str_new_capa(mrb_state *mrb, size_t capa)
 {
     return mrb_str_buf_new(mrb, capa);

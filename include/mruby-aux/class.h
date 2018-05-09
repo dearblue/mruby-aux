@@ -4,8 +4,9 @@
 #include <mruby.h>
 #include <mruby/variable.h>
 #include <mruby/class.h>
+#include "common.h"
 
-static inline struct RClass *
+MRBX_INLINE struct RClass *
 mrbx_class_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
@@ -16,7 +17,7 @@ mrbx_class_ptr(mrb_state *mrb, mrb_value v)
     }
 }
 
-static inline struct RClass *
+MRBX_INLINE struct RClass *
 mrbx_by_class_ptr(mrb_state *mrb, struct RClass *p)
 {
     return p;
@@ -24,7 +25,7 @@ mrbx_by_class_ptr(mrb_state *mrb, struct RClass *p)
 
 #ifdef __cplusplus
 
-static inline struct RClass *
+MRBX_INLINE struct RClass *
 mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 {
     return mrbx_by_class_ptr(mrb, p);
@@ -42,7 +43,7 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 
 #define RClass(V) mrbx_class_ptr(mrb, (V))
 
-static inline struct RClass *
+MRBX_INLINE struct RClass *
 aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
 {
     if (!c) {

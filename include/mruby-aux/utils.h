@@ -52,7 +52,7 @@
          &I < _list_end_;                                           \
          &I ++)                                                     \
 
-static inline void *
+MRBX_INLINE void *
 mrbx_getrefp(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
 {
     void *p;
@@ -62,7 +62,7 @@ mrbx_getrefp(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
     return p;
 }
 
-static inline void *
+MRBX_INLINE void *
 mrbx_getref(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
 {
     void *p = mrbx_getrefp(mrb, obj, type);
@@ -76,7 +76,7 @@ mrbx_getref(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
     return p;
 }
 
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrbx_funcall_passthrough(mrb_state *mrb, mrb_value recv, mrb_sym mid)
 {
     mrb_int argc;
@@ -85,13 +85,13 @@ mrbx_funcall_passthrough(mrb_state *mrb, mrb_value recv, mrb_sym mid)
     return mrb_funcall_with_block(mrb, recv, mid, argc, argv, block);
 }
 
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrbx_instance_eval(mrb_state *mrb, mrb_value o, mrb_value b)
 {
     return mrb_yield_with_class(mrb, b, 1, &b, o, NULL);
 }
 
-static inline mrb_value
+MRBX_INLINE mrb_value
 mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const mrb_value argv[])
 {
     return mrb_yield_with_class(mrb, b, argc, argv, o, NULL);
@@ -111,7 +111,7 @@ mrbx_instance_exec(mrb_state *mrb, mrb_value o, mrb_value b, mrb_int argc, const
 # define mrbx_get_const_cstr(mrb, var)
 #endif
 
-static inline const char *
+MRBX_INLINE const char *
 mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
 {
     if (mrb_symbol_p(v)) {
@@ -129,7 +129,7 @@ mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
     return NULL;
 }
 
-static inline const char *
+MRBX_INLINE const char *
 mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 {
     if (str) {
@@ -141,9 +141,9 @@ mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 
 #ifdef __cplusplus
 
-static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return mrbx_get_const_cstr_from_value(mrb, v); }
-static const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return mrbx_get_const_cstr_from_string(mrb, str); }
-static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
+MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return mrbx_get_const_cstr_from_value(mrb, v); }
+MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return mrbx_get_const_cstr_from_string(mrb, str); }
+MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
 
 #else
 
@@ -156,7 +156,7 @@ static const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb
 
 #endif
 
-MRBX_UNUSED static void
+MRBX_INLINE void
 mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
 {
     if (max == min) {

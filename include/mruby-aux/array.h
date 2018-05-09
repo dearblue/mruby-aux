@@ -11,7 +11,7 @@
 
 #define RArray(V)   mrbx_ary_ptr(mrb, (V))
 
-MRBX_UNUSED static struct RArray *
+MRBX_INLINE struct RArray *
 mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
 {
     if (mrb_nil_p(v)) {
@@ -22,7 +22,7 @@ mrbx_ary_ptr(mrb_state *mrb, mrb_value v)
     }
 }
 
-MRBX_UNUSED static struct RArray *
+MRBX_INLINE struct RArray *
 mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
 {
     return p;
@@ -30,7 +30,7 @@ mrbx_by_ary_ptr(mrb_state *mrb, struct RArray *p)
 
 #ifdef __cplusplus
 
-MRBX_UNUSED static struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { return mrbx_by_ary_ptr(mrb, p); }
+MRBX_INLINE struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { return mrbx_by_ary_ptr(mrb, p); }
 
 #else
 

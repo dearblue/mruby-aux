@@ -3,21 +3,49 @@
 
 #include <string.h>
 
-#ifndef MRBX_UNUSED
-# if __cplusplus
-#  if __cplusplus >= 201703L
+#if __cplusplus
+# if __cplusplus >= 201703L
+#  ifndef MRBX_UNUSED
 #   define MRBX_UNUSED [[maybe_unused]]
-#  elif defined(__GNUC__) || defined (__clang__)
-#   define MRBX_UNUSED __attribute__((unused))
-#  else
-#   define MRBX_UNUSED inline
 #  endif
 # elif defined(__GNUC__) || defined (__clang__)
-#  define MRBX_UNUSED __attribute__((unused))
-# elif __STDC_VERSION__ >= 199901L
-#  define MRBX_UNUSED inline
+#  ifndef MRBX_UNUSED
+#   define MRBX_UNUSED __attribute__((unused))
+#  endif
 # else
+#  ifndef MRBX_UNUSED
+#   define MRBX_UNUSED
+#  endif
+# endif
+
+# ifndef MRBX_INLINE
+#  define MRBX_INLINE MRBX_UNUSED static inline
+# endif
+
+#elif defined(__GNUC__) || defined (__clang__)
+# ifndef MRBX_UNUSED
+#  define MRBX_UNUSED __attribute__((unused))
+# endif
+
+# ifndef MRBX_INLINE
+#  define MRBX_INLINE MRBX_UNUSED static inline
+# endif
+
+#elif __STDC_VERSION__ >= 199901L
+# ifndef MRBX_UNUSED
 #  define MRBX_UNUSED
+# endif
+
+# ifndef MRBX_INLINE
+#  define MRBX_INLINE MRBX_UNUSED static inline
+# endif
+#else
+# ifndef MRBX_UNUSED
+#  define MRBX_UNUSED
+# endif
+
+# ifndef MRBX_INLINE
+#  define MRBX_INLINE MRBX_UNUSED static
 # endif
 #endif
 
@@ -58,25 +86,25 @@ struct RProc;
 struct RRange;
 struct RString;
 
-MRBX_UNUSED static mrb_bool mrbx_false_always(void *p) { return FALSE; }
-MRBX_UNUSED static mrb_bool mrbx_rstr_frozen_p(struct RString *p) { return RSTR_FROZEN_P(p); }
+MRBX_INLINE mrb_bool mrbx_false_always(void *p) { return FALSE; }
+MRBX_INLINE mrb_bool mrbx_rstr_frozen_p(struct RString *p) { return RSTR_FROZEN_P(p); }
 
 # ifdef __cplusplus
 
 #  define MRB_FROZEN_P(O)   mrbx_frozen_p(O)
 
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RArray *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RBasic *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RClass *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RData *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct REnv *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RException *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RFiber *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RHash *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
-MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RArray *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RBasic *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RClass *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RData *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct REnv *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RException *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RFiber *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RHash *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
 
 # else
 
@@ -102,15 +130,15 @@ MRBX_UNUSED static mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_
 
 #ifdef __cplusplus
 
-static inline mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
-static inline mrb_sym mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
-static inline mrb_sym mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
+MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
+MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
 
 #else
 
-static inline mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
-static inline mrb_sym mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
-static inline mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mrb_intern_static(mrb, str, strlen(str)); }
+MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+MRBX_INLINE mrb_sym mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
+MRBX_INLINE mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mrb_intern_static(mrb, str, strlen(str)); }
 
 #   define MRBX_SYMBOL_CSTR_FUNC(CSTR)  \
         (MRBX_LITERAL_P(CSTR) ?         \

@@ -32,27 +32,27 @@
 
 struct RIstruct;
 
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
-MRBX_UNUSED static inline mrb_value mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
-MRBX_UNUSED static inline mrb_value mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+MRBX_INLINE mrb_value mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
+MRBX_INLINE mrb_value mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
 
 #if __cplusplus
 
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, mrb_value v) { return mrbx_value_to_value(mrb, v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RData *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrbx_fixnum_value(mrb, v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
-MRBX_UNUSED static inline mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrbx_value_str_new_cstr(mrb, v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, mrb_value v) { return mrbx_value_to_value(mrb, v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RData *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrbx_fixnum_value(mrb, v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrbx_value_str_new_cstr(mrb, v); }
 
 # define mrb_value(V)   mrbx_obj_value(mrb, (V))
 
