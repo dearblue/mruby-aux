@@ -22,6 +22,12 @@
 # define ENDOF(A)       ((A) + ELEMENTOF((A)))
 #endif
 
+#ifndef MRBX_SMALL_TARGET
+# ifdef MRB_INT16
+#  define MRBX_SMALL_TARGET 1
+# endif
+#endif
+
 #include "compat/object.h"
 #include <string.h>
 
