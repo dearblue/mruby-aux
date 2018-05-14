@@ -6,7 +6,7 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
 #ifdef MRB_INT16
     enum { first_growup = 256, max_growup = 1 * 1024, };
 #else
-    enum { first_growup = 4 * 1024, max_growup = 4 * 1024 * 1024, };
+    enum { first_growup = 4 * 1024, max_growup = 1 * 1024 * 1024, };
 #endif
 
     if ((ssize_t)maxsize < 0) {
