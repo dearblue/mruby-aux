@@ -10,8 +10,8 @@ mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
     }
 
     int off = bytesize * 8;
-    char str[bytesize * 2];
-    char *p = str;
+    mrb_value str = mrb_str_new(mrb, NULL, bytesize * 2);
+    char *p = RSTRING_PTR(str);
 
     for (; off > 0; off -= 4, p ++) {
         uint8_t ch = (n >> (off - 4)) & 0x0f;
@@ -22,5 +22,5 @@ mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
         }
     }
 
-    return mrb_str_new(mrb, str, bytesize * 2);
+    return str;
 }
