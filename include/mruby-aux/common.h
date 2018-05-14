@@ -1,50 +1,9 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
-#if __cplusplus
-# if __cplusplus >= 201703L
-#  ifndef MRBX_UNUSED
-#   define MRBX_UNUSED [[maybe_unused]]
-#  endif
-# elif defined(__GNUC__) || defined (__clang__)
-#  ifndef MRBX_UNUSED
-#   define MRBX_UNUSED __attribute__((unused))
-#  endif
-# else
-#  ifndef MRBX_UNUSED
-#   define MRBX_UNUSED
-#  endif
-# endif
-
-# ifndef MRBX_INLINE
-#  define MRBX_INLINE MRBX_UNUSED static inline
-# endif
-
-#elif defined(__GNUC__) || defined (__clang__)
-# ifndef MRBX_UNUSED
-#  define MRBX_UNUSED __attribute__((unused))
-# endif
-
-# ifndef MRBX_INLINE
-#  define MRBX_INLINE MRBX_UNUSED static inline
-# endif
-
-#elif __STDC_VERSION__ >= 199901L
-# ifndef MRBX_UNUSED
-#  define MRBX_UNUSED
-# endif
-
-# ifndef MRBX_INLINE
-#  define MRBX_INLINE MRBX_UNUSED static inline
-# endif
-#else
-# ifndef MRBX_UNUSED
-#  define MRBX_UNUSED
-# endif
-
-# ifndef MRBX_INLINE
-#  define MRBX_INLINE MRBX_UNUSED static
-# endif
+#ifndef MRBX_INLINE
+# include <mruby/common.h>
+# define MRBX_INLINE MRB_INLINE
 #endif
 
 #ifndef MRBX_LITERAL_P
