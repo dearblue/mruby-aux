@@ -27,7 +27,7 @@ MRBX_SCANHASH(mrb, user_hash_object, mrb_nil_value(),
 ## Specification
 
   * Package name: mruby-aux
-  * Version: 0.2
+  * Version: 0.3
   * Product quality: PROTOTYPE
   * Author: [dearblue](https://github.com/dearblue)
   * Project page: <https://github.com/dearblue/mruby-aux>
