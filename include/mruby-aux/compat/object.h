@@ -63,4 +63,10 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 #else
 #endif /* MRUBY_RELEASE_NO */
 
+/* RCLASS_SUPER は mruby-2.0 (dev) で削除 */
+#include <mruby/class.h>
+#ifndef RCLASS_SUPER
+# define RCLASS_SUPER(O)  (mrb_class_ptr(O)->super)
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_OBJECT_H */
