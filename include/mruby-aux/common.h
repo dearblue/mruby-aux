@@ -53,7 +53,7 @@ MRBX_INLINE mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mr
                  mrb_value:     mrbx_symbol,                \
                  mrb_sym:       mrbx_symbol_sym,            \
                  const mrb_sym: mrbx_symbol_sym,            \
-                 char *:        mrb_intern_cstr,            \
+                 char *:        MRBX_SYMBOL_CSTR_FUNC(V),   \
                  const char *:  MRBX_SYMBOL_CSTR_FUNC(V))   \
             (MRB, V)                                        \
 

@@ -61,7 +61,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
 # define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR) \
         (MRBX_LITERAL_P(CSTR) ?             \
          mrbx_value_str_new_lit :           \
-         mrb_str_new_cstr)                  \
+         mrbx_value_str_new_cstr)           \
 
 # define mrb_value(V)                                                       \
         _Generic((V),                                                       \
@@ -81,7 +81,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
                  const mrb_int:         mrbx_fixnum_value,                  \
                  mrb_float:             mrb_float_value,                    \
                  const mrb_float:       mrb_float_value,                    \
-                 char *:                mrbx_str_new_cstr,                  \
+                 char *:                MRBX_VALUE_STR_NEW_CSTR_FUNC(V),    \
                  const char *:          MRBX_VALUE_STR_NEW_CSTR_FUNC(V))    \
             (mrb, (V))                                                      \
 

@@ -84,7 +84,7 @@ MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { ret
         _Generic((V),                                               \
                  mrb_value:             mrbx_str_ptr,               \
                  struct RString *:      mrbx_by_str_ptr,            \
-                 char *:                mrbx_str_new_cstr,          \
+                 char *:                MRBX_STR_NEW_CSTR_FUNC(V),  \
                  const char *:          MRBX_STR_NEW_CSTR_FUNC(V))  \
             (MRB, V)                                                \
 
