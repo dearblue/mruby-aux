@@ -9,6 +9,7 @@
  */
 
 #include <mruby-aux/scanhash.h>
+#include <mruby-aux/compat/hash.h>
 
 
 #if MRUBY_RELEASE_NO <= 10200
@@ -161,7 +162,7 @@ mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struc
 
     mrbx_scanhash_setdefaults(argv, argv + argc);
 
-    if (hashp && !mrb_bool(mrb_hash_empty_p(mrb, mrb_obj_value(hashp)))) {
+    if (hashp && !mrb_hash_empty_p(mrb, mrb_obj_value(hashp))) {
         struct mrbx_scanhash_args argset = { argv, argv + argc, receptor };
         mrbx_hash_foreach(mrb, hashp, mrbx_scanhash_foreach, &argset);
     }
