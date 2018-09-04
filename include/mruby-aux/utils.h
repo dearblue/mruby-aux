@@ -178,4 +178,6 @@ mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
     }
 }
 
+MRB_API void mrbx_cleanup_data_objects(mrb_state *mrb, int num, const struct mrb_data_type *types[]);
+
 #endif /* MRUBY_AUX_UTILS_H */
