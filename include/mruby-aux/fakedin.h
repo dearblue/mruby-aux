@@ -4,6 +4,8 @@
 #include <mruby.h>
 #include <stdint.h>
 
+MRB_BEGIN_DECL
+
 struct mrbx_fakedin
 {
     /* 読み込み対象 */
@@ -46,5 +48,7 @@ void mrbx_fakedin_setup(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *in
 mrb_int mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size);
 mrb_bool mrbx_fakedin_eof(struct mrbx_fakedin *input);
 int64_t mrbx_fakedin_total_in(struct mrbx_fakedin *input);
+
+MRB_END_DECL
 
 #endif /* MRUBY_AUX_FAKEDIN_H_ */

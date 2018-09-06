@@ -3,6 +3,8 @@
 
 #include "../string.h"
 
+MRB_BEGIN_DECL
+
 enum { MRBX_NEXT = -1, MRBX_STOP = -2, };
 
 typedef ssize_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, void *user);
@@ -16,5 +18,7 @@ typedef ssize_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, v
  * MRBX_NEXT で処理を進める。
  */
 struct RString *mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user);
+
+MRB_END_DECL
 
 #endif /* MRUBY_AUX_STRING_GROWUP_H_ */
