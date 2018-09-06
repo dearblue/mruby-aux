@@ -3,11 +3,11 @@
 
 #include "compat/array.h"
 
-#define MRBX_TUPLE(...)                                         \
-    mrb_ary_new_from_values(                                    \
-            mrb,                                                \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }))             \
+#define MRBX_TUPLE(...)                                                     \
+    mrb_ary_new_from_values(                                                \
+            mrb,                                                            \
+            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
+            ((const mrb_value []) { __VA_ARGS__ }))                         \
 
 #define RArray(V)   mrbx_ary_ptr(mrb, (V))
 
@@ -34,11 +34,11 @@ MRBX_INLINE struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { retu
 
 #else
 
-#   define mrbx_ary_ptr(MRB, V)                     \
-        _Generic((V),                               \
-                 mrb_value:         mrbx_ary_ptr,   \
-                 struct RArray *:   mrbx_by_ary_ptr \
-                 )(MRB, V)                          \
+#   define mrbx_ary_ptr(MRB, V)                                             \
+        _Generic((V),                                                       \
+                 mrb_value:         mrbx_ary_ptr,                           \
+                 struct RArray *:   mrbx_by_ary_ptr                         \
+                 )(MRB, V)                                                  \
 
 #endif
 

@@ -25,10 +25,10 @@
 
 #define MRB             mrb_state *mrb
 
-#define MRBX_OBJ_NEW(MRB, KLASS, ...)                       \
-     mrb_obj_new(MRB, KLASS,                                \
-             ELEMENTOF(((const VALUE []) { __VA_ARGS__ })), \
-             (const VALUE []) { __VA_ARGS__ } )             \
+#define MRBX_OBJ_NEW(MRB, KLASS, ...)                                       \
+     mrb_obj_new(MRB, KLASS,                                                \
+             ELEMENTOF(((const VALUE []) { __VA_ARGS__ })),                 \
+             (const VALUE []) { __VA_ARGS__ } )                             \
 
 struct RIstruct;
 
@@ -58,10 +58,10 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
 
 #else
 
-# define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR) \
-        (MRBX_LITERAL_P(CSTR) ?             \
-         mrbx_value_str_new_lit :           \
-         mrbx_value_str_new_cstr)           \
+# define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR)                                 \
+        (MRBX_LITERAL_P(CSTR) ?                                             \
+         mrbx_value_str_new_lit :                                           \
+         mrbx_value_str_new_cstr)                                           \
 
 # define mrb_value(V)                                                       \
         _Generic((V),                                                       \

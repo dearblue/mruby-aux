@@ -7,50 +7,50 @@
 #include <mruby/string.h>
 #include "common.h"
 
-#define IMPLEMENT_ME                                \
-        mrb_raisef(mrb, E_NOTIMP_ERROR,             \
-                   "IMPLEMENT ME! (in %S:%S:%S)",   \
-                   mrb_str_new_cstr(mrb, __FILE__), \
-                   mrb_fixnum_value(__LINE__),      \
-                   mrb_str_new_cstr(mrb, __func__)) \
+#define IMPLEMENT_ME                                                        \
+        mrb_raisef(mrb, E_NOTIMP_ERROR,                                     \
+                   "IMPLEMENT ME! (in %S:%S:%S)",                           \
+                   mrb_str_new_cstr(mrb, __FILE__),                         \
+                   mrb_fixnum_value(__LINE__),                              \
+                   mrb_str_new_cstr(mrb, __func__))                         \
 
-#define FUNCALL(MRB, RECV, MID, ...)                            \
-    mrb_funcall_argv(                                           \
-            (MRB), (RECV), SYMBOL((MID)),                       \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }))             \
+#define FUNCALL(MRB, RECV, MID, ...)                                        \
+    mrb_funcall_argv(                                                       \
+            (MRB), (RECV), SYMBOL((MID)),                                   \
+            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
+            ((const mrb_value []) { __VA_ARGS__ }))                         \
 
-#define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)          \
-    mrb_funcall_with_block(                                     \
-            (MRB), (RECV), SYMBOL((MID)),                       \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),  \
-            ((const mrb_value []) { __VA_ARGS__ }),             \
-            (BLOCK))                                            \
+#define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)                      \
+    mrb_funcall_with_block(                                                 \
+            (MRB), (RECV), SYMBOL((MID)),                                   \
+            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
+            ((const mrb_value []) { __VA_ARGS__ }),                         \
+            (BLOCK))                                                        \
 
-#define FOREACH_LIST(TYPE, I, ...)                              \
-    for (TYPE _list_[] = { __VA_ARGS__ },                       \
-              *_list_end_ = _list_ + ELEMENTOF(_list_),         \
-              I = _list_;                                       \
-         &I < _list_end_;                                       \
-         &I ++)                                                 \
+#define FOREACH_LIST(TYPE, I, ...)                                          \
+    for (TYPE _list_[] = { __VA_ARGS__ },                                   \
+              *_list_end_ = _list_ + ELEMENTOF(_list_),                     \
+              I = _list_;                                                   \
+         &I < _list_end_;                                                   \
+         &I ++)                                                             \
 
-#define FOREACH_ALIST(TYPE, I, LIST)                            \
-    for (TYPE *_list_end_ = (LIST) + ELEMENTOF((LIST)),         \
-              I = (LIST);                                       \
-         &I < _list_end_;                                       \
-         &I ++)                                                 \
+#define FOREACH_ALIST(TYPE, I, LIST)                                        \
+    for (TYPE *_list_end_ = (LIST) + ELEMENTOF((LIST)),                     \
+              I = (LIST);                                                   \
+         &I < _list_end_;                                                   \
+         &I ++)                                                             \
 
-#define FOREACH_NLIST(TYPE, I, N, LIST)                         \
-    for (TYPE *_list_end_ = (LIST) + (N),                       \
-              I = (LIST);                                       \
-         &I < _list_end_;                                       \
-         &I ++)                                                 \
+#define FOREACH_NLIST(TYPE, I, N, LIST)                                     \
+    for (TYPE *_list_end_ = (LIST) + (N),                                   \
+              I = (LIST);                                                   \
+         &I < _list_end_;                                                   \
+         &I ++)                                                             \
 
-#define FOREACH_RARRAY(I, LIST)                                     \
-    for (const VALUE I = ARY_PTR(RArray((LIST))),                   \
-                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));  \
-         &I < _list_end_;                                           \
-         &I ++)                                                     \
+#define FOREACH_RARRAY(I, LIST)                                             \
+    for (const VALUE I = ARY_PTR(RArray((LIST))),                           \
+                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));          \
+         &I < _list_end_;                                                   \
+         &I ++)                                                             \
 
 MRBX_INLINE void *
 mrbx_getrefp(mrb_state *mrb, mrb_value obj, const mrb_data_type *type)
@@ -147,12 +147,12 @@ MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { retur
 
 #else
 
-#   define mrbx_get_const_cstr(MRB, V)                                  \
-        _Generic((V),                                                   \
-                 mrb_value:         mrbx_get_const_cstr_from_value,     \
-                 struct RString *:  mrbx_get_const_cstr_from_string,    \
-                 mrb_sym:           mrb_sym2name)                       \
-            (MRB, V)                                                    \
+#   define mrbx_get_const_cstr(MRB, V)                                      \
+        _Generic((V),                                                       \
+                 mrb_value:         mrbx_get_const_cstr_from_value,         \
+                 struct RString *:  mrbx_get_const_cstr_from_string,        \
+                 mrb_sym:           mrb_sym2name)                           \
+            (MRB, V)                                                        \
 
 #endif
 

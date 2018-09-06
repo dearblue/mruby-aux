@@ -33,11 +33,11 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 
 #else
 
-#define mrbx_class_ptr(MRB, V)                      \
-    _Generic((V),                                   \
-             mrb_value:         mrbx_class_ptr,     \
-             struct RClass *:   mrbx_by_class_ptr   \
-            )(MRB, V)                               \
+#define mrbx_class_ptr(MRB, V)                                              \
+    _Generic((V),                                                           \
+             mrb_value:         mrbx_class_ptr,                             \
+             struct RClass *:   mrbx_by_class_ptr                           \
+            )(MRB, V)                                                       \
 
 #endif
 
@@ -57,9 +57,9 @@ aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
     return c;
 }
 
-#define AUX_DIG_CLASS(MRB, TOP, ...)                        \
-     aux_dig_class(MRB, RClass(TOP),                        \
-             ELEMENTOF(((const char *[]) { __VA_ARGS__ })), \
-             (const char *[]) { __VA_ARGS__ })              \
+#define AUX_DIG_CLASS(MRB, TOP, ...)                                        \
+     aux_dig_class(MRB, RClass(TOP),                                        \
+             ELEMENTOF(((const char *[]) { __VA_ARGS__ })),                 \
+             (const char *[]) { __VA_ARGS__ })                              \
 
 #endif /* MRUBY_AUX_CLASS_H */
