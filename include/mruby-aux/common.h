@@ -1,9 +1,54 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#include <mruby.h>
+
 #ifndef MRBX_INLINE
-# include <mruby/common.h>
 # define MRBX_INLINE MRB_INLINE
+#endif
+
+#ifndef MRBX_FORCE_INLINE
+# ifdef MRB_FORCE_INLINE
+#  define MRBX_FORCE_INLINE MRB_FORCE_INLINE
+# elif defined(__GNUC__) || defined (__clang__)
+#  define MRBX_FORCE_INLINE __attribute__((always_inline))
+# elif defined _MSC_VER
+#  define MRBX_FORCE_INLINE __forceinline
+# else
+#  define MRBX_FORCE_INLINE MRBX_INLINE
+# endif
+#endif
+
+#ifndef MRBX_NOINLINE
+# ifdef MRB_NOINLINE
+#  define MRBX_NOINLINE MRB_NOINLINE
+# elif defined(__GNUC__) || defined (__clang__)
+#  define MRBX_NOINLINE __attribute__((noinline))
+# elif defined _MSC_VER
+#  define MRBX_NOINLINE __declspec(noinline)
+# else
+#  define MRBX_NOINLINE static
+# endif
+#endif
+
+#ifndef MRBX_WEAK
+# if defined(__GNUC__) || defined (__clang__)
+#  define MRBX_WEAK __attribute__((weak))
+# elif defined _MSC_VER
+#  define MRBX_WEAK __declspec(selectany)
+# else
+#  define MRBX_WEAK
+# endif
+#endif
+
+#ifndef MRBX_PRETTY_FUNCTION
+# if defined(__GNUC__) || defined (__clang__)
+#  define MRBX_PRETTY_FUNCTION __PRETTY_FUNCTION__
+# elif defined _MSC_VER
+#  define MRBX_PRETTY_FUNCTION __FUNCSIG__
+# else
+#  define MRBX_PRETTY_FUNCTION __func__
+# endif
 #endif
 
 #ifndef MRBX_LITERAL_P
