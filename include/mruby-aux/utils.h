@@ -40,7 +40,7 @@
          &I < _list_end_;                                       \
          &I ++)                                                 \
 
-#define FOREACH_NLIST(TYPE, N, I, LIST)                         \
+#define FOREACH_NLIST(TYPE, I, N, LIST)                         \
     for (TYPE *_list_end_ = (LIST) + (N),                       \
               I = (LIST);                                       \
          &I < _list_end_;                                       \
