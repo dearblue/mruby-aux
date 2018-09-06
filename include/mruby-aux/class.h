@@ -44,7 +44,7 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 #define RClass(V) mrbx_class_ptr(mrb, (V))
 
 MRBX_INLINE struct RClass *
-aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
+mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
 {
     if (!c) {
         c = mrb->object_class;
@@ -57,8 +57,8 @@ aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
     return c;
 }
 
-#define AUX_DIG_CLASS(MRB, TOP, ...)                                        \
-     aux_dig_class(MRB, RClass(TOP),                                        \
+#define MRBX_DIG_CLASS(MRB, TOP, ...)                                       \
+     mrbx_dig_class(MRB, RClass(TOP),                                       \
              ELEMENTOF(((const char *[]) { __VA_ARGS__ })),                 \
              (const char *[]) { __VA_ARGS__ })                              \
 
