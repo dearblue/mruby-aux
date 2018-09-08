@@ -44,20 +44,20 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 
 # else
 
-#  define MRB_FROZEN_P(O)                                       \
-       _Generic((O),                                            \
-                struct RBasic *:       mrbx_false_always,       \
-                struct RObject *:      mrbx_false_always,       \
-                struct RClass *:       mrbx_false_always,       \
-                struct RArray *:       mrbx_false_always,       \
-                struct RData *:        mrbx_false_always,       \
-                struct REnv *:         mrbx_false_always,       \
-                struct RException *:   mrbx_false_always,       \
-                struct RFiber *:       mrbx_false_always,       \
-                struct RHash *:        mrbx_false_always,       \
-                struct RProc *:        mrbx_false_always,       \
-                struct RRange *:       mrbx_false_always,       \
-                struct RString *:      mrbx_rstr_frozen_p)(O)   \
+#  define MRB_FROZEN_P(O)                                                   \
+       _Generic((O),                                                        \
+                struct RBasic *:       mrbx_false_always,                   \
+                struct RObject *:      mrbx_false_always,                   \
+                struct RClass *:       mrbx_false_always,                   \
+                struct RArray *:       mrbx_false_always,                   \
+                struct RData *:        mrbx_false_always,                   \
+                struct REnv *:         mrbx_false_always,                   \
+                struct RException *:   mrbx_false_always,                   \
+                struct RFiber *:       mrbx_false_always,                   \
+                struct RHash *:        mrbx_false_always,                   \
+                struct RProc *:        mrbx_false_always,                   \
+                struct RRange *:       mrbx_false_always,                   \
+                struct RString *:      mrbx_rstr_frozen_p)(O)               \
 
 # endif /* __cplusplus */
 #else

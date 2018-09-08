@@ -3,11 +3,12 @@
 
 #include "compat/string.h"
 #include <string.h>
+#include <stdint.h>
 
 #ifndef MRBX_STR_MAX
 #   if MRB_INT_MAX < SIZE_MAX
 #       define MRBX_STR_MAX (MRB_INT_MAX - 1)
-#       define mrbx_size_t ssize_t
+#       define mrbx_size_t intptr_t
 #   else
 #       define MRBX_STR_MAX (SIZE_MAX - 1)
 #       define mrbx_size_t mrb_int
@@ -75,18 +76,18 @@ MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { ret
 
 #else
 
-# define MRBX_STR_NEW_CSTR_FUNC(CSTR)   \
-        (MRBX_LITERAL_P(CSTR) ?         \
-         mrbx_str_new_lit :             \
-         mrbx_str_new_cstr)             \
+# define MRBX_STR_NEW_CSTR_FUNC(CSTR)                                       \
+        (MRBX_LITERAL_P(CSTR) ?                                             \
+         mrbx_str_new_lit :                                                 \
+         mrbx_str_new_cstr)                                                 \
 
-# define mrbx_str_ptr(MRB, V)                                       \
-        _Generic((V),                                               \
-                 mrb_value:             mrbx_str_ptr,               \
-                 struct RString *:      mrbx_by_str_ptr,            \
-                 char *:                MRBX_STR_NEW_CSTR_FUNC(V),  \
-                 const char *:          MRBX_STR_NEW_CSTR_FUNC(V))  \
-            (MRB, V)                                                \
+# define mrbx_str_ptr(MRB, V)                                               \
+        _Generic((V),                                                       \
+                 mrb_value:             mrbx_str_ptr,                       \
+                 struct RString *:      mrbx_by_str_ptr,                    \
+                 char *:                MRBX_STR_NEW_CSTR_FUNC(V),          \
+                 const char *:          MRBX_STR_NEW_CSTR_FUNC(V))          \
+            (MRB, V)                                                        \
 
 #endif
 
@@ -122,11 +123,11 @@ mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
 
 #else
 
-#   define mrbx_str_set_len(MRB, DEST, LEN)                 \
-        _Generic((DEST),                                    \
-                 mrb_value:         mrbx_str_set_len_value, \
-                 struct RString *:  mrbx_str_set_len)       \
-            ((MRB), (DEST), (LEN))                          \
+#   define mrbx_str_set_len(MRB, DEST, LEN)                                 \
+        _Generic((DEST),                                                    \
+                 mrb_value:         mrbx_str_set_len_value,                 \
+                 struct RString *:  mrbx_str_set_len)                       \
+            ((MRB), (DEST), (LEN))                                          \
 
 #endif
 
@@ -166,11 +167,11 @@ mrbx_str_reserve(mrb_state *mrb, mrb_value str, size_t len)
 
 #else
 
-#   define mrbx_str_reserve(MRB, STR, LEN)          \
-        _Generic((STR),                             \
-                mrb_value: mrbx_str_reserve_value,  \
-                struct RString *: mrbx_str_reserve) \
-            ((MRB), (STR), (LEN))                   \
+#   define mrbx_str_reserve(MRB, STR, LEN)                                  \
+        _Generic((STR),                                                     \
+                mrb_value: mrbx_str_reserve_value,                          \
+                struct RString *: mrbx_str_reserve)                         \
+            ((MRB), (STR), (LEN))                                           \
 
 #endif
 
@@ -205,11 +206,11 @@ mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
 
 #else
 
-#   define mrbx_str_recycle(MRB, STR, LEN)          \
-        _Generic((STR),                             \
-                mrb_value: mrbx_str_recycle_value,  \
-                struct RString *: mrbx_str_recycle) \
-            ((MRB), (STR), (LEN))                   \
+#   define mrbx_str_recycle(MRB, STR, LEN)                                  \
+        _Generic((STR),                                                     \
+                mrb_value: mrbx_str_recycle_value,                          \
+                struct RString *: mrbx_str_recycle)                         \
+            ((MRB), (STR), (LEN))                                           \
 
 #endif
 
@@ -244,11 +245,11 @@ mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
 
 #else
 
-#   define mrbx_str_force_recycle(MRB, STR, LEN)                    \
-        _Generic((STR),                                             \
-                struct RString *:   mrbx_str_force_recycle,         \
-                mrb_value:          mrbx_str_force_recycle_value)   \
-            ((MRB), (STR), (LEN))                                   \
+#   define mrbx_str_force_recycle(MRB, STR, LEN)                            \
+        _Generic((STR),                                                     \
+                struct RString *:   mrbx_str_force_recycle,                 \
+                mrb_value:          mrbx_str_force_recycle_value)           \
+            ((MRB), (STR), (LEN))                                           \
 
 #endif
 

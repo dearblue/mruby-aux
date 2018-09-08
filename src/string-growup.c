@@ -9,7 +9,7 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
     enum { first_growup = 4 * 1024, max_growup = 1 * 1024 * 1024, };
 #endif
 
-    if ((ssize_t)maxsize < 0) {
+    if ((intptr_t)maxsize < 0) {
         maxsize = MRBX_STR_MAX;
     } else if (maxsize > MRBX_STR_MAX) {
         mrb_raise(mrb, E_RUNTIME_ERROR,
@@ -25,7 +25,7 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
         mrbx_str_reserve(mrb, str, off + grow);
 
         size_t step = grow;
-        ssize_t s = func(mrb, RSTR_PTR(str) + off, &step, user);
+        intptr_t s = func(mrb, RSTR_PTR(str) + off, &step, user);
         off += step;
         if (s >= 0) {
             if ((off + s) < s || (off + s) > maxsize) {

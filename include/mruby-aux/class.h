@@ -9,10 +9,17 @@
 MRBX_INLINE struct RClass *
 mrbx_class_ptr(mrb_state *mrb, mrb_value v)
 {
-    if (mrb_nil_p(v)) {
+    switch (mrb_type(v)) {
+    default:
+        if (!mrb_nil_p(v)) {
+            mrb_raisef(mrb, E_TYPE_ERROR,
+                       "expect nil, module or class, but given %S",
+                       mrb_obj_value(mrb_obj_class(mrb, v)));
+        }
         return NULL;
-    } else {
-        mrb_check_type(mrb, v, MRB_TT_CLASS);
+    case MRB_TT_MODULE:
+    case MRB_TT_CLASS:
+    case MRB_TT_SCLASS:
         return mrb_class_ptr(v);
     }
 }
@@ -33,33 +40,33 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 
 #else
 
-#define mrbx_class_ptr(MRB, V)                      \
-    _Generic((V),                                   \
-             mrb_value:         mrbx_class_ptr,     \
-             struct RClass *:   mrbx_by_class_ptr   \
-            )(MRB, V)                               \
+#define mrbx_class_ptr(MRB, V)                                              \
+    _Generic((V),                                                           \
+             mrb_value:         mrbx_class_ptr,                             \
+             struct RClass *:   mrbx_by_class_ptr                           \
+            )(MRB, V)                                                       \
 
 #endif
 
 #define RClass(V) mrbx_class_ptr(mrb, (V))
 
 MRBX_INLINE struct RClass *
-aux_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
+mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
 {
     if (!c) {
         c = mrb->object_class;
     }
 
     for (; num > 0; num --, names ++) {
-        c = mrb_class_get_under(mrb, c, *names);
+        c = mrbx_class_ptr(mrb, mrb_const_get(mrb, mrb_obj_value(c), mrb_intern_cstr(mrb, names[0])));
     }
 
     return c;
 }
 
-#define AUX_DIG_CLASS(MRB, TOP, ...)                        \
-     aux_dig_class(MRB, RClass(TOP),                        \
-             ELEMENTOF(((const char *[]) { __VA_ARGS__ })), \
-             (const char *[]) { __VA_ARGS__ })              \
+#define MRBX_DIG_CLASS(MRB, TOP, ...)                                       \
+     mrbx_dig_class(MRB, RClass(TOP),                                       \
+             ELEMENTOF(((const char *[]) { __VA_ARGS__ })),                 \
+             (const char *[]) { __VA_ARGS__ })                              \
 
 #endif /* MRUBY_AUX_CLASS_H */
