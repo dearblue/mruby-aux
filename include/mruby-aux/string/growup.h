@@ -7,7 +7,7 @@ MRB_BEGIN_DECL
 
 enum { MRBX_NEXT = -1, MRBX_STOP = -2, };
 
-typedef ssize_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, void *user);
+typedef intptr_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, void *user);
 
 /*
  * str.len から先を段階的に拡張していき、その拡張部分をその都度 func に渡す。
