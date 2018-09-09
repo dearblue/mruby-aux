@@ -1,6 +1,13 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#ifdef __cplusplus
+# include <memory>
+# define MRBX_MOVE(E) ::std::move(E)
+#else
+# define MRBX_MOVE(E) E
+#endif
+
 #include <mruby.h>
 
 #ifndef MRBX_INLINE

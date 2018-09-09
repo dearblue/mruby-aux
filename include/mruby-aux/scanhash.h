@@ -16,13 +16,6 @@
 #include <mruby/hash.h>
 #include "common.h"
 
-#ifdef __cplusplus
-# include <memory>
-# define MRBX_MOVE(E) ::std::move(E)
-#else
-# define MRBX_MOVE(E) E
-#endif
-
 MRB_BEGIN_DECL
 
 struct mrbx_scanhash_arg
