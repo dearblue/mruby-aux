@@ -4,10 +4,7 @@
 #include "compat/array.h"
 
 #define MRBX_TUPLE(...)                                                     \
-    mrb_ary_new_from_values(                                                \
-            mrb,                                                            \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
-            ((const mrb_value []) { __VA_ARGS__ }))                         \
+    mrb_ary_new_from_values(mrb, MRBX_LIST(const mrb_value, __VA_ARGS__))   \
 
 #define RArray(V)   mrbx_ary_ptr(mrb, (V))
 

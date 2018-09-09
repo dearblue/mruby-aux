@@ -16,13 +16,6 @@
 #include <mruby/hash.h>
 #include "common.h"
 
-#ifdef __cplusplus
-# include <memory>
-# define MRBX_MOVE(E) ::std::move(E)
-#else
-# define MRBX_MOVE(E) E
-#endif
-
 MRB_BEGIN_DECL
 
 struct mrbx_scanhash_arg
@@ -32,7 +25,7 @@ struct mrbx_scanhash_arg
     mrb_value initval;
 };
 
-mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv);
+mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv);
 
 
 /**
@@ -74,9 +67,8 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
  *          MRBX_SCANHASH_ARG("f", &f, mrb_undef_value())
  */
 #define MRBX_SCANHASH(mrb, hash, rest, ...)                                 \
-    mrbx_scanhash(mrb, (hash), (rest),                                      \
-            ELEMENTOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })),      \
-            MRBX_MOVE(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })));     \
+        mrbx_scanhash(mrb, (hash), (rest),                                  \
+                      MRBX_LIST(struct mrbx_scanhash_arg, __VA_ARGS__))     \
 
 /*
  * 評価順は左から右に固定される。

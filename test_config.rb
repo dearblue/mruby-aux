@@ -1,7 +1,7 @@
 #ruby
 
 unless Object.const_defined?(:MRUBY_RELEASE_NO)
-  if File.read(File.join(MRUBY_BASEDIR, "README.md")) =~ /\bversion\s*\K(\d+)\.(\d+)\.(\d+)\s+/im
+  if File.read(File.join(MRUBY_ROOT, "README.md")) =~ /\bversion\s*\K(\d+)\.(\d+)\.(\d+)\s+/im
     MRUBY_RELEASE_NO = $1.to_i * 10000 + $2.to_i * 100 + $3.to_i
   else
     warn "mruby version not found! temporary version number is set to 1.0.0"

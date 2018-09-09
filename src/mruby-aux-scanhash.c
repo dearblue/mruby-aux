@@ -25,13 +25,13 @@
 
 struct mrbx_scanhash_args
 {
-    struct mrbx_scanhash_arg *args;
+    const struct mrbx_scanhash_arg *args;
     const struct mrbx_scanhash_arg *end;
     struct RHash *receptor;
 };
 
 static void
-mrbx_scanhash_error(mrb_state *mrb, mrb_sym given, struct mrbx_scanhash_arg *args, const struct mrbx_scanhash_arg *end)
+mrbx_scanhash_error(mrb_state *mrb, mrb_sym given, const struct mrbx_scanhash_arg *args, const struct mrbx_scanhash_arg *end)
 {
     // 引数の数が㌧でもない数の場合、よくないことが起きそう。
 
@@ -62,7 +62,7 @@ mrbx_scanhash_error(mrb_state *mrb, mrb_sym given, struct mrbx_scanhash_arg *arg
 static int
 mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, struct mrbx_scanhash_args *args)
 {
-    struct mrbx_scanhash_arg *p = args->args;
+    const struct mrbx_scanhash_arg *p = args->args;
     const struct mrbx_scanhash_arg *end = args->end;
     mrb_sym keyid = mrb_obj_to_sym(mrb, key);
 
@@ -100,7 +100,7 @@ mrbx_scanhash_to_hash(mrb_state *mrb, mrb_value hash)
 }
 
 static inline void
-mrbx_scanhash_setdefaults(struct mrbx_scanhash_arg *args, struct mrbx_scanhash_arg *end)
+mrbx_scanhash_setdefaults(const struct mrbx_scanhash_arg *args, const struct mrbx_scanhash_arg *end)
 {
     for (; args < end; args ++) {
         if (args->dest) {
@@ -111,7 +111,7 @@ mrbx_scanhash_setdefaults(struct mrbx_scanhash_arg *args, struct mrbx_scanhash_a
 
 
 static inline void
-mrbx_scanhash_check_missingkeys(mrb_state *mrb, struct mrbx_scanhash_arg *args, struct mrbx_scanhash_arg *end)
+mrbx_scanhash_check_missingkeys(mrb_state *mrb, const struct mrbx_scanhash_arg *args, const struct mrbx_scanhash_arg *end)
 {
     for (; args < end; args ++) {
         if (args->dest && mrb_undef_p(*args->dest)) {
@@ -155,7 +155,7 @@ make_receptor(mrb_state *mrb, mrb_value rest)
 }
 
 mrb_value
-mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, struct mrbx_scanhash_arg *argv)
+mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv)
 {
     struct RHash *receptor = make_receptor(mrb, rest);
     struct RHash *hashp = mrbx_scanhash_to_hash(mrb, hash);
