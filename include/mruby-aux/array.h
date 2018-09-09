@@ -39,4 +39,7 @@ MRBX_INLINE struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { retu
 
 #endif
 
+#define MRBX_JOIN(SEP, ...)                                                 \
+        mrb_ary_join(mrb, MRBX_TUPLE(__VA_ARGS__), mrb_value(RString(SEP)))
+
 #endif /* MRUBY_AUX_ARRAY_H */
