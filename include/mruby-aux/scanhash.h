@@ -67,9 +67,8 @@ mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t a
  *          MRBX_SCANHASH_ARG("f", &f, mrb_undef_value())
  */
 #define MRBX_SCANHASH(mrb, hash, rest, ...)                                 \
-    mrbx_scanhash(mrb, (hash), (rest),                                      \
-            ELEMENTOF(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })),      \
-            MRBX_MOVE(((struct mrbx_scanhash_arg []){ __VA_ARGS__ })));     \
+        mrbx_scanhash(mrb, (hash), (rest),                                  \
+                      MRBX_LIST(struct mrbx_scanhash_arg, __VA_ARGS__))     \
 
 /*
  * 評価順は左から右に固定される。

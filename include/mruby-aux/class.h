@@ -65,8 +65,6 @@ mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[]
 }
 
 #define MRBX_DIG_CLASS(MRB, TOP, ...)                                       \
-     mrbx_dig_class(MRB, RClass(TOP),                                       \
-             ELEMENTOF(((const char *[]) { __VA_ARGS__ })),                 \
-             (const char *[]) { __VA_ARGS__ })                              \
+        mrbx_dig_class(MRB, RClass(TOP), MRB_LIST(const char *, __VA_ARGS__)) \
 
 #endif /* MRUBY_AUX_CLASS_H */

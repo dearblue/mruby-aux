@@ -15,17 +15,13 @@
                    mrb_str_new_cstr(mrb, __func__))                         \
 
 #define FUNCALL(MRB, RECV, MID, ...)                                        \
-    mrb_funcall_argv(                                                       \
-            (MRB), (RECV), SYMBOL((MID)),                                   \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
-            ((const mrb_value []) { __VA_ARGS__ }))                         \
+        mrb_funcall_argv((MRB), (RECV), SYMBOL((MID)),                      \
+                         MRBX_LIST(const mrb_value, __VA_ARGS__))           \
 
 #define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)                      \
-    mrb_funcall_with_block(                                                 \
-            (MRB), (RECV), SYMBOL((MID)),                                   \
-            ELEMENTOF(((const mrb_value []) { __VA_ARGS__ })),              \
-            ((const mrb_value []) { __VA_ARGS__ }),                         \
-            (BLOCK))                                                        \
+        mrb_funcall_with_block((MRB), (RECV), SYMBOL((MID)),                \
+                               MRBX_LIST(const mrb_value, __VA_ARGS__))     \
+                               (BLOCK))                                     \
 
 #define FOREACH_LIST(TYPE, I, ...)                                          \
     for (TYPE _list_[] = { __VA_ARGS__ },                                   \

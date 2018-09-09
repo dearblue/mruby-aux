@@ -26,9 +26,7 @@
 #define MRB             mrb_state *mrb
 
 #define MRBX_OBJ_NEW(MRB, KLASS, ...)                                       \
-     mrb_obj_new(MRB, KLASS,                                                \
-             ELEMENTOF(((const VALUE []) { __VA_ARGS__ })),                 \
-             (const VALUE []) { __VA_ARGS__ } )                             \
+        mrb_obj_new(MRB, KLASS, MRBX_LIST(const mrb_value, __VA_ARGS__))    \
 
 struct RIstruct;
 

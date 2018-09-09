@@ -1,12 +1,24 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#ifndef ELEMENTOF
+# define ELEMENTOF(A)   (sizeof((A)) / sizeof((A)[0]))
+#endif
+
+#ifndef ENDOF
+# define ENDOF(A)       ((A) + ELEMENTOF((A)))
+#endif
+
 #ifdef __cplusplus
 # include <memory>
 # define MRBX_MOVE(E) ::std::move(E)
 #else
 # define MRBX_MOVE(E) E
 #endif
+
+#define MRBX_LIST(T, ...)                                                   \
+        ELEMENTOF(((T []){ __VA_ARGS__ })),                                 \
+        MRBX_MOVE(((T []){ __VA_ARGS__ }))                                  \
 
 #include <mruby.h>
 
@@ -64,14 +76,6 @@
 # else
 #  define MRBX_LITERAL_P(E) (0)
 # endif
-#endif
-
-#ifndef ELEMENTOF
-# define ELEMENTOF(A)   (sizeof((A)) / sizeof((A)[0]))
-#endif
-
-#ifndef ENDOF
-# define ENDOF(A)       ((A) + ELEMENTOF((A)))
 #endif
 
 #ifndef MRBX_SMALL_TARGET
