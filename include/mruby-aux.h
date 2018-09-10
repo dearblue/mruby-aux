@@ -41,6 +41,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return 
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RHash *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_obj_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_obj_value(mrb, (void *)v); }
@@ -68,6 +69,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
                  struct RObject *:      mrbx_obj_value,                     \
                  struct RClass *:       mrbx_obj_value,                     \
                  struct RArray *:       mrbx_obj_value,                     \
+                 struct RHash *:        mrbx_obj_value,                     \
                  struct RString *:      mrbx_obj_value,                     \
                  struct RProc *:        mrbx_obj_value,                     \
                  struct RRange *:       mrbx_obj_value,                     \
