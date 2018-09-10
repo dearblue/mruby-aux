@@ -9,6 +9,7 @@
 #include <mruby/value.h>
 #include <mruby/data.h>
 #include "mruby-aux/common.h"
+#include "mruby-aux/object.h"
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
 #include "mruby-aux/class.h"

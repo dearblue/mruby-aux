@@ -1,7 +1,7 @@
 #ifndef MRUBY_AUX_COMPAT_OBJECT_H
 #define MRUBY_AUX_COMPAT_OBJECT_H 1
 
-#include <mruby.h>
+#include "../object.h"
 
 #if MRUBY_RELEASE_NO < 10200
 # define MRB_FROZEN_P(S)  FALSE
