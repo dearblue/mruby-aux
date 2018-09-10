@@ -31,25 +31,25 @@
 
 struct RIstruct;
 
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
+MRBX_INLINE mrb_value mrbx_ptr_to_value(mrb_state *mrb, void *v) { return (v ? mrb_obj_value(v) : mrb_nil_value()); }
 MRBX_INLINE mrb_value mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
 MRBX_INLINE mrb_value mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
 
 #if __cplusplus
 
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, mrb_value v) { return mrbx_value_to_value(mrb, v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RHash *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RData *v) { return mrbx_obj_value(mrb, (void *)v); }
-MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_obj_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RObject *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RClass *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RHash *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RData *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RIstruct *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_int v) { return mrbx_fixnum_value(mrb, v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const mrb_float v) { return mrb_float_value(mrb, v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrbx_value_str_new_cstr(mrb, v); }
@@ -66,18 +66,18 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
 # define mrb_value(V)                                                       \
         _Generic((V),                                                       \
                  mrb_value:             mrbx_value_to_value,                \
-                 struct RBasic *:       mrbx_obj_value,                     \
-                 struct RObject *:      mrbx_obj_value,                     \
-                 struct RClass *:       mrbx_obj_value,                     \
-                 struct RArray *:       mrbx_obj_value,                     \
-                 struct RHash *:        mrbx_obj_value,                     \
-                 struct RString *:      mrbx_obj_value,                     \
-                 struct RProc *:        mrbx_obj_value,                     \
-                 struct RRange *:       mrbx_obj_value,                     \
-                 struct RFiber *:       mrbx_obj_value,                     \
-                 struct RException *:   mrbx_obj_value,                     \
-                 struct RData *:        mrbx_obj_value,                     \
-                 struct RIstruct *:     mrbx_obj_value,                     \
+                 struct RBasic *:       mrbx_ptr_to_value,                  \
+                 struct RObject *:      mrbx_ptr_to_value,                  \
+                 struct RClass *:       mrbx_ptr_to_value,                  \
+                 struct RArray *:       mrbx_ptr_to_value,                  \
+                 struct RHash *:        mrbx_ptr_to_value,                  \
+                 struct RString *:      mrbx_ptr_to_value,                  \
+                 struct RProc *:        mrbx_ptr_to_value,                  \
+                 struct RRange *:       mrbx_ptr_to_value,                  \
+                 struct RFiber *:       mrbx_ptr_to_value,                  \
+                 struct RException *:   mrbx_ptr_to_value,                  \
+                 struct RData *:        mrbx_ptr_to_value,                  \
+                 struct RIstruct *:     mrbx_ptr_to_value,                  \
                  mrb_int:               mrbx_fixnum_value,                  \
                  const mrb_int:         mrbx_fixnum_value,                  \
                  mrb_float:             mrb_float_value,                    \
