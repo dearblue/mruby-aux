@@ -78,6 +78,10 @@
 # endif
 #endif
 
+#define MRBX_TOKEN_2(X)     #X
+#define MRBX_TOKEN_1(X)     MRBX_TOKEN_2(X)
+#define MRBX_TOKEN(X)       MRBX_TOKEN_1(X)
+
 #ifndef MRBX_SMALL_TARGET
 # ifdef MRB_INT16
 #  define MRBX_SMALL_TARGET 1
