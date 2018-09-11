@@ -253,4 +253,17 @@ mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
 
 #endif
 
+MRB_BEGIN_DECL
+
+/*
+ * 一つのメモリブロックに複数のポインタ配列と文字列から構成されたものを mruby の文字列として確保して返す。
+ *
+ * ポインタ配列の最後には NULL が置かれる。
+ *
+ * [ [str1ptr] [str2ptr] ... [strNptr] [NULL] [str1...] [NUL] [str2...] [NUL] ... [strN...] [NUL] ]
+ */
+struct RString *mrbx_str_new_table(mrb_state *mrb, struct RArray *list);
+
+MRB_END_DECL
+
 #endif /* MRUBY_AUX_STRING_H */
