@@ -6,22 +6,31 @@
 #include <mruby/class.h>
 #include "common.h"
 
-MRBX_INLINE struct RClass *
-mrbx_class_ptr(mrb_state *mrb, mrb_value v)
+MRBX_INLINE int
+mrbx_namespace_p(mrb_value v)
 {
     switch (mrb_type(v)) {
     default:
-        if (!mrb_nil_p(v)) {
-            mrb_raisef(mrb, E_TYPE_ERROR,
-                       "expect nil, module or class, but given %S",
-                       mrb_obj_value(mrb_obj_class(mrb, v)));
-        }
-        return NULL;
+        return FALSE;
     case MRB_TT_MODULE:
     case MRB_TT_CLASS:
     case MRB_TT_SCLASS:
-        return mrb_class_ptr(v);
+        return TRUE;
     }
+}
+
+MRBX_INLINE struct RClass *
+mrbx_class_ptr(mrb_state *mrb, mrb_value v)
+{
+    if (mrbx_namespace_p(v)) {
+        return mrb_class_ptr(v);
+    } else if (!mrb_nil_p(v)) {
+        mrb_raisef(mrb, E_TYPE_ERROR,
+                   "expect nil, module or class, but given %S",
+                   mrb_obj_value(mrb_obj_class(mrb, v)));
+    }
+
+    return NULL;
 }
 
 MRBX_INLINE struct RClass *
