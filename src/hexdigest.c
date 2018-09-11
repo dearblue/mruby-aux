@@ -1,6 +1,6 @@
 #include <mruby-aux/string.h>
 
-MRB_API mrb_value
+MRB_API struct RString *
 mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
 {
     static const char hexmap[16] = {
@@ -15,8 +15,8 @@ mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
     }
 
     int off = bytesize * 8;
-    mrb_value str = mrb_str_new(mrb, NULL, bytesize * 2);
-    char *p = RSTRING_PTR(str);
+    struct RString *str = RSTRING(mrb_str_new(mrb, NULL, bytesize * 2));
+    char *p = RSTR_PTR(str);
 
     for (; off > 0; off -= 4, p ++) {
         *p = hexmap[(n >> (off - 4)) & 0x0f];

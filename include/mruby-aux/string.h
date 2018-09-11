@@ -266,7 +266,7 @@ MRB_API struct RString *mrbx_str_new_table(mrb_state *mrb, struct RArray *list);
 
 MRB_API struct RString *mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size);
 
-MRB_API mrb_value mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize);
+MRB_API struct RString *mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize);
 
 MRB_END_DECL
 
