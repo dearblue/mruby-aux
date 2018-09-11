@@ -177,6 +177,7 @@ mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
 MRB_BEGIN_DECL
 
 MRB_API void mrbx_cleanup_data_objects(mrb_state *mrb, int num, const struct mrb_data_type *types[]);
+MRB_API void mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **dest);
 
 MRB_END_DECL
 

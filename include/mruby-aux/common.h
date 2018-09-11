@@ -1,6 +1,8 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#include <sys/types.h> /* for ssize_t */
+
 #ifndef ELEMENTOF
 # define ELEMENTOF(A)   (sizeof((A)) / sizeof((A)[0]))
 #endif
