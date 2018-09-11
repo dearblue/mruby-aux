@@ -74,6 +74,24 @@ mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[]
 }
 
 #define MRBX_DIG_CLASS(MRB, TOP, ...)                                       \
-        mrbx_dig_class(MRB, RClass(TOP), MRB_LIST(const char *, __VA_ARGS__)) \
+        mrbx_dig_class(MRB, RClass(TOP), MRBX_LIST(const char *, __VA_ARGS__)) \
+
+
+MRBX_INLINE mrb_value
+mrbx_dig_const(mrb_state *mrb, struct RClass *outer, int numname, const mrb_sym name[])
+{
+    if (!outer) { outer = mrb->object_class; }
+
+    mrb_value v = mrb_obj_value(outer);
+
+    for (; numname > 0; numname --, name ++) {
+        v = mrb_const_get(mrb, v, *name);
+    }
+
+    return v;
+}
+
+#define MRBX_DIG_CONST(MRB, TOP, ...)                                       \
+        mrbx_dig_const(MRB, TOP, MRBX_LIST(const mrb_sym, __VA_ARGS__))     \
 
 #endif /* MRUBY_AUX_CLASS_H */
