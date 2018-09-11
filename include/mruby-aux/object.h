@@ -7,7 +7,7 @@
 MRBX_INLINE struct RObject *mrbx_ptr_to_ptr(mrb_state *mrb, void *p) { return (struct RObject *)p; }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, mrb_value o) { return mrb_immediate_p(o) ? NULL : mrb_obj_ptr(o); }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RBasic *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RObject *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }

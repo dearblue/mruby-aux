@@ -113,7 +113,7 @@ mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, size_t len)
     return mrbx_str_set_len(mrb, RSTRING(dest), len);
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
@@ -196,7 +196,7 @@ mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
@@ -235,7 +235,7 @@ mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)

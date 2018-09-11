@@ -35,7 +35,7 @@ MRBX_INLINE mrb_value mrbx_ptr_to_value(mrb_state *mrb, void *v) { return (v ? m
 MRBX_INLINE mrb_value mrbx_value_to_value(mrb_state *mrb, mrb_value v) { return v; }
 MRBX_INLINE mrb_value mrbx_fixnum_value(mrb_state *mrb, mrb_int v) { return mrb_fixnum_value(v); }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, mrb_value v) { return mrbx_value_to_value(mrb, v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RBasic *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
