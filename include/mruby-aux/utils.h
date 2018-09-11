@@ -6,6 +6,7 @@
 #include <mruby/data.h>
 #include <mruby/string.h>
 #include "common.h"
+#include "array.h"
 
 #define IMPLEMENT_ME                                                        \
         mrb_raisef(mrb, E_NOTIMP_ERROR,                                     \
@@ -43,8 +44,8 @@
          &I ++)                                                             \
 
 #define FOREACH_RARRAY(I, LIST)                                             \
-    for (const VALUE I = ARY_PTR(RArray((LIST))),                           \
-                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));          \
+    for (const mrb_value I = ARY_PTR(RArray((LIST))),                       \
+                         *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));      \
          &I < _list_end_;                                                   \
          &I ++)                                                             \
 
