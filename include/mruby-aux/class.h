@@ -60,21 +60,21 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
 #define RClass(V) mrbx_class_ptr(mrb, (V))
 
 MRBX_INLINE struct RClass *
-mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const char *names[])
+mrbx_dig_class(mrb_state *mrb, struct RClass *c, size_t num, const mrb_sym names[])
 {
     if (!c) {
         c = mrb->object_class;
     }
 
     for (; num > 0; num --, names ++) {
-        c = mrbx_class_ptr(mrb, mrb_const_get(mrb, mrb_obj_value(c), mrb_intern_cstr(mrb, names[0])));
+        c = mrbx_class_ptr(mrb, mrb_const_get(mrb, mrb_obj_value(c), *names));
     }
 
     return c;
 }
 
 #define MRBX_DIG_CLASS(MRB, TOP, ...)                                       \
-        mrbx_dig_class(MRB, RClass(TOP), MRBX_LIST(const char *, __VA_ARGS__)) \
+        mrbx_dig_class(MRB, RClass(TOP), MRBX_LIST(const mrb_sym, __VA_ARGS__)) \
 
 
 MRBX_INLINE mrb_value
