@@ -13,17 +13,18 @@ mrbx_str_new_table(mrb_state *mrb, struct RArray *list)
         memsize += mrb_str_strlen(mrb, RSTRING(*i)) + 1; // NOTE: NUL 終端のために +1 する
     }
 
-    mrb_value strpool = mrb_str_buf_new(mrb, memsize);
-    char **strtable = (char **)RSTRING_PTR(strpool);
+    struct RString *strpool = RSTRING(mrb_str_new(mrb, NULL, memsize));
+    char **strtable = (char **)RSTR_PTR(strpool);
     char *str = (char *)(strtable + (nelem + 1));
     FOREACH_RARRAY(*i, list) {
-        mrb_int len = RSTRING_LEN(*i);
-        memcpy(str, RSTRING_PTR(*i), len);
+        struct RString *s = RSTRING(*i);
+        mrb_int len = RSTR_LEN(s);
+        memcpy(str, RSTR_PTR(s), len);
         str[len] = '\0';
         *strtable ++ = str;
         str += len + 1;
     }
     *strtable = NULL;
 
-    return RSTRING(strpool);
+    return strpool;
 }
