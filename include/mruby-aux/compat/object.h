@@ -1,7 +1,8 @@
 #ifndef MRUBY_AUX_COMPAT_OBJECT_H
 #define MRUBY_AUX_COMPAT_OBJECT_H 1
 
-#include "../object.h"
+#include <mruby.h>
+#include <mruby/object.h>
 
 #if MRUBY_RELEASE_NO < 10200
 # define MRB_FROZEN_P(S)  FALSE
@@ -21,6 +22,16 @@ struct RObject;
 struct RProc;
 struct RRange;
 struct RString;
+
+MRBX_INLINE uint32_t
+MRB_SET_FROZEN_FLAG(struct RObject *o)
+{
+    if (o->tt == MRB_TT_STRING) {
+        return RSTR_SET_FROZEN_FLAG(o);
+    } else {
+        return o->flags;
+    }
+}
 
 MRBX_INLINE mrb_bool mrbx_false_always(void *p) { return FALSE; }
 MRBX_INLINE mrb_bool mrbx_rstr_frozen_p(struct RString *p) { return RSTR_FROZEN_P(p); }
@@ -60,6 +71,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
                 struct RString *:      mrbx_rstr_frozen_p)(O)               \
 
 # endif /* __cplusplus */
+
 #else
 #endif /* MRUBY_RELEASE_NO */
 
@@ -68,5 +80,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 #ifndef RCLASS_SUPER
 # define RCLASS_SUPER(O)  (mrb_class_ptr(O)->super)
 #endif
+
+#include "../object.h"
 
 #endif /* MRUBY_AUX_COMPAT_OBJECT_H */
