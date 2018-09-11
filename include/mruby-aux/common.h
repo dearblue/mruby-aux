@@ -22,6 +22,14 @@
         ELEMENTOF(((T []){ __VA_ARGS__ })),                                 \
         MRBX_MOVE(((T []){ __VA_ARGS__ }))                                  \
 
+#ifndef MRB_WITHOUT_FLOAT
+# include <float.h>
+# ifdef MRB_USE_FLOAT
+#  define MRBX_FLOAT_MATN_DIG FLT_MANT_DIG
+# else
+#  define MRBX_FLOAT_MATN_DIG DBL_MANT_DIG
+# endif
+
 #include <mruby.h>
 
 #ifndef MRBX_INLINE
@@ -89,14 +97,6 @@
 #  define MRBX_SMALL_TARGET 1
 # endif
 #endif
-
-#ifndef MRB_WITHOUT_FLOAT
-# include <float.h>
-# ifdef MRB_USE_FLOAT
-#  define MRBX_FLOAT_MATN_DIG FLT_MANT_DIG
-# else
-#  define MRBX_FLOAT_MATN_DIG DBL_MANT_DIG
-# endif
                                                                 /* NOTE: キャストしているのは負数シフトで報告される警告を避けるため */
 # define MRBX_FLOAT_OUT_OF_INTEGER_P(N) (!((N) < (1LL << MRBX_FLOAT_MATN_DIG) && (N) > (int64_t)((uint64_t)-1LL << MRBX_FLOAT_MATN_DIG)))
 #endif

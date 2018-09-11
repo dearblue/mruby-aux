@@ -11,10 +11,10 @@
 #ifndef MRBX_HASHARGS_H
 #define MRBX_HASHARGS_H 1
 
+#include "common.h"
 #include <mruby.h>
 #include <mruby/array.h>
 #include <mruby/hash.h>
-#include "common.h"
 
 MRB_BEGIN_DECL
 

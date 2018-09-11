@@ -1,6 +1,12 @@
 #ifndef MRUBY_AUX_H
 #define MRUBY_AUX_H 1
 
+#include "mruby-aux/common.h"
+#include "mruby-aux/object.h"
+#include "mruby-aux/array.h"
+#include "mruby-aux/string.h"
+#include "mruby-aux/class.h"
+#include "mruby-aux/utils.h"
 #include <mruby.h>
 #include <mruby/variable.h>
 #include <mruby/class.h>
@@ -8,12 +14,6 @@
 #include <mruby/string.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
-#include "mruby-aux/common.h"
-#include "mruby-aux/object.h"
-#include "mruby-aux/array.h"
-#include "mruby-aux/string.h"
-#include "mruby-aux/class.h"
-#include "mruby-aux/utils.h"
 
 #define VALUE           mrb_value
 #define Qnil            mrb_nil_value()

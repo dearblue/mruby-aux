@@ -1,9 +1,9 @@
 #ifndef MRUBY_AUX_COMPAT_ARRAY_H
 #define MRUBY_AUX_COMPAT_ARRAY_H 1
 
+#include "../common.h"
 #include <mruby.h>
 #include <mruby/array.h>
-#include "../common.h"
 
 /* ARY_PTR は 1.4.0 で追加 */
 #ifndef ARY_PTR

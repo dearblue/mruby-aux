@@ -1,12 +1,12 @@
 #ifndef MRUBY_AUX_UTILS_H
 #define MRUBY_AUX_UTILS_H 1
 
+#include "common.h"
+#include "array.h"
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
 #include <mruby/string.h>
-#include "common.h"
-#include "array.h"
 
 #define IMPLEMENT_ME                                                        \
         mrb_raisef(mrb, E_NOTIMP_ERROR,                                     \
