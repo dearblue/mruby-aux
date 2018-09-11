@@ -1,7 +1,7 @@
 #include <mruby-aux/string.h>
 #include <mruby-aux/utils.h>
 
-struct RString *
+MRB_API struct RString *
 mrbx_str_new_table(mrb_state *mrb, struct RArray *list)
 {
     size_t nelem = RARY_LEN(list);

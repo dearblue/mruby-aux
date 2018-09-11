@@ -1,7 +1,7 @@
 #include <mruby-aux.h>
 #include <mruby-aux/utils.h>
 
-void
+MRB_API void
 mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **dest)
 {
     mrb_value sizev = mrb_nil_value();

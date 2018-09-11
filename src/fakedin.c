@@ -5,7 +5,7 @@
 #define id_iv_stream_private mrb_intern_cstr(mrb, "input stream@mruby-aux")
 #define id_iv_buffer_private mrb_intern_cstr(mrb, "input buffer@mruby-aux")
 
-void
+MRB_API void
 mrbx_fakedin_setup(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, mrb_value stream)
 {
     mrb_iv_set(mrb, owner, id_iv_stream_private, stream);
@@ -127,7 +127,7 @@ mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value owner, struct mrbx_faked
     return size;
 }
 
-mrb_int
+MRB_API mrb_int
 mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, const char **buf, mrb_int size)
 {
     if (size < 0) { mrb_raise(mrb, E_RUNTIME_ERROR, "wrong fetch size"); }
@@ -141,13 +141,13 @@ mrbx_fakedin_read(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, c
     }
 }
 
-mrb_bool
+MRB_API mrb_bool
 mrbx_fakedin_eof(struct mrbx_fakedin *input)
 {
     return !!(input->off < 0);
 }
 
-int64_t
+MRB_API int64_t
 mrbx_fakedin_total_in(struct mrbx_fakedin *input)
 {
     if (input->off < 0) {

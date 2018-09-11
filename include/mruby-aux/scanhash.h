@@ -25,7 +25,7 @@ struct mrbx_scanhash_arg
     mrb_value initval;
 };
 
-mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv);
+MRB_API mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv);
 
 
 /**

@@ -17,7 +17,7 @@ typedef intptr_t mrbx_str_buf_growup_f(mrb_state *mrb, char *ptr, size_t *size, 
  * MRBX_STOP で終了する。
  * MRBX_NEXT で処理を進める。
  */
-struct RString *mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user);
+MRB_API struct RString *mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user);
 
 MRB_END_DECL
 

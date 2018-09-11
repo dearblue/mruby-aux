@@ -6,7 +6,7 @@
 
 MRB_BEGIN_DECL
 
-mrb_value
+MRB_API mrb_value
 mrbx_protect_exceptions(
         mrb_state *mrb,
         mrb_func_t body, mrb_value b_data,
