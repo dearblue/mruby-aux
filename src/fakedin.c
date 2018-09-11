@@ -1,5 +1,5 @@
 #include <mruby-aux/fakedin.h>
-#include <mruby-aux/string/drop.h>
+#include <mruby-aux/string.h>
 #include <mruby/variable.h>
 
 #define id_iv_stream_private mrb_intern_cstr(mrb, "input stream@mruby-aux")

@@ -264,6 +264,12 @@ MRB_BEGIN_DECL
  */
 struct RString *mrbx_str_new_table(mrb_state *mrb, struct RArray *list);
 
+struct RString *mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size);
+
+mrb_value mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize);
+
 MRB_END_DECL
+
+#include "string/growup.h"
 
 #endif /* MRUBY_AUX_STRING_H */

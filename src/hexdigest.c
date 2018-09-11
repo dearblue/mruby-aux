@@ -1,4 +1,4 @@
-#include <mruby-aux/string/hexdigest.h>
+#include <mruby-aux/string.h>
 
 mrb_value
 mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize)
