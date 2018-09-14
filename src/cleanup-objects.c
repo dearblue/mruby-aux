@@ -1,6 +1,6 @@
+#include <mruby-aux/utils.h>
 #include <mruby.h>
 #include <mruby/gc.h>
-#include <mruby-aux/utils.h>
 
 #if MRUBY_RELEASE_NO < 10300
 typedef void mrb_objspace_each_objects_ret;

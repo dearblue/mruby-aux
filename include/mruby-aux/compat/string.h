@@ -1,9 +1,9 @@
 #ifndef MRUBY_AUX_COMPAT_STRING_H
 #define MRUBY_AUX_COMPAT_STRING_H 1
 
+#include "../common.h"
 #include <mruby.h>
 #include <mruby/string.h>
-#include "../common.h"
 
 #if MRUBY_RELEASE_NO < 10200
 #   define RSTR_FROZEN_P(S) FALSE

@@ -1,7 +1,7 @@
 #include <mruby-aux/string.h>
 #include <string.h>
 
-struct RString *
+MRB_API struct RString *
 mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size)
 {
     mrb_int len = RSTR_LEN(str);

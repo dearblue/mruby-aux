@@ -1,6 +1,6 @@
-#include <mruby-aux/string/growup.h>
+#include <mruby-aux/string.h>
 
-struct RString *
+MRB_API struct RString *
 mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_bool *is_partial, mrbx_str_buf_growup_f *func, void *user)
 {
 #ifdef MRBX_SMALL_TARGET

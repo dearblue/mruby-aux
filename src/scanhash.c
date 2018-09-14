@@ -154,7 +154,7 @@ make_receptor(mrb_state *mrb, mrb_value rest)
     }
 }
 
-mrb_value
+MRB_API mrb_value
 mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv)
 {
     struct RHash *receptor = make_receptor(mrb, rest);

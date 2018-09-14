@@ -11,10 +11,10 @@
 #ifndef MRBX_HASHARGS_H
 #define MRBX_HASHARGS_H 1
 
+#include "common.h"
 #include <mruby.h>
 #include <mruby/array.h>
 #include <mruby/hash.h>
-#include "common.h"
 
 MRB_BEGIN_DECL
 
@@ -25,7 +25,7 @@ struct mrbx_scanhash_arg
     mrb_value initval;
 };
 
-mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv);
+MRB_API mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv);
 
 
 /**

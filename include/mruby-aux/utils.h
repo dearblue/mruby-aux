@@ -1,11 +1,12 @@
 #ifndef MRUBY_AUX_UTILS_H
 #define MRUBY_AUX_UTILS_H 1
 
+#include "common.h"
+#include "array.h"
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
 #include <mruby/string.h>
-#include "common.h"
 
 #define IMPLEMENT_ME                                                        \
         mrb_raisef(mrb, E_NOTIMP_ERROR,                                     \
@@ -43,8 +44,8 @@
          &I ++)                                                             \
 
 #define FOREACH_RARRAY(I, LIST)                                             \
-    for (const VALUE I = ARY_PTR(RArray((LIST))),                           \
-                     *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));          \
+    for (const mrb_value I = ARY_PTR(RArray((LIST))),                       \
+                         *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));      \
          &I < _list_end_;                                                   \
          &I ++)                                                             \
 
@@ -177,6 +178,7 @@ mrbx_error_arity(mrb_state *mrb, mrb_int argc, mrb_int min, mrb_int max)
 MRB_BEGIN_DECL
 
 MRB_API void mrbx_cleanup_data_objects(mrb_state *mrb, int num, const struct mrb_data_type *types[]);
+MRB_API void mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **dest);
 
 MRB_END_DECL
 

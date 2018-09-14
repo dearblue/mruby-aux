@@ -113,7 +113,7 @@ mrbx_str_set_len_value(mrb_state *mrb, mrb_value dest, size_t len)
     return mrbx_str_set_len(mrb, RSTRING(dest), len);
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
@@ -196,7 +196,7 @@ mrbx_str_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
@@ -235,7 +235,7 @@ mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     }
 }
 
-#if __cplusplus
+#ifdef __cplusplus
 
 MRBX_INLINE struct RString *
 mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
@@ -252,5 +252,24 @@ mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
             ((MRB), (STR), (LEN))                                           \
 
 #endif
+
+MRB_BEGIN_DECL
+
+/*
+ * 一つのメモリブロックに複数のポインタ配列と文字列から構成されたものを mruby の文字列として確保して返す。
+ *
+ * ポインタ配列の最後には NULL が置かれる。
+ *
+ * [ [str1ptr] [str2ptr] ... [strNptr] [NULL] [str1...] [NUL] [str2...] [NUL] ... [strN...] [NUL] ]
+ */
+MRB_API struct RString *mrbx_str_new_table(mrb_state *mrb, struct RArray *list);
+
+MRB_API struct RString *mrbx_str_drop(mrb_state *mrb, struct RString *str, mrb_int off, mrb_int size);
+
+MRB_API struct RString *mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize);
+
+MRB_END_DECL
+
+#include "string/growup.h"
 
 #endif /* MRUBY_AUX_STRING_H */

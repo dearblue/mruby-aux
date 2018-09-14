@@ -1,12 +1,12 @@
 #ifndef MRUBY_AUX_ERROR_H
 #define MRUBY_AUX_ERROR_H 1
 
-#include <mruby.h>
 #include "common.h"
+#include <mruby.h>
 
 MRB_BEGIN_DECL
 
-mrb_value
+MRB_API mrb_value
 mrbx_protect_exceptions(
         mrb_state *mrb,
         mrb_func_t body, mrb_value b_data,
