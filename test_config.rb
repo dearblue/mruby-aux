@@ -57,7 +57,7 @@ MRuby::Build.new("host16") do |conf|
   gem File.dirname(__FILE__)
 end
 
-if MRUBY_RELEASE_NO > 10200
+if MRUBY_RELEASE_NO >= 10300
   MRuby::Build.new("host++") do |conf|
     toolchain :clang
 
@@ -66,8 +66,10 @@ if MRUBY_RELEASE_NO > 10200
     enable_test
     enable_cxx_abi
 
-    cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=c++1z"
-    cxx.flags << "-std=c++1z"
+    stdcxx = (MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
+
+    cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=#{stdcxx}"
+    cxx.flags << "-std=#{stdcxx}"
 
     gem core: "mruby-print"
     gem core: "mruby-bin-mirb"
