@@ -6,5 +6,4 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.homepage = "https://github.com/dearblue/mruby-aux"
 
   add_dependency "mruby-error", core: "mruby-error"
-  add_dependency "mruby-string-ext", core: "mruby-string-ext"
 end
