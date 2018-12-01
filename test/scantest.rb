@@ -74,7 +74,7 @@ assert "scan keyword (catch rest)" do
 end
 
 assert "wrong target" do
-  assert_raise(NoMethodError) {
+  assert_raise(TypeError) {
     AuxScanHashTest.scan_static_keywords(1, nil, [nil, 1, 2.0, true])
   }
 end

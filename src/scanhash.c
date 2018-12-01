@@ -88,15 +88,8 @@ static struct RHash *
 mrbx_scanhash_to_hash(mrb_state *mrb, mrb_value hash)
 {
     if (mrb_nil_p(hash)) { return NULL; }
-
-    mrb_sym id_to_hash = mrb_intern_lit(mrb, "to_hash");
-    mrb_value hash1 = mrb_funcall_argv(mrb, hash, id_to_hash, 0, 0);
-    if (!mrb_hash_p(hash1)) {
-        mrb_raisef(mrb, E_TYPE_ERROR,
-                   "converted object is not a hash (<#%S>)",
-                   hash);
-    }
-    return RHASH(hash1);
+    mrb_check_type(mrb, hash, MRB_TT_HASH);
+    return RHASH(hash);
 }
 
 static inline void
