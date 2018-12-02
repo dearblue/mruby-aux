@@ -34,8 +34,9 @@ mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **dest)
             }
         }
 
-        *dest = (mrb_nil_p(bufv) ? mrbx_str_ptr(mrb, bufv) : NULL);
+        *dest = (mrb_nil_p(bufv) ? NULL : RSTRING(bufv));
     }
 
     *dest = mrbx_str_force_recycle(mrb, *dest, (*size < 0 ? 0 : *size));
+    RSTR_SET_LEN((*dest), 0);
 }
