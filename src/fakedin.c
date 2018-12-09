@@ -2,8 +2,8 @@
 #include <mruby-aux/string.h>
 #include <mruby/variable.h>
 
-#define id_iv_stream_private mrb_intern_cstr(mrb, "input stream@mruby-aux")
-#define id_iv_buffer_private mrb_intern_cstr(mrb, "input buffer@mruby-aux")
+#define id_iv_stream_private mrb_intern_lit(mrb, "input stream@mruby-aux")
+#define id_iv_buffer_private mrb_intern_lit(mrb, "input buffer@mruby-aux")
 
 MRB_API void
 mrbx_fakedin_setup(mrb_state *mrb, mrb_value owner, struct mrbx_fakedin *input, mrb_value stream)
