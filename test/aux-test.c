@@ -1,6 +1,6 @@
 #include <mruby.h>
 #include <mruby-aux.h>
-#include <mruby-aux/string/drop.h>
+#include <mruby-aux/string.h>
 #include <mruby-aux/fakedin.h>
 #include <mruby-aux/scanhash.h>
 #include <mruby/numeric.h>
