@@ -12,17 +12,6 @@
 #include <mruby-aux/compat/hash.h>
 
 
-#if MRUBY_RELEASE_NO <= 10200
-#   define id_values mrb_intern_lit(mrb, "values")
-
-    static mrb_value
-    mrb_hash_values(mrb_state *mrb, mrb_value hash)
-    {
-        return mrb_funcall_argv(mrb, hash, id_values, 0, NULL);
-    }
-#endif
-
-
 struct mrbx_scanhash_args
 {
     const struct mrbx_scanhash_arg *args;
