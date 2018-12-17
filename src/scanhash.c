@@ -49,8 +49,9 @@ mrbx_scanhash_error(mrb_state *mrb, mrb_sym given, const struct mrbx_scanhash_ar
 }
 
 static int
-mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, struct mrbx_scanhash_args *args)
+mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, void *ud)
 {
+    struct mrbx_scanhash_args *args = (struct mrbx_scanhash_args *)ud;
     const struct mrbx_scanhash_arg *p = args->args;
     const struct mrbx_scanhash_arg *end = args->end;
     mrb_sym keyid = mrb_obj_to_sym(mrb, key);
@@ -105,22 +106,6 @@ mrbx_scanhash_check_missingkeys(mrb_state *mrb, const struct mrbx_scanhash_arg *
     }
 }
 
-static void
-mrbx_hash_foreach(mrb_state *mrb, struct RHash *hash, int (*block)(mrb_state *, mrb_value, mrb_value, struct mrbx_scanhash_args *), struct mrbx_scanhash_args *args)
-{
-    mrb_value keys = mrb_hash_keys(mrb, mrb_obj_value(hash));
-    mrb_value values = mrb_hash_values(mrb, mrb_obj_value(hash));
-    const mrb_value *k = RARRAY_PTR(keys);
-    const mrb_value *const kk = k + RARRAY_LEN(keys);
-    const mrb_value *v = RARRAY_PTR(values);
-    int arena = mrb_gc_arena_save(mrb);
-
-    for (; k < kk; k ++, v ++) {
-        block(mrb, *k, *v, args);
-        mrb_gc_arena_restore(mrb, arena);
-    }
-}
-
 static struct RHash *
 make_receptor(mrb_state *mrb, mrb_value rest)
 {
@@ -146,7 +131,7 @@ mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const
 
     if (hashp && !mrb_hash_empty_p(mrb, mrb_obj_value(hashp))) {
         struct mrbx_scanhash_args argset = { argv, argv + argc, receptor };
-        mrbx_hash_foreach(mrb, hashp, mrbx_scanhash_foreach, &argset);
+        mrb_hash_foreach(mrb, hashp, mrbx_scanhash_foreach, &argset);
     }
 
     mrbx_scanhash_check_missingkeys(mrb, argv, argv + argc);
