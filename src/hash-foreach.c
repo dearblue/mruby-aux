@@ -1,4 +1,7 @@
-#if MRUBY_RELEASE_NO < 20000
+#include <mruby.h>
+
+#ifdef MRUBY_AUX_NEED_HASH_FOREACH
+/* #if MRUBY_RELEASE_NO < 20000 */
 
 #include <mruby-aux/compat/hash.h>
 
