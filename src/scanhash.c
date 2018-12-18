@@ -24,12 +24,13 @@ mrbx_scanhash_error(mrb_state *mrb, mrb_sym given, const struct mrbx_scanhash_ar
 {
     // 引数の数が㌧でもない数の場合、よくないことが起きそう。
 
-    mrb_value names = mrb_ary_new(mrb);
+    size_t namenum = end - args;
+    mrb_value names = mrb_ary_new_capa(mrb, namenum);
+
     for (; args < end; args ++) {
         mrb_ary_push(mrb, names, mrb_symbol_value(args->name));
     }
 
-    size_t namenum = RARRAY_LEN(names);
     if (namenum > 2) {
         mrb_value w = mrb_ary_pop(mrb, names);
         names = mrb_ary_join(mrb, names, mrb_str_new_cstr(mrb, ", "));
