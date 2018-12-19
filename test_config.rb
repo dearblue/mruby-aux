@@ -15,14 +15,16 @@ MRuby::Build.new do |conf|
   conf.build_dir = "host32"
 
   enable_test
+  enable_debug
 
   cc.defines = %w(MRB_INT32)
-  cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=c11"
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mirb"
   gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    cc.flags << %w(-std=c11 -Wall -pedantic)
+  end
 end
 
 MRuby::Build.new("host64") do |conf|
@@ -31,14 +33,16 @@ MRuby::Build.new("host64") do |conf|
   conf.build_dir = conf.name
 
   enable_test
+  enable_debug
 
   cc.defines = %w(MRB_INT64)
-  cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=c11"
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mrbc"
   gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    cc.flags << %w(-std=c11 -Wall -pedantic)
+  end
 end
 
 MRuby::Build.new("host16") do |conf|
@@ -47,14 +51,16 @@ MRuby::Build.new("host16") do |conf|
   conf.build_dir = conf.name
 
   enable_test
+  enable_debug
 
   cc.defines = %w(MRB_INT16)
-  cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=c11"
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mrbc"
   gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    cc.flags << %w(-std=c11 -Wall -pedantic)
+  end
 end
 
 if MRUBY_RELEASE_NO >= 10300
@@ -64,16 +70,17 @@ if MRUBY_RELEASE_NO >= 10300
     conf.build_dir = conf.name
 
     enable_test
+    enable_debug
     enable_cxx_abi
-
-    stdcxx = (MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
-
-    cc.flags << "-Wall" << "-O0" << "-pedantic" << "-std=#{stdcxx}"
-    cxx.flags << "-std=#{stdcxx}"
 
     gem core: "mruby-print"
     gem core: "mruby-bin-mirb"
     gem core: "mruby-bin-mruby"
-    gem File.dirname(__FILE__)
+    gem File.dirname(__FILE__) do
+      stdcxx = (MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
+
+      cc.flags << %W(-Wall -pedantic -std=#{stdcxx})
+      cxx.flags << "-std=#{stdcxx}"
+    end
   end
 end
