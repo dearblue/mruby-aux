@@ -7,16 +7,6 @@
 #include <mruby/array.h>
 #include <mruby/variable.h>
 
-static VALUE
-test_str_drop(MRB, VALUE self)
-{
-    VALUE str;
-    mrb_int off, size;
-    mrb_get_args(mrb, "Sii", &str, &off, &size);
-
-    return VALUE(mrbx_str_drop(mrb, RSTRING(str), off, size));
-}
-
 #define id_REQUIREMENT_KEYWORD mrb_intern_lit(mrb, "REQUIREMENT_KEYWORD")
 
 static mrb_value
@@ -60,17 +50,18 @@ scan_static_keywords(mrb_state *mrb, mrb_value mAuxScanHashTest)
 }
 
 void mruby_aux_test_fakedin_init(mrb_state *mrb, struct RClass *test);
+void mruby_aux_test_string_init(mrb_state *mrb, struct RClass *test);
 
 void
 mrb_mruby_aux_gem_test(MRB)
 {
     struct RClass *mAuxTest = mrb_define_module(mrb, "AuxTest");
 
-    mrb_define_class_method(mrb, mAuxTest, "str_drop", test_str_drop, MRB_ARGS_REQ(3));
 
     struct RClass *mAuxScanHashTest = mrb_define_module(mrb, "AuxScanHashTest");
     mrb_define_class_method(mrb, mAuxScanHashTest, "scan_static_keywords", scan_static_keywords, MRB_ARGS_ANY());
     mrb_const_set(mrb, mrb_obj_value(mAuxScanHashTest), id_REQUIREMENT_KEYWORD, mrb_obj_new(mrb, mrb->object_class, 0, NULL));
 
     mruby_aux_test_fakedin_init(mrb, mAuxTest);
+    mruby_aux_test_string_init(mrb, mAuxTest);
 }
