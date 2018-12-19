@@ -75,14 +75,6 @@ mrbx_scanhash_foreach(mrb_state *mrb, mrb_value key, mrb_value value, void *ud)
     return 0;
 }
 
-static struct RHash *
-mrbx_scanhash_to_hash(mrb_state *mrb, mrb_value hash)
-{
-    if (mrb_nil_p(hash)) { return NULL; }
-    mrb_check_type(mrb, hash, MRB_TT_HASH);
-    return RHASH(hash);
-}
-
 static inline void
 mrbx_scanhash_setdefaults(const struct mrbx_scanhash_arg *args, const struct mrbx_scanhash_arg *end)
 {
@@ -126,7 +118,7 @@ MRB_API mrb_value
 mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, size_t argc, const struct mrbx_scanhash_arg *argv)
 {
     struct RHash *receptor = make_receptor(mrb, rest);
-    struct RHash *hashp = mrbx_scanhash_to_hash(mrb, hash);
+    struct RHash *hashp = mrbx_hash_ptr(mrb, hash);
 
     mrbx_scanhash_setdefaults(argv, argv + argc);
 
