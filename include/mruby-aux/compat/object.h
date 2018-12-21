@@ -3,6 +3,7 @@
 
 #include <mruby.h>
 #include <mruby/object.h>
+#include "../common.h"
 
 #if MRUBY_RELEASE_NO < 10200
 # define MRB_FROZEN_P(S)  FALSE
