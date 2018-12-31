@@ -1,21 +1,5 @@
 #include <mruby-aux/array.h>
 
-#if defined(__clang__)
-# pragma GCC diagnostic ignored "-Wgnu-empty-initializer"
-# pragma GCC diagnostic ignored "-Wzero-length-array"
-#endif
-
-static mrb_value
-test_tuple_0(mrb_state *mrb, mrb_value self)
-{
-    return MRBX_TUPLE();
-}
-
-#if defined(__clang__)
-# pragma GCC diagnostic warning "-Wgnu-empty-initializer"
-# pragma GCC diagnostic warning "-Wzero-length-array"
-#endif
-
 static mrb_value
 test_tuple_3(mrb_state *mrb, mrb_value self)
 {
@@ -65,7 +49,6 @@ test_ary_ptr_double(mrb_state *mrb, mrb_value self)
 void
 mruby_aux_test_array_init(mrb_state *mrb, struct RClass *test)
 {
-    mrb_define_class_method(mrb, test, "tuple_0",         test_tuple_0,        MRB_ARGS_ANY());
     mrb_define_class_method(mrb, test, "tuple_3",         test_tuple_3,        MRB_ARGS_ANY());
     mrb_define_class_method(mrb, test, "tuple_5",         test_tuple_5,        MRB_ARGS_ANY());
     mrb_define_class_method(mrb, test, "ary_ptr",         test_ary_ptr,        MRB_ARGS_ANY());
