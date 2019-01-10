@@ -1,13 +1,8 @@
 #ruby
 
-unless Object.const_defined?(:MRUBY_RELEASE_NO)
-  if File.read(File.join(MRUBY_ROOT, "README.md")) =~ /\bversion\s*\K(\d+)\.(\d+)\.(\d+)\s+/im
-    MRUBY_RELEASE_NO = $1.to_i * 10000 + $2.to_i * 100 + $3.to_i
-  else
-    warn "mruby version not found! temporary version number is set to 1.0.0"
-    MRUBY_RELEASE_NO = 10000
-  end
-end
+$: << File.join(MRUBY_ROOT, "lib") # for mruby-1.3 or older
+
+require "mruby/source"
 
 MRuby::Build.new do |conf|
   toolchain :clang
@@ -63,7 +58,7 @@ MRuby::Build.new("host16") do |conf|
   end
 end
 
-if MRUBY_RELEASE_NO >= 10300
+if MRuby::Source::MRUBY_RELEASE_NO >= 10300
   MRuby::Build.new("host++") do |conf|
     toolchain :clang
 
@@ -77,7 +72,7 @@ if MRUBY_RELEASE_NO >= 10300
     gem core: "mruby-bin-mirb"
     gem core: "mruby-bin-mruby"
     gem File.dirname(__FILE__) do
-      stdcxx = (MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
+      stdcxx = (MRuby::Source::MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
 
       cc.flags << %W(-Wall -pedantic -std=#{stdcxx})
       cxx.flags << "-std=#{stdcxx}"
