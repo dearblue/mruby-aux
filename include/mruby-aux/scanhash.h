@@ -1,13 +1,3 @@
-/*
- * This code is under public domain (CC0)
- * <https://creativecommons.org/publicdomain/zero/1.0/>.
- *
- * To the extent possible under law, dearblue has waived all copyright
- * and related or neighboring rights to this work.
- *
- *     dearblue <dearblue@users.noreply.github.com>
- */
-
 #ifndef MRBX_HASHARGS_H
 #define MRBX_HASHARGS_H 1
 

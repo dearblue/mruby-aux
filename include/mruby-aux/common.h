@@ -30,6 +30,11 @@
 #  define MRBX_FLOAT_MATN_DIG DBL_MANT_DIG
 # endif
 
+/* 与えられた N を浮動小数点数にした場合、桁落ちしていれば真を返す */
+/* NOTE: キャストしているのは負数シフトで報告される警告を避けるため */
+# define MRBX_FLOAT_OUT_OF_INTEGER_P(N) (!((N) < (1LL << MRBX_FLOAT_MATN_DIG) && (N) > (int64_t)((uint64_t)-1LL << MRBX_FLOAT_MATN_DIG)))
+#endif
+
 #include <mruby.h>
 
 #ifndef MRBX_INLINE
@@ -96,9 +101,6 @@
 # ifdef MRB_INT16
 #  define MRBX_SMALL_TARGET 1
 # endif
-#endif
-                                                                /* NOTE: キャストしているのは負数シフトで報告される警告を避けるため */
-# define MRBX_FLOAT_OUT_OF_INTEGER_P(N) (!((N) < (1LL << MRBX_FLOAT_MATN_DIG) && (N) > (int64_t)((uint64_t)-1LL << MRBX_FLOAT_MATN_DIG)))
 #endif
 
 #include "compat/object.h"

@@ -24,4 +24,8 @@ mrb_str_new_capa(mrb_state *mrb, size_t capa)
 }
 #endif
 
+#ifndef RSTR_END
+# define RSTR_END(S) (RSTR_PTR(S) + RSTR_LEN(S))
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_STRING_H */

@@ -4,6 +4,22 @@
 #include "compat/array.h"
 #include "compat/object.h"
 
+#ifdef MRB_WORD_BOXING
+# ifndef mrb_true_p
+#  define mrb_true_p(o)  ((o).w == MRB_Qtrue)
+# endif
+# ifndef mrb_false_p
+#  define mrb_false_p(o) ((o).w == MRB_Qfalse)
+# endif
+#else
+# ifndef mrb_true_p
+#  define mrb_true_p(o)  (mrb_type(o) == MRB_TT_TRUE)
+# endif
+# ifndef mrb_false_p
+#  define mrb_false_p(o) (mrb_type(o) == MRB_TT_FALSE && !!mrb_fixnum(o))
+# endif
+#endif
+
 MRBX_INLINE struct RObject *mrbx_ptr_to_ptr(mrb_state *mrb, void *p) { return (struct RObject *)p; }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, mrb_value o) { return mrb_immediate_p(o) ? NULL : mrb_obj_ptr(o); }
 
