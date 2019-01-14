@@ -1,6 +1,8 @@
-# mruby-aux - An auxiliary library for mruby
+# mruby-aux - An auxiliary C library for mruby
 
-mruby ライブラリを作成する際の補助関数などを集めたライブラリです。
+mruby ライブラリを作成する際の C の補助関数などを集めたライブラリです。
+
+また、mruby-1.2 から mruby-2.0 までのいくつかの非互換性部分を補うマクロ・関数を提供します。
 
 
 ## HOW TO USAGE
