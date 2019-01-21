@@ -37,6 +37,18 @@
 
 #include <mruby.h>
 
+#ifndef mrbx_restrict
+# ifdef mrb_restrict
+#  define mrbx_restrict mrb_restrict
+# elif defined(__GNUC__) || defined(__clang__)
+#  define mrbx_restrict __restrict__
+# elif defined _MSC_VER
+#  define mrbx_restrict __declspec(restrict)
+# else
+#  define mrbx_restrict __restrict
+# endif
+#endif
+
 #ifndef MRBX_INLINE
 # define MRBX_INLINE MRB_INLINE
 #endif
