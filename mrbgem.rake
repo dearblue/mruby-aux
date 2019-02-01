@@ -10,4 +10,13 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
   has_mrb_hash_foreach = File.read(File.join(MRUBY_ROOT, "include/mruby/hash.h")) =~ /\bmrb_hash_foreach\b/
 
   cc.defines << "MRUBY_AUX_NEED_HASH_FOREACH" unless has_mrb_hash_foreach
+
+  if s.build.test_enabled? || s.build.bintest_enabled?
+    s.bins = %w(
+      mruby-aux-test-mob-create-only
+      mruby-aux-test-mob-push
+      mruby-aux-test-mob-push-pop
+      mruby-aux-test-mob-mix
+    )
+  end
 end
