@@ -89,11 +89,42 @@ MRBX_SCANHASH(mrb, user_hash_object, mrb_nil_value(),
         MRBX_SCANHASH_ARG("d", &d, mrb_fixnum_value(5)));
 ```
 
+### mob ポインタマネージャオブジェクト API (mob ポインタ API)
+
+mruby の GC 対象外となる一般的なポインタを GC で回収・破棄させるための API です。
+
+[`mruby-aux/mobptr.h`](include/mruby-aux/mobptr.h) をインクルードすることによって利用可能です。
+
+```c
+#include <mruby-aux/mobptr.h>
+
+
+mrb_value mob = mrbx_mob_create(mrb);
+void *ptr = mrb_malloc(mrb, 12345);
+mrbx_mob_push(mrb, mob, ptr, mrb_free);
+
+...
+この区間で例外などの大域脱出が起きた場合、mob オブジェクトの破棄とともに ptr が開放される
+...
+
+mrbx_mob_free(mrb, mob, ptr); // 明示的に ptr を解放することも可能
+mrbx_mob_cleanup(mrb, mob);   // mob オブジェクトに結び付けられたポインタすべてを解放する (しなくても GC の時に開放される)
+```
+
+他の関数、使い方については [`mruby-aux/mobptr.h`](include/mruby-aux/mobptr.h) を見て下さい。
+
+実際に使ったテストコードについては以下を見て下さい。
+
+  - [`mruby-aux-test-mob-create-only`](tools/mruby-aux-test-mob-create-only/test.c)
+  - [`mruby-aux-test-mob-push`](tools/mruby-aux-test-mob-push/test.c)
+  - [`mruby-aux-test-mob-push-pop`](tools/mruby-aux-test-mob-push-pop/test.c)
+  - [`mruby-aux-test-mob-mix`](tools/mruby-aux-test-mob-mix/test.c)
+
 
 ## Specification
 
   * Package name: mruby-aux
-  * Version: 0.5.2
+  * Version: 0.6
   * Product quality: PROTOTYPE
   * Author: [dearblue](https://github.com/dearblue)
   * Project page: <https://github.com/dearblue/mruby-aux>
