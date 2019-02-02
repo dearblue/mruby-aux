@@ -206,18 +206,6 @@ findentry_common(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **
     return NULL;
 }
 
-static struct mob_entry *
-findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
-{
-    return findentry_common(mrb, mob, data, holder, 0);
-}
-
-static struct mob_entry *
-findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
-{
-    return findentry_common(mrb, mob, data, holder, 1);
-}
-
 static int
 mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree, int noraise)
 {
@@ -272,7 +260,7 @@ MRB_API mrbx_mob_free_f *
 mrbx_mob_pop(mrb_state *mrb, mrb_value mob, void *data)
 {
     struct mob_holder *holder;
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, &holder);
+    struct mob_entry *e = findentry_common(mrb, mob, data, &holder, 1);
 
     if (e) {
         mrbx_mob_free_f *dfree = e->dfree;
