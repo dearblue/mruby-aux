@@ -92,10 +92,19 @@ mrbx_mob_create(mrb_state *mrb)
 }
 
 static int
-mob_order(mrb_state *mrb, mrb_value mob, int order,
-        void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *),
-        void *(*callocator)(mrb_state *, size_t num, size_t len))
+mob_order(mrb_state *mrb, mrb_value mob, int order, int noraise)
 {
+    void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *);
+    void *(*allocator)(mrb_state *, size_t num, size_t len);
+
+    if (noraise) {
+        getdata = mrb_data_check_get_ptr;
+        allocator = aux_calloc_simple;
+    } else {
+        getdata = mrb_data_get_ptr;
+        allocator = mrb_calloc;
+    }
+
     struct mob_holder *s = (struct mob_holder *)getdata(mrb, mob, &mob_type);
     struct mob_holder *p = s;
 
@@ -116,7 +125,7 @@ mob_order(mrb_state *mrb, mrb_value mob, int order,
     }
 
     for (; order > 0; order -= MOB_ENTRIES) {
-        p = (struct mob_holder *)callocator(mrb, 1, sizeof(struct mob_holder));
+        p = (struct mob_holder *)allocator(mrb, 1, sizeof(struct mob_holder));
 
         if (p == NULL) return 1;
 
@@ -131,7 +140,7 @@ mob_order(mrb_state *mrb, mrb_value mob, int order,
 MRB_API int
 mrbx_mob_order(mrb_state *mrb, mrb_value mob, int order)
 {
-    mob_order(mrb, mob, order, mrb_data_get_ptr, mrb_calloc);
+    mob_order(mrb, mob, order, 0);
 
     return 0;
 }
@@ -139,7 +148,7 @@ mrbx_mob_order(mrb_state *mrb, mrb_value mob, int order)
 MRB_API int
 mrbx_mob_order_noraise(mrb_state *mrb, mrb_value mob, int order)
 {
-    return mob_order(mrb, mob, order, mrb_data_check_get_ptr, aux_calloc_simple);
+    return mob_order(mrb, mob, order, 1);
 }
 
 static void
