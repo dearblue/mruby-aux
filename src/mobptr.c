@@ -171,9 +171,11 @@ setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 }
 
 static struct mob_entry *
-findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
+findentry_common(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder, int noraise)
 {
-    struct mob_holder *p = (struct mob_holder *)mrb_data_check_get_ptr(mrb, mob, &mob_type);
+    void *(*getptr)(mrb_state *mrb, mrb_value, const mrb_data_type *) =
+        noraise ? mrb_data_check_get_ptr : mrb_data_get_ptr;
+    struct mob_holder *p = (struct mob_holder *)getptr(mrb, mob, &mob_type);
 
     if (holder) { *holder = NULL; }
 
@@ -198,11 +200,13 @@ findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder *
 static struct mob_entry *
 findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
 {
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, holder);
+    return findentry_common(mrb, mob, data, holder, 0);
+}
 
-    if (e == NULL) { mrb_data_check_type(mrb, mob, &mob_type); }
-
-    return e;
+static struct mob_entry *
+findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
+{
+    return findentry_common(mrb, mob, data, holder, 1);
 }
 
 static int
