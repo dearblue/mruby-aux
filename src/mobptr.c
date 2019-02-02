@@ -180,7 +180,7 @@ setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 }
 
 static struct mob_entry *
-findentry_common(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder, int noraise)
+findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder, int noraise)
 {
     void *(*getptr)(mrb_state *mrb, mrb_value, const mrb_data_type *) =
         noraise ? mrb_data_check_get_ptr : mrb_data_get_ptr;
@@ -211,7 +211,7 @@ mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree, int 
 {
     if (data == NULL || dfree == NULL) { return 1; }
 
-    struct mob_entry *e = findentry_common(mrb, mob, data, NULL, noraise);
+    struct mob_entry *e = findentry(mrb, mob, data, NULL, noraise);
 
     if (e) {
         e->data = data;
@@ -260,7 +260,7 @@ MRB_API mrbx_mob_free_f *
 mrbx_mob_pop(mrb_state *mrb, mrb_value mob, void *data)
 {
     struct mob_holder *holder;
-    struct mob_entry *e = findentry_common(mrb, mob, data, &holder, 1);
+    struct mob_entry *e = findentry(mrb, mob, data, &holder, 1);
 
     if (e) {
         mrbx_mob_free_f *dfree = e->dfree;
@@ -384,7 +384,7 @@ mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size, int noraise)
     void *(*allocator)(mrb_state *, void *, size_t) =
         noraise ? mrb_realloc_simple : mrb_realloc;
 
-    struct mob_entry *e = findentry_common(mrb, mob, data, NULL, noraise);
+    struct mob_entry *e = findentry(mrb, mob, data, NULL, noraise);
 
     if (e == NULL) {
         if (noraise) {
