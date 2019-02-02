@@ -219,19 +219,17 @@ findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder *
 }
 
 static int
-mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree,
-        struct mob_entry *(*findentry)(mrb_state *, mrb_value, void *, struct mob_holder **),
-        int (*mob_order)(mrb_state *, mrb_value, int))
+mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree, int noraise)
 {
     if (data == NULL || dfree == NULL) { return 1; }
 
-    struct mob_entry *e = findentry(mrb, mob, data, NULL);
+    struct mob_entry *e = findentry_common(mrb, mob, data, NULL, noraise);
 
     if (e) {
         e->data = data;
         e->dfree = dfree;
     } else {
-        if (mob_order(mrb, mob, 1) != 0) { return 1; }
+        if (mob_order(mrb, mob, 1, noraise) != 0) { return 1; }
 
         setentry(mob, data, dfree);
     }
@@ -242,13 +240,13 @@ mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree,
 MRB_API int
 mrbx_mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 {
-    return mob_push(mrb, mob, data, dfree, findentry, mrbx_mob_order);
+    return mob_push(mrb, mob, data, dfree, 0);
 }
 
 MRB_API int
 mrbx_mob_push_noraise(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 {
-    return mob_push(mrb, mob, data, dfree, findentry_noraise, mrbx_mob_order_noraise);
+    return mob_push(mrb, mob, data, dfree, 1);
 }
 
 static void
