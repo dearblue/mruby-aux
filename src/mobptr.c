@@ -377,30 +377,41 @@ mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
     return mob_calloc(mrb, mob, num, size, mrbx_mob_order_noraise, aux_calloc_simple);
 }
 
-MRB_API void *
-mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size)
+static void *
+mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size, int noraise,
+        struct mob_entry *findentry(mrb_state *, mrb_value, void *, struct mob_holder **),
+        void *allocator(mrb_state *, void *, size_t))
 {
     struct mob_entry *e = findentry(mrb, mob, data, NULL);
 
-    if (e == NULL) { mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer"); }
-    if (size < 1) { mrbx_mob_free(mrb, mob, data); return NULL; }
+    if (e == NULL) {
+        if (noraise) {
+            return NULL;
+        } else {
+            mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer");
+        }
+    }
 
-    e->data = mrb_realloc(mrb, data, size);
+    if (size < 1) {
+        mrbx_mob_free(mrb, mob, data);
+        return NULL;
+    }
 
-    return e->data;
+    void *p = allocator(mrb, data, size);
+
+    if (p) { e->data = p; }
+
+    return p;
+}
+
+MRB_API void *
+mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size)
+{
+    return mob_realloc(mrb, mob, data, size, 0, findentry, mrb_realloc);
 }
 
 MRB_API void *
 mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, NULL);
-
-    if (e == NULL) { return NULL; }
-    if (size < 1) { mrbx_mob_free(mrb, mob, data); return NULL; }
-
-    void *p = mrb_realloc_simple(mrb, data, size);
-
-    if (p) { e->data = p; }
-
-    return p;
+    return mob_realloc(mrb, mob, data, size, 1, findentry_noraise, mrb_realloc_simple);
 }
