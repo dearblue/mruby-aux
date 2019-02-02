@@ -353,16 +353,28 @@ mrbx_mob_malloc_simple(mrb_state *mrb, mrb_value mob, size_t size)
     return mob_malloc(mrb, mob, size, mrbx_mob_order_noraise, mrb_malloc_simple);
 }
 
-MRB_API void *
-mrbx_mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
+static void *
+mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size,
+        int mob_order(mrb_state *, mrb_value, int),
+        void *allocator(mrb_state *, size_t, size_t))
 {
-    if (size < 1) { return NULL; }
-
-    mrbx_mob_order(mrb, mob, 1);
-    void *p = mrb_calloc(mrb, num, size);
+    if (mob_order(mrb, mob, 1) != 0) { return NULL; }
+    void *p = allocator(mrb, num, size);
     setentry(mob, p, NULL);
 
     return p;
+}
+
+MRB_API void *
+mrbx_mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
+{
+    return mob_calloc(mrb, mob, num, size, mrbx_mob_order, mrb_calloc);
+}
+
+MRB_API void *
+mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
+{
+    return mob_calloc(mrb, mob, num, size, mrbx_mob_order_noraise, aux_calloc_simple);
 }
 
 MRB_API void *
@@ -376,19 +388,6 @@ mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size)
     e->data = mrb_realloc(mrb, data, size);
 
     return e->data;
-}
-
-MRB_API void *
-mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
-{
-    if (num < 1 || size < 1 || num > SIZE_MAX / size) { return NULL; }
-
-    size *= num;
-    void *p = mrbx_mob_malloc_simple(mrb, mob, size);
-
-    if (p) { memset(p, 0, size); }
-
-    return p;
 }
 
 MRB_API void *
