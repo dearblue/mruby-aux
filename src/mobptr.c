@@ -92,10 +92,19 @@ mrbx_mob_create(mrb_state *mrb)
 }
 
 static int
-mob_order(mrb_state *mrb, mrb_value mob, int order,
-        void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *),
-        void *(*callocator)(mrb_state *, size_t num, size_t len))
+mob_order(mrb_state *mrb, mrb_value mob, int order, int noraise)
 {
+    void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *);
+    void *(*allocator)(mrb_state *, size_t num, size_t len);
+
+    if (noraise) {
+        getdata = mrb_data_check_get_ptr;
+        allocator = aux_calloc_simple;
+    } else {
+        getdata = mrb_data_get_ptr;
+        allocator = mrb_calloc;
+    }
+
     struct mob_holder *s = (struct mob_holder *)getdata(mrb, mob, &mob_type);
     struct mob_holder *p = s;
 
@@ -116,7 +125,7 @@ mob_order(mrb_state *mrb, mrb_value mob, int order,
     }
 
     for (; order > 0; order -= MOB_ENTRIES) {
-        p = (struct mob_holder *)callocator(mrb, 1, sizeof(struct mob_holder));
+        p = (struct mob_holder *)allocator(mrb, 1, sizeof(struct mob_holder));
 
         if (p == NULL) return 1;
 
@@ -131,7 +140,7 @@ mob_order(mrb_state *mrb, mrb_value mob, int order,
 MRB_API int
 mrbx_mob_order(mrb_state *mrb, mrb_value mob, int order)
 {
-    mob_order(mrb, mob, order, mrb_data_get_ptr, mrb_calloc);
+    mob_order(mrb, mob, order, 0);
 
     return 0;
 }
@@ -139,7 +148,7 @@ mrbx_mob_order(mrb_state *mrb, mrb_value mob, int order)
 MRB_API int
 mrbx_mob_order_noraise(mrb_state *mrb, mrb_value mob, int order)
 {
-    return mob_order(mrb, mob, order, mrb_data_check_get_ptr, aux_calloc_simple);
+    return mob_order(mrb, mob, order, 1);
 }
 
 static void
@@ -171,9 +180,11 @@ setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 }
 
 static struct mob_entry *
-findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
+findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder, int noraise)
 {
-    struct mob_holder *p = (struct mob_holder *)mrb_data_check_get_ptr(mrb, mob, &mob_type);
+    void *(*getptr)(mrb_state *mrb, mrb_value, const mrb_data_type *) =
+        noraise ? mrb_data_check_get_ptr : mrb_data_get_ptr;
+    struct mob_holder *p = (struct mob_holder *)getptr(mrb, mob, &mob_type);
 
     if (holder) { *holder = NULL; }
 
@@ -195,30 +206,18 @@ findentry_noraise(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder *
     return NULL;
 }
 
-static struct mob_entry *
-findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder)
-{
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, holder);
-
-    if (e == NULL) { mrb_data_check_type(mrb, mob, &mob_type); }
-
-    return e;
-}
-
 static int
-mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree,
-        struct mob_entry *(*findentry)(mrb_state *, mrb_value, void *, struct mob_holder **),
-        int (*mob_order)(mrb_state *, mrb_value, int))
+mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree, int noraise)
 {
     if (data == NULL || dfree == NULL) { return 1; }
 
-    struct mob_entry *e = findentry(mrb, mob, data, NULL);
+    struct mob_entry *e = findentry(mrb, mob, data, NULL, noraise);
 
     if (e) {
         e->data = data;
         e->dfree = dfree;
     } else {
-        if (mob_order(mrb, mob, 1) != 0) { return 1; }
+        if (mob_order(mrb, mob, 1, noraise) != 0) { return 1; }
 
         setentry(mob, data, dfree);
     }
@@ -229,13 +228,13 @@ mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree,
 MRB_API int
 mrbx_mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 {
-    return mob_push(mrb, mob, data, dfree, findentry, mrbx_mob_order);
+    return mob_push(mrb, mob, data, dfree, 0);
 }
 
 MRB_API int
 mrbx_mob_push_noraise(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 {
-    return mob_push(mrb, mob, data, dfree, findentry_noraise, mrbx_mob_order_noraise);
+    return mob_push(mrb, mob, data, dfree, 1);
 }
 
 static void
@@ -261,7 +260,7 @@ MRB_API mrbx_mob_free_f *
 mrbx_mob_pop(mrb_state *mrb, mrb_value mob, void *data)
 {
     struct mob_holder *holder;
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, &holder);
+    struct mob_entry *e = findentry(mrb, mob, data, &holder, 1);
 
     if (e) {
         mrbx_mob_free_f *dfree = e->dfree;
@@ -329,13 +328,39 @@ mrbx_mob_cleanup(mrb_state *mrb, mrb_value mob)
     mrbx_mob_compact(mrb, mob);
 }
 
+static void *
+mob_malloc(mrb_state *mrb, mrb_value mob, size_t size, int noraise)
+{
+    void *(*allocator)(mrb_state *, size_t) =
+        noraise ? mrb_malloc_simple : mrb_malloc;
+
+    if (mob_order(mrb, mob, 1, noraise) != 0) { return NULL; }
+    void *p = allocator(mrb, size);
+    setentry(mob, p, NULL);
+
+    return p;
+}
+
 MRB_API void *
 mrbx_mob_malloc(mrb_state *mrb, mrb_value mob, size_t size)
 {
-    if (size < 1) { return NULL; }
+    return mob_malloc(mrb, mob, size, 0);
+}
 
-    mrbx_mob_order(mrb, mob, 1);
-    void *p = mrb_malloc(mrb, size);
+MRB_API void *
+mrbx_mob_malloc_simple(mrb_state *mrb, mrb_value mob, size_t size)
+{
+    return mob_malloc(mrb, mob, size, 1);
+}
+
+static void *
+mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size, int noraise)
+{
+    void *(*allocator)(mrb_state *, size_t, size_t) =
+        noraise ? aux_calloc_simple : mrb_calloc;
+
+    if (mob_order(mrb, mob, 1, noraise) != 0) { return NULL; }
+    void *p = allocator(mrb, num, size);
     setentry(mob, p, NULL);
 
     return p;
@@ -344,11 +369,39 @@ mrbx_mob_malloc(mrb_state *mrb, mrb_value mob, size_t size)
 MRB_API void *
 mrbx_mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
 {
-    if (size < 1) { return NULL; }
+    return mob_calloc(mrb, mob, num, size, 0);
+}
 
-    mrbx_mob_order(mrb, mob, 1);
-    void *p = mrb_calloc(mrb, num, size);
-    setentry(mob, p, NULL);
+MRB_API void *
+mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
+{
+    return mob_calloc(mrb, mob, num, size, 1);
+}
+
+static void *
+mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size, int noraise)
+{
+    void *(*allocator)(mrb_state *, void *, size_t) =
+        noraise ? mrb_realloc_simple : mrb_realloc;
+
+    struct mob_entry *e = findentry(mrb, mob, data, NULL, noraise);
+
+    if (e == NULL) {
+        if (noraise) {
+            return NULL;
+        } else {
+            mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer");
+        }
+    }
+
+    if (size < 1) {
+        mrbx_mob_free(mrb, mob, data);
+        return NULL;
+    }
+
+    void *p = allocator(mrb, data, size);
+
+    if (p) { e->data = p; }
 
     return p;
 }
@@ -356,53 +409,11 @@ mrbx_mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
 MRB_API void *
 mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-    struct mob_entry *e = findentry(mrb, mob, data, NULL);
-
-    if (e == NULL) { mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer"); }
-    if (size < 1) { mrbx_mob_free(mrb, mob, data); return NULL; }
-
-    e->data = mrb_realloc(mrb, data, size);
-
-    return e->data;
-}
-
-MRB_API void *
-mrbx_mob_malloc_simple(mrb_state *mrb, mrb_value mob, size_t size)
-{
-    if (size < 1) { return NULL; }
-    if (mrbx_mob_order_noraise(mrb, mob, 1) != 0) { return NULL; }
-
-    void *p = mrb_malloc_simple(mrb, size);
-
-    if (p) { setentry(mob, p, NULL); }
-
-    return p;
-}
-
-MRB_API void *
-mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
-{
-    if (num < 1 || size < 1 || num > SIZE_MAX / size) { return NULL; }
-
-    size *= num;
-    void *p = mrbx_mob_malloc_simple(mrb, mob, size);
-
-    if (p) { memset(p, 0, size); }
-
-    return p;
+    return mob_realloc(mrb, mob, data, size, 0);
 }
 
 MRB_API void *
 mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-    struct mob_entry *e = findentry_noraise(mrb, mob, data, NULL);
-
-    if (e == NULL) { return NULL; }
-    if (size < 1) { mrbx_mob_free(mrb, mob, data); return NULL; }
-
-    void *p = mrb_realloc_simple(mrb, data, size);
-
-    if (p) { e->data = p; }
-
-    return p;
+    return mob_realloc(mrb, mob, data, size, 1);
 }

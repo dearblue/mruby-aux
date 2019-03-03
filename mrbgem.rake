@@ -11,12 +11,14 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
 
   cc.defines << "MRUBY_AUX_NEED_HASH_FOREACH" unless has_mrb_hash_foreach
 
-  if s.build.test_enabled? || s.build.bintest_enabled?
-    s.bins = %w(
-      mruby-aux-test-mob-create-only
-      mruby-aux-test-mob-push
-      mruby-aux-test-mob-push-pop
-      mruby-aux-test-mob-mix
-    )
+  class << self
+    def include_testtools
+      self.bins = %w(
+        mruby-aux-test-mob-create-only
+        mruby-aux-test-mob-push
+        mruby-aux-test-mob-push-pop
+        mruby-aux-test-mob-mix
+      )
+    end
   end
 end
