@@ -18,7 +18,9 @@ MRuby::Build.new do |conf|
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mrbc"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    include_testtools
+  end
 end
 
 MRuby::Build.new("host64") do |conf|
@@ -35,7 +37,9 @@ MRuby::Build.new("host64") do |conf|
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mrbc"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    include_testtools
+  end
 end
 
 MRuby::Build.new("host16") do |conf|
@@ -52,7 +56,9 @@ MRuby::Build.new("host16") do |conf|
 
   gem core: "mruby-print"
   gem core: "mruby-bin-mrbc"
-  gem File.dirname(__FILE__)
+  gem File.dirname(__FILE__) do
+    include_testtools
+  end
 end
 
 if MRuby::Source::MRUBY_RELEASE_NO > 10200
@@ -71,6 +77,8 @@ if MRuby::Source::MRUBY_RELEASE_NO > 10200
 
     gem core: "mruby-print"
     gem core: "mruby-bin-mrbc"
-    gem File.dirname(__FILE__)
+    gem File.dirname(__FILE__) do
+      include_testtools
+    end
   end
 end

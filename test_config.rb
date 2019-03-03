@@ -18,6 +18,8 @@ MRuby::Build.new do |conf|
   gem core: "mruby-bin-mirb"
   gem core: "mruby-bin-mruby"
   gem File.dirname(__FILE__) do
+    include_testtools
+
     cc.flags << %w(-std=c11 -Wall -pedantic)
   end
 end
@@ -36,6 +38,8 @@ MRuby::Build.new("host64") do |conf|
   gem core: "mruby-bin-mrbc"
   gem core: "mruby-bin-mruby"
   gem File.dirname(__FILE__) do
+    include_testtools
+
     cc.flags << %w(-std=c11 -Wall -pedantic)
   end
 end
@@ -54,6 +58,8 @@ MRuby::Build.new("host16") do |conf|
   gem core: "mruby-bin-mrbc"
   gem core: "mruby-bin-mruby"
   gem File.dirname(__FILE__) do
+    include_testtools
+
     cc.flags << %w(-std=c11 -Wall -pedantic)
   end
 end
@@ -72,6 +78,8 @@ if MRuby::Source::MRUBY_RELEASE_NO >= 10300
     gem core: "mruby-bin-mirb"
     gem core: "mruby-bin-mruby"
     gem File.dirname(__FILE__) do
+      include_testtools
+
       stdcxx = (MRuby::Source::MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
 
       cc.flags << %W(-Wall -pedantic -std=#{stdcxx})
