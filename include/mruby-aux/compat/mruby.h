@@ -7,4 +7,8 @@
 MRB_API struct RClass *mrb_exc_get(mrb_state *mrb, const char *name);
 #endif
 
+#if MRUBY_RELEASE_NO < 20000
+MRB_API void mrb_undef_method_id(mrb_state *mrb, struct RClass *c, mrb_sym mid);
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_MRUBY_H */
