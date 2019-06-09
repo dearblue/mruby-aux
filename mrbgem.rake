@@ -1,6 +1,3 @@
-$LOAD_PATH << File.join(MRUBY_ROOT, "lib")
-require "mruby/source"
-
 MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.summary = "auxiliary library for mruby"
   version = File.read(File.join(File.dirname(__FILE__), "README.md")).scan(/^\s*[\-\*] version:\s*(\d+(?:\.\d+)+)/i).flatten[-1]
@@ -32,9 +29,5 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
     objfile File.join(build_dir, ff.pathmap("%X"))
   }.compact
 
-  libmruby_static = MRuby::Source::MRUBY_RELEASE_NO >= 20000 && build.libmruby_static
-  libmruby_static ||= build.libfile(File.join(build.build_dir, "lib/libmruby"))
-
-  file libmruby_static => auxobjs
   build.libmruby << auxobjs
 end
