@@ -1,6 +1,6 @@
 MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.summary = "auxiliary library for mruby"
-  version = File.read(File.join(File.dirname(__FILE__), "README.md")).scan(/^\s*[\-\*] version:\s*(\d+(?:\.\d+)+)/i).flatten[-1]
+  version = File.read(File.join(__dir__, "README.md")).scan(/^\s*[\-\*] version:\s*(\d+(?:\.\d+)+)/i).flatten[-1]
   s.version = version if version
   s.license = "CC0"
   s.author  = "dearblue"
