@@ -417,3 +417,15 @@ mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
     return mob_realloc(mrb, mob, data, size, 1);
 }
+
+MRB_API void *
+mrbx_mob_reallocf_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
+{
+    void *newdata = mrbx_mob_realloc_simple(mrb, mob, data, size);
+
+    if (newdata == NULL && data && size > 0) {
+        mrbx_mob_free(mrb, mob, data);
+    }
+
+    return newdata;
+}
