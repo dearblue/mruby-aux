@@ -2,6 +2,7 @@
 #define MRUBY_AUX_H 1
 
 #include "mruby-aux/common.h"
+#include "mruby-aux/compat/mruby.h"
 #include "mruby-aux/object.h"
 #include "mruby-aux/array.h"
 #include "mruby-aux/string.h"
