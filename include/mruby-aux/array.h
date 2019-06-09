@@ -42,4 +42,9 @@ MRBX_INLINE struct RArray *mrbx_ary_ptr(mrb_state *mrb, struct RArray *p) { retu
 #define MRBX_JOIN(SEP, ...)                                                 \
         mrb_ary_join(mrb, MRBX_TUPLE(__VA_ARGS__), mrb_value(RString(SEP)))
 
+MRB_API void mrbx_ary_set_len(mrb_state *mrb, struct RArray *ary, mrb_int new_len);
+MRB_API mrb_value mrbx_ary_delete(mrb_state *mrb, struct RArray *ary, mrb_value obj);
+MRB_API mrb_value mrbx_ary_delete_at(mrb_state *mrb, struct RArray *ary, mrb_int idx);
+MRB_API mrb_value mrbx_ary_delete_once(mrb_state *mrb, struct RArray *ary, mrb_value obj);
+
 #endif /* MRUBY_AUX_ARRAY_H */
