@@ -5,6 +5,7 @@
 #include <mruby.h>
 #include <mruby/variable.h>
 #include <mruby/class.h>
+#include "compat/proc.h"
 
 MRBX_INLINE int
 mrbx_namespace_p(mrb_value v)
@@ -93,5 +94,8 @@ mrbx_dig_const(mrb_state *mrb, struct RClass *outer, int numname, const mrb_sym 
 
 #define MRBX_DIG_CONST(MRB, TOP, ...)                                       \
         mrbx_dig_const(MRB, TOP, MRBX_LIST(const mrb_sym, __VA_ARGS__))     \
+
+MRB_API mrb_value mrbx_proc_from_method(mrb_state *mrb, mrb_method_t m);
+MRB_API mrb_value mrbx_yield_super(mrb_state *mrb, mrb_value self, mrb_int argc, const mrb_value *argv, struct RClass **c);
 
 #endif /* MRUBY_AUX_CLASS_H */
