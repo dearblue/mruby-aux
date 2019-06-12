@@ -9,6 +9,7 @@ MRB_API struct RClass *mrb_exc_get(mrb_state *mrb, const char *name);
 
 #if MRUBY_RELEASE_NO < 20000
 MRB_API void mrb_undef_method_id(mrb_state *mrb, struct RClass *c, mrb_sym mid);
+MRB_API mrb_value mrb_to_str(mrb_state *mrb, mrb_value obj);
 #endif
 
 #if MRUBY_RELEASE_NO < 20001
