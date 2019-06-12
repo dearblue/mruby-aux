@@ -31,6 +31,10 @@ typedef struct RProc *mrb_method_t;
 # define MRB_METHOD_UNDEF_P(M)      ((M) == NULL)
 # define MRB_METHOD_CFUNC_P(M)      (MRB_PROC_CFUNC_P(M))
 # define MRB_METHOD_CFUNC(M)        (MRB_PROC_CFUNC_P(M) ? (M)->body.func : NULL)
+
+# ifndef MRB_PROC_SET_TARGET_CLASS
+#  define MRB_PROC_SET_TARGET_CLASS(PROC, CLASS) ((PROC)->target_class = (CLASS))
+# endif
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */
