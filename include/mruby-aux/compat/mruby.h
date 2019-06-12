@@ -11,4 +11,8 @@ MRB_API struct RClass *mrb_exc_get(mrb_state *mrb, const char *name);
 MRB_API void mrb_undef_method_id(mrb_state *mrb, struct RClass *c, mrb_sym mid);
 #endif
 
+#if MRUBY_RELEASE_NO < 20001
+MRB_API void mrb_notimplement(mrb_state *mrb);
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_MRUBY_H */
