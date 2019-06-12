@@ -24,15 +24,7 @@ struct RProc;
 struct RRange;
 struct RString;
 
-MRBX_INLINE uint32_t
-MRB_SET_FROZEN_FLAG(struct RObject *o)
-{
-    if (o->tt == MRB_TT_STRING) {
-        return RSTR_SET_FROZEN_FLAG(o);
-    } else {
-        return o->flags;
-    }
-}
+# define MRB_SET_FROZEN_FLAG(O) ((O)->tt == MRB_TT_STRING ? RSTR_SET_FROZEN_FLAG(O) : (O)->flags)
 
 MRBX_INLINE mrb_bool mrbx_false_always(void *p) { return FALSE; }
 MRBX_INLINE mrb_bool mrbx_rstr_frozen_p(struct RString *p) { return RSTR_FROZEN_P(p); }
