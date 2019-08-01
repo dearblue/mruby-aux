@@ -4,6 +4,24 @@
 #include <mruby.h>
 #include <mruby/numeric.h>
 
+/*
+ * Convert to Fixnum/Float from int32_t/uint32_t/int64_t/uint64_t.
+ * If the value is out of range, raises `RangeError` exception.
+ */
+MRB_API mrb_value mrbx_num_from_int32(mrb_state *mrb, int32_t n);
+MRB_API mrb_value mrbx_num_from_uint32(mrb_state *mrb, uint32_t n);
+MRB_API mrb_value mrbx_num_from_int64(mrb_state *mrb, int64_t n);
+MRB_API mrb_value mrbx_num_from_uint64(mrb_state *mrb, uint64_t n);
+
+/*
+ * Convert to Fixnum/Float from int32_t/uint32_t/int64_t/uint64_t.
+ * If the value is out of range or insufficient precision, raises `RangeError` exception.
+ */
+MRB_API mrb_value mrbx_num_from_int32_explicit(mrb_state *mrb, int32_t n);
+MRB_API mrb_value mrbx_num_from_uint32_explicit(mrb_state *mrb, uint32_t n);
+MRB_API mrb_value mrbx_num_from_int64_explicit(mrb_state *mrb, int64_t n);
+MRB_API mrb_value mrbx_num_from_uint64_explicit(mrb_state *mrb, uint64_t n);
+
 #ifndef MRB_WITHOUT_FLOAT
 # include <stdint.h>
 # include <float.h>
