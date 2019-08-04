@@ -5,22 +5,27 @@
 #include <mruby/numeric.h>
 
 /*
- * Convert to Fixnum/Float from int32_t/uint32_t/int64_t/uint64_t.
- * If the value is out of range, raises `RangeError` exception.
+ * Decide the behavior in case of lack of numerical precision
  */
-MRB_API mrb_value mrbx_num_from_int32(mrb_state *mrb, int32_t n);
-MRB_API mrb_value mrbx_num_from_uint32(mrb_state *mrb, uint32_t n);
-MRB_API mrb_value mrbx_num_from_int64(mrb_state *mrb, int64_t n);
-MRB_API mrb_value mrbx_num_from_uint64(mrb_state *mrb, uint64_t n);
+enum mrbx_num_behavior {
+  /* Raise a RangeError exception */
+  MRBX_NUM_RAISE = 0,
+
+  /* Return nil instead of numeric */
+  MRBX_NUM_RETURN_NIL = 1,
+
+  /* Use lower bits of value */
+  MRBX_NUM_USE_LOWER_BIT = 2,
+
+  /* Force convert to Float; same as MRBX_NUM_USE_LOWER_BIT with MRB_WITHOUT_FLOAT */
+  MRBX_NUM_DROP_PRECISION = 3,
+};
 
 /*
- * Convert to Fixnum/Float from int32_t/uint32_t/int64_t/uint64_t.
- * If the value is out of range or insufficient precision, raises `RangeError` exception.
+ * Convert to Fixnum/Float from int64_t/uint64_t.
  */
-MRB_API mrb_value mrbx_num_from_int32_explicit(mrb_state *mrb, int32_t n);
-MRB_API mrb_value mrbx_num_from_uint32_explicit(mrb_state *mrb, uint32_t n);
-MRB_API mrb_value mrbx_num_from_int64_explicit(mrb_state *mrb, int64_t n);
-MRB_API mrb_value mrbx_num_from_uint64_explicit(mrb_state *mrb, uint64_t n);
+MRB_API mrb_value mrbx_num_from_int64(mrb_state *mrb, int64_t n, enum mrbx_num_behavior behavior);
+MRB_API mrb_value mrbx_num_from_uint64(mrb_state *mrb, uint64_t n, enum mrbx_num_behavior behavior);
 
 #ifndef MRB_WITHOUT_FLOAT
 # include <stdint.h>
