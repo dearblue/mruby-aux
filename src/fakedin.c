@@ -4,6 +4,9 @@
 #include <mruby/variable.h>
 #include <mruby/data.h>
 
+#define id_iv_stream_private mrb_intern_lit(mrb, "input stream@mruby-aux")
+#define id_iv_buffer_private mrb_intern_lit(mrb, "input buffer@mruby-aux")
+
 struct fakedin
 {
   /* 読み込み対象 */
@@ -48,30 +51,20 @@ fakedin_string_p(const struct fakedin *p)
   return (mrb_bool)(p->selector < 0 ? TRUE : FALSE);
 }
 
-static void
-fakedin_free(mrb_state *mrb, void *ptr)
-{
-  if (ptr) {
-    struct fakedin *p = (struct fakedin *)ptr;
-    mrb_gc_unregister(mrb, p->stream);
-    if (fakedin_string_p(p)) {
-      mrb_gc_unregister(mrb, mrb_obj_value(p->read.buf));
-    }
-  }
-}
-
-static const mrb_data_type fakedin_type = { "faked-in@mruby-aux", fakedin_free };
+static const mrb_data_type fakedin_type = { "faked-in@mruby-aux", mrb_free };
 
 MRB_API mrb_value
 mrbx_fakedin_new(mrb_state *mrb, mrb_value stream)
 {
   struct RData *d = mrb_data_object_alloc(mrb, mrb->object_class, NULL, &fakedin_type);
   struct fakedin *input = (struct fakedin *)mrb_calloc(mrb, 1, sizeof(struct fakedin));
+  mrb_value fake = mrb_obj_value(d);
 
   d->data = input;
-  mrb_gc_register(mrb, stream);
   input->stream = stream;
   input->off = 0;
+
+  mrb_iv_set(mrb, fake, id_iv_stream_private, stream);
 
   if (mrb_string_p(stream)) {
     input->string.buf = RSTRING(stream);
@@ -81,7 +74,7 @@ mrbx_fakedin_new(mrb_state *mrb, mrb_value stream)
     input->selector = 0;
   }
 
-  return mrb_obj_value(d);
+  return fake;
 }
 
 static struct fakedin *
@@ -126,14 +119,14 @@ mrbx_fakedin_read_from_stream_read(mrb_state *mrb, struct fakedin *input, mrb_in
 }
 
 static mrb_int
-mrbx_fakedin_read_from_stream(mrb_state *mrb, struct fakedin *input, const char **buf, mrb_int size)
+mrbx_fakedin_read_from_stream(mrb_state *mrb, mrb_value fake, struct fakedin *input, const char **buf, mrb_int size)
 {
   if (!input->read.buf) {
     mrb_value bufobj = mrb_str_buf_new(mrb, size);
-    mrb_gc_register(mrb, bufobj);
     input->read.off = 0;
     input->read.buf = RSTRING(bufobj);
     RSTR_SET_LEN(input->read.buf, 0);
+    mrb_iv_set(mrb, fake, id_iv_buffer_private, mrb_obj_value(input->read.buf));
   }
 
   int ai = mrb_gc_arena_save(mrb);
@@ -171,7 +164,7 @@ mrbx_fakedin_read_from_stream(mrb_state *mrb, struct fakedin *input, const char 
 }
 
 static mrb_int
-mrbx_fakedin_read_from_string(mrb_state *mrb, struct fakedin *input, const char **buf, mrb_int size)
+mrbx_fakedin_read_from_string(mrb_state *mrb, mrb_value fake, struct fakedin *input, const char **buf, mrb_int size)
 {
   const mrb_int len = RSTR_LEN(input->string.buf);
 
@@ -203,9 +196,9 @@ mrbx_fakedin_read(mrb_state *mrb, mrb_value fakedin, const char **buf, mrb_int s
   if (input->off < 0) { *buf = NULL; return -1; }
 
   if (fakedin_string_p(input)) {
-    return mrbx_fakedin_read_from_string(mrb, input, buf, size);
+    return mrbx_fakedin_read_from_string(mrb, fakedin, input, buf, size);
   } else {
-    return mrbx_fakedin_read_from_stream(mrb, input, buf, size);
+    return mrbx_fakedin_read_from_stream(mrb, fakedin, input, buf, size);
   }
 }
 
