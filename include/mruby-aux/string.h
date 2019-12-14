@@ -271,6 +271,11 @@ MRB_API char *mrbx_cstr_HEXDIGEST(char buf[], uint64_t n, int bytesize);
 MRB_API struct RString *mrbx_str_new_as_hexdigest(mrb_state *mrb, uint64_t n, int bytesize);
 MRB_API struct RString *mrbx_str_new_as_HEXDIGEST(mrb_state *mrb, uint64_t n, int bytesize);
 
+/*
+ * len が0未満の場合、str から長さを取得します。
+ */
+MRB_API mrb_value mrbx_str_new_static(mrb_state *mrb, const char *str, intptr_t len);
+
 MRB_END_DECL
 
 #include "string/growup.h"
