@@ -124,7 +124,7 @@ mrbx_mob_cleanup(mrb, mob);   // mob オブジェクトに結び付けられた�
 ## Specification
 
   * Package name: mruby-aux
-  * Version: 0.6.1
+  * Version: 0.7
   * Product quality: PROTOTYPE
   * Author: [dearblue](https://github.com/dearblue)
   * Project page: <https://github.com/dearblue/mruby-aux>
