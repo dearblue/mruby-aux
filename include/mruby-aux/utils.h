@@ -3,6 +3,7 @@
 
 #include "common.h"
 #include "array.h"
+#include "compat/mruby.h"
 #include <mruby.h>
 #include <mruby/value.h>
 #include <mruby/data.h>
@@ -112,7 +113,7 @@ MRBX_INLINE const char *
 mrbx_get_const_cstr_from_value(mrb_state *mrb, mrb_value v)
 {
     if (mrb_symbol_p(v)) {
-        return mrb_sym2name(mrb, mrb_symbol(v));
+        return mrb_sym_name(mrb, mrb_symbol(v));
     } else if (mrb_string_p(v)) {
         return mrb_str_to_cstr(mrb, v);
     }
@@ -140,7 +141,7 @@ mrbx_get_const_cstr_from_string(mrb_state *mrb, struct RString *str)
 
 MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { return mrbx_get_const_cstr_from_value(mrb, v); }
 MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return mrbx_get_const_cstr_from_string(mrb, str); }
-MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym2name(mrb, sym); }
+MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym_name(mrb, sym); }
 
 #else
 
@@ -148,7 +149,7 @@ MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { retur
         _Generic((V),                                                       \
                  mrb_value:         mrbx_get_const_cstr_from_value,         \
                  struct RString *:  mrbx_get_const_cstr_from_string,        \
-                 mrb_sym:           mrb_sym2name)                           \
+                 mrb_sym:           mrb_sym_name)                           \
             (MRB, V)                                                        \
 
 #endif
