@@ -82,8 +82,8 @@ MRB_API mrb_value mrbx_num_from_uint64(mrb_state *mrb, uint64_t n, enum mrbx_num
 # endif /* MRB_USE_FLOAT */
 
 /* Maximum/minimum real number that can keeps integer precision */
-# define MRBX_FLT_INT_MIN       (INT64_C(-1) << MRBX_FLT_MANT_DIG)
-# define MRBX_FLT_INT_MAX       (INT64_C(+1) << MRBX_FLT_MANT_DIG)
+# define MRBX_FLT_INT_MIN       ((int64_t)((uint64_t)-1 << MRBX_FLT_MANT_DIG))
+# define MRBX_FLT_INT_MAX       ((int64_t)((uint64_t)+1 << MRBX_FLT_MANT_DIG))
 #endif /* MRB_WITHOUT_FLOAT */
 
 #endif /* MRUBY_AUX_NUMERIC_H */
