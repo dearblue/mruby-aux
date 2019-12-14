@@ -1,7 +1,6 @@
 #include <mruby.h>
 
-#ifdef MRUBY_AUX_NEED_HASH_FOREACH
-/* #if MRUBY_RELEASE_NO < 20000 */
+#if MRUBY_RELEASE_NO < 20001
 
 #include <mruby-aux/compat/hash.h>
 

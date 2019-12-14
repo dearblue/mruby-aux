@@ -135,10 +135,13 @@ MRB_API void *mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *ptr, size_t 
  *
  * ポインタが得られない場合や、結びつけのための内部領域の確保に失敗した場合は、NULL を返します。
  *
- * `mrbx_mob_realloc_simple()` は指定ポインタが mob オブジェクトに結び付けられていない場合、NULL を返します。
+ * `mrbx_mob_realloc_simple()` と `mrbx_mob_reallocf_simple()` は、指定ポインタが mob オブジェクトに結び付けられていない場合、NULL を返します。
+ *
+ * `mrbx_mob_reallocf_simple()` は、ヒープの再確保に失敗した場合に `ptr` を開放して NULL を返します。
  */
 MRB_API void *mrbx_mob_malloc_simple(mrb_state *mrb, mrb_value mob, size_t size);
 MRB_API void *mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size);
 MRB_API void *mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t size);
+MRB_API void *mrbx_mob_reallocf_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t size);
 
 #endif /* MRUBY_AUX_MOBPTR_H */

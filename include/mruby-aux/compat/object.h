@@ -24,32 +24,26 @@ struct RProc;
 struct RRange;
 struct RString;
 
-MRBX_INLINE uint32_t
-MRB_SET_FROZEN_FLAG(struct RObject *o)
-{
-    if (o->tt == MRB_TT_STRING) {
-        return RSTR_SET_FROZEN_FLAG(o);
-    } else {
-        return o->flags;
-    }
-}
+# define MRB_SET_FROZEN_FLAG(O) ((O)->tt == MRB_TT_STRING ? RSTR_SET_FROZEN_FLAG(O) : (O)->flags)
 
 MRBX_INLINE mrb_bool mrbx_false_always(void *p) { return FALSE; }
 MRBX_INLINE mrb_bool mrbx_rstr_frozen_p(struct RString *p) { return RSTR_FROZEN_P(p); }
+MRBX_INLINE mrb_bool mrbx_rbasic_frozen_p(struct RBasic *p) { return (p->tt == MRB_TT_STRING ? mrbx_rstr_frozen_p((struct RString *)p) : FALSE); }
+MRBX_INLINE mrb_bool mrbx_robj_frozen_p(struct RObject *p) { return mrbx_rbasic_frozen_p((struct RBasic *)p); }
 
 # ifdef __cplusplus
 
 #  define MRB_FROZEN_P(O)   mrbx_frozen_p(O)
 
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RArray *p) { return mrbx_false_always((void *)p); }
-MRBX_INLINE mrb_bool mrbx_frozen_p(struct RBasic *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RBasic *p) { return mrbx_rbasic_frozen_p(p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RClass *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RData *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct REnv *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RException *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RFiber *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RHash *p) { return mrbx_false_always((void *)p); }
-MRBX_INLINE mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_robj_frozen_p(p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
@@ -58,8 +52,8 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 
 #  define MRB_FROZEN_P(O)                                                   \
        _Generic((O),                                                        \
-                struct RBasic *:       mrbx_false_always,                   \
-                struct RObject *:      mrbx_false_always,                   \
+                struct RBasic *:       mrbx_rbasic_frozen_p,                \
+                struct RObject *:      mrbx_robj_frozen_p,                  \
                 struct RClass *:       mrbx_false_always,                   \
                 struct RArray *:       mrbx_false_always,                   \
                 struct RData *:        mrbx_false_always,                   \

@@ -23,4 +23,8 @@
 #   define RARY_LEN(A)  ARY_LEN((A))
 #endif
 
+#ifndef ARY_SET_LEN
+#   define ARY_SET_LEN(A, L) ((A)->len = (L))
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_ARRAY_H */
