@@ -8,6 +8,10 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
 
   add_dependency "mruby-error", core: "mruby-error"
 
+  if !build.cxx_abi_enabled? && cc.command =~ /\b(?:g?cc|clang)\d*\b/
+    cc.flags << %w(-Wno-declaration-after-statement)
+  end
+
   class << self
     def include_testtools
       self.bins = %w(
