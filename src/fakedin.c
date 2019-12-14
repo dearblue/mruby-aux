@@ -221,3 +221,11 @@ mrbx_fakedin_total_in(mrb_state *mrb, mrb_value fakedin)
     return input->off;
   }
 }
+
+MRB_API mrb_value
+mrbx_fakedin_stream(mrb_state *mrb, mrb_value fakedin)
+{
+  struct fakedin *input = get_fakedin(mrb, fakedin);
+
+  return input->stream;
+}
