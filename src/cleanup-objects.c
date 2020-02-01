@@ -1,13 +1,6 @@
 #include <mruby-aux/utils.h>
 #include <mruby.h>
-#include <mruby/gc.h>
-
-#if MRUBY_RELEASE_NO < 10300
-typedef void mrb_objspace_each_objects_ret;
-# define MRB_EACH_OBJ_OK
-#else
-typedef int mrb_objspace_each_objects_ret;
-#endif
+#include <mruby-aux/compat/gc.h>
 
 struct mrbx_cleanup_data_objects
 {
@@ -15,7 +8,7 @@ struct mrbx_cleanup_data_objects
     const struct mrb_data_type **types;
 };
 
-static mrb_objspace_each_objects_ret
+static mrbx_objspace_each_objects_ret
 cleanup_objects(mrb_state *mrb, struct RBasic *o, void *p)
 {
     struct RData *d = (struct RData *)o;

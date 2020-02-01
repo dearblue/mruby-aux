@@ -8,6 +8,7 @@
 #include <mruby/value.h>
 #include <mruby/data.h>
 #include <mruby/string.h>
+#include <mruby/gc.h>
 
 #define IMPLEMENT_ME                                                        \
         mrb_raisef(mrb, E_NOTIMP_ERROR,                                     \
