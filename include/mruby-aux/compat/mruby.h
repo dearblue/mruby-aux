@@ -30,4 +30,8 @@ mrb_sym_name_len(mrb_state *mrb, mrb_sym sym, mrb_int *len)
 }
 #endif
 
+#if MRUBY_RELEASE_NO < 10300
+# define MRB_FIBER_RESUMED  MRB_FIBER_RESUMING
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_MRUBY_H */
