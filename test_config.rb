@@ -44,26 +44,6 @@ MRuby::Build.new("host64") do |conf|
   end
 end
 
-MRuby::Build.new("host16") do |conf|
-  toolchain :clang
-
-  conf.build_dir = conf.name
-
-  enable_test
-  enable_debug
-
-  cc.defines = %w(MRB_INT16)
-
-  gem core: "mruby-print"
-  gem core: "mruby-bin-mrbc"
-  gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__) do
-    include_testtools
-
-    cc.flags << %w(-std=c11 -Wall -pedantic)
-  end
-end
-
 if MRuby::Source::MRUBY_RELEASE_NO >= 10300
   MRuby::Build.new("host++") do |conf|
     toolchain :clang

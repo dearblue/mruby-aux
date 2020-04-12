@@ -13,18 +13,7 @@ typedef struct RProc *mrb_method_t;
 
 # define MRB_METHOD_FUNC_P(M)       (FALSE)
 # define MRB_METHOD_FUNC(M)         (NULL)
-
-# define MRB_METHOD_FROM_FUNC(M, F)                               \
-  do {                                                            \
-    mrb_bug(mrb, "[%S:%S:%S] "                                    \
-                 "Not available this mruby version! "             \
-                 "Use `mrb_proc_new_cfunc()` instead "            \
-                 "of `MRB_METHOD_FROM_FUNC()`.",                  \
-            mrb_str_new_lit(mrb, __FILE__),                       \
-            mrb_fixnum_value(mrb, __LINE__),                      \
-            mrb_str_new_static(mrb, __func__, strlen(__func__))); \
-  } while (0)                                                     \
-
+# define MRB_METHOD_FROM_FUNC(M, F) do { (M) = mrb_proc_new_cfunc(mrb, F); } while (0)
 # define MRB_METHOD_FROM_PROC(M, P) do { (M) = (P); } while (0)
 # define MRB_METHOD_PROC_P(M)       (TRUE)
 # define MRB_METHOD_PROC(M)         (M)
