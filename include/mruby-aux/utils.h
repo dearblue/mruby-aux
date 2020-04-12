@@ -182,6 +182,12 @@ MRB_BEGIN_DECL
 MRB_API void mrbx_cleanup_data_objects(mrb_state *mrb, int num, const struct mrb_data_type *types[]);
 MRB_API void mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **dest);
 
+/**
+ * `mrb_cptr_value()` のラッパー関数です。
+ * オブジェクトの確保に失敗した時は例外を発生させず、`mrb_nil_value()` を返します。
+ */
+MRB_API mrb_value mrbx_cptr_value(mrb_state *mrb, void *ptr);
+
 MRB_END_DECL
 
 #endif /* MRUBY_AUX_UTILS_H */
