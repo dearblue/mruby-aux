@@ -1,69 +1,99 @@
 #ruby
 
-$: << File.join(MRUBY_ROOT, "lib") # for mruby-1.3 or older
+begin
+  require "mruby/source"
+rescue LoadError
+  $: << File.join(MRUBY_ROOT, "lib") # for mruby-1.3 or older
+  require "mruby/source"
+end
 
-require "mruby/source"
+require "yaml"
 
-MRuby::Build.new do |conf|
-  toolchain :clang
+module Internals
+  refine Hash do
+    def boxnan?
+      [*self["defines"]].include?("MRB_NAN_BOXING")
+    end
 
-  conf.build_dir = "host32"
-
-  enable_test
-  enable_debug
-
-  cc.defines = %w(MRB_INT32)
-
-  gem core: "mruby-print"
-  gem core: "mruby-bin-mirb"
-  gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__) do
-    include_testtools
-
-    cc.flags << %w(-std=c11 -Wall -pedantic)
+    def cxxabi?
+      !!self["c++abi"]
+    end
   end
 end
 
-MRuby::Build.new("host64") do |conf|
-  toolchain :clang
+using Internals
 
-  conf.build_dir = conf.name
+config = YAML.load <<'YAML'
+  common:
+    gems:
+    - :core: "mruby-sprintf"
+    - :core: "mruby-print"
+    - :core: "mruby-bin-mirb"
+    - :core: "mruby-bin-mruby"
+    - :core: "mruby-bin-mrbc"
+  builds:
+    host:
+      defines: MRB_INT64
+      gems:
+      - :core: "mruby-fiber"
+    host-int32:
+      defines: MRB_INT32
+    host-nan:
+      defines: MRB_NAN_BOXING
+    host-word:
+      defines: MRB_WORD_BOXING
+    host++-nan:
+      defines: MRB_NAN_BOXING
+      c++abi: true
+    host++-word:
+      defines: MRB_WORD_BOXING
+      c++abi: true
+    host32:
+      defines: MRB_INT64
+      flags: -m32
+    host32-int32:
+      defines: MRB_INT32
+      flags: -m32
+    host32-nan:
+      defines: MRB_NAN_BOXING
+      flags: -m32
+    host32-word:
+      defines: MRB_WORD_BOXING
+      flags: -m32
+YAML
 
-  enable_test
-  enable_debug
+config["builds"].each_pair do |n, c|
+  next if (c.boxnan? || c.cxxabi?) && MRuby::Source::MRUBY_RELEASE_NO < 10300
+  next if (c.boxnan?) && MRuby::Source::MRUBY_RELEASE_NO == 20001
 
-  cc.defines = %w(MRB_INT64)
-
-  gem core: "mruby-print"
-  gem core: "mruby-bin-mrbc"
-  gem core: "mruby-bin-mruby"
-  gem File.dirname(__FILE__) do
-    include_testtools
-
-    cc.flags << %w(-std=c11 -Wall -pedantic)
-  end
-end
-
-if MRuby::Source::MRUBY_RELEASE_NO >= 10300
-  MRuby::Build.new("host++") do |conf|
+  MRuby::Build.new(n) do |conf|
     toolchain :clang
 
-    conf.build_dir = conf.name
+    conf.build_dir = File.join("build", c["build_dir"] || name)
 
-    enable_test
     enable_debug
-    enable_cxx_abi
+    enable_test
+    enable_cxx_abi if c["c++abi"]
 
-    gem core: "mruby-print"
-    gem core: "mruby-bin-mirb"
-    gem core: "mruby-bin-mruby"
-    gem File.dirname(__FILE__) do
+    cc.defines << [*c["defines"]] << [*c["cdefines"]]
+    cxx.defines << [*c["defines"]] << [*c["c++defines"]]
+    cc.flags << [*c["flags"]] << [*c["cflags"]]
+    cxx.flags << [*c["flags"]] << [*c["c++flags"]]
+    linker.flags << [*c["flags"]] << [*c["ldflags"]]
+
+    Array(config.dig("common", "gems")).each { |*g| gem *g }
+    Array(c["gems"]).each { |*g| gem *g }
+
+    gem core: "mruby-io" if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+
+    gem __dir__ do |g|
       include_testtools
 
-      stdcxx = (MRuby::Source::MRUBY_RELEASE_NO < 10400 ? "c++11" : "c++1z")
-
-      cc.flags << %W(-Wall -pedantic -std=#{stdcxx})
-      cxx.flags << "-std=#{stdcxx}"
+      if g.cc.command =~ /\\b(?:g?cc|clang)\\d*\\b/
+        g.cc.flags << "-std=c11" unless c["c++abi"]
+        g.cc.flags << "-pedantic"
+        g.cc.flags << "-Wall"
+      end
     end
   end
 end
