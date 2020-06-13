@@ -128,4 +128,6 @@ struct mrbx_implant_value
 #define MRBX_TRUE_VALUE()       MRBX_IMPLANT_VALUE(MRB_TT_TRUE, 1)
 #define MRBX_FIXNUM_VALUE(N)    MRBX_IMPLANT_VALUE(MRB_TT_FIXNUM, N)
 
+MRB_API const char *mrbx_typename(enum mrb_vtype tt);
+
 #endif /* MRUBY_AUX_VALUE_H */
