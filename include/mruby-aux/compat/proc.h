@@ -24,6 +24,10 @@ typedef struct RProc *mrb_method_t;
 # ifndef MRB_PROC_SET_TARGET_CLASS
 #  define MRB_PROC_SET_TARGET_CLASS(PROC, CLASS) ((PROC)->target_class = (CLASS))
 # endif
+
+# define MRBX_PROC_CFUNC(P)         ((P)->body.func)
+#else
+# define MRBX_PROC_CFUNC(P)         MRB_PROC_CFUNC(P)
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */
