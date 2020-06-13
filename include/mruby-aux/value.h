@@ -2,6 +2,7 @@
 #define MRUBY_AUX_VALUE_H 1
 
 #include "common.h"
+#include "compat/value.h"
 
 /* The implant immediate values */
 
