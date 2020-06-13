@@ -12,7 +12,7 @@
 typedef struct RProc *mrb_method_t;
 
 # define MRB_METHOD_FUNC_P(M)       (FALSE)
-# define MRB_METHOD_FUNC(M)         (NULL)
+# define MRB_METHOD_FUNC(M)         ((mrb_value (*)(mrb_state *, mrb_value))NULL)
 # define MRB_METHOD_FROM_FUNC(M, F) do { (M) = mrb_proc_new_cfunc(mrb, F); } while (0)
 # define MRB_METHOD_FROM_PROC(M, P) do { (M) = (P); } while (0)
 # define MRB_METHOD_PROC_P(M)       (TRUE)
