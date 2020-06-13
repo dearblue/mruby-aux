@@ -19,11 +19,11 @@
 
 #define FUNCALL(MRB, RECV, MID, ...)                                        \
         mrb_funcall_argv((MRB), (RECV), SYMBOL((MID)),                      \
-                         MRBX_LIST(const mrb_value, __VA_ARGS__))           \
+                         -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
 
 #define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)                      \
         mrb_funcall_with_block((MRB), (RECV), SYMBOL((MID)),                \
-                               MRBX_LIST(const mrb_value, __VA_ARGS__),     \
+                               -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
                                (BLOCK))                                     \
 
 #define FOREACH_LIST(TYPE, I, ...)                                          \
