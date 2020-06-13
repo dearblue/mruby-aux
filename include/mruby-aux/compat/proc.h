@@ -4,6 +4,10 @@
 #include <mruby.h>
 #include <mruby/proc.h>
 
+#if MRUBY_RELEASE_NO < 10300
+void mrb_env_unshare(mrb_state *mrb, struct REnv *e);
+#endif
+
 #if MRUBY_RELEASE_NO < 10400
 # include <mruby/value.h>
 # include <mruby/string.h>
@@ -25,9 +29,15 @@ typedef struct RProc *mrb_method_t;
 #  define MRB_PROC_SET_TARGET_CLASS(PROC, CLASS) ((PROC)->target_class = (CLASS))
 # endif
 
+# define MRB_PROC_ENV(P)            ((P)->env)
+
 # define MRBX_PROC_CFUNC(P)         ((P)->body.func)
 #else
 # define MRBX_PROC_CFUNC(P)         MRB_PROC_CFUNC(P)
+#endif
+
+#if MRUBY_RELEASE_NO < 20100
+# define MRB_METHOD_NOARG_P(M)      FALSE
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */
