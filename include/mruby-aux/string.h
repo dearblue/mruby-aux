@@ -96,9 +96,11 @@ MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { ret
 MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
 {
-    if (len >= MRB_INT_MAX) {
+#if SIZE_MAX >= MRB_INT_MAX
+    if (len >= (size_t)MRB_INT_MAX) {
             mrb_raise(mrb, E_RUNTIME_ERROR, "string length too large");
     }
+#endif
 
     RSTR_SET_LEN(dest, len);
 
@@ -135,9 +137,11 @@ MRBX_INLINE struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (RSTR_CAPA(str) < len) {
-        if (len >= MRB_INT_MAX) {
+#if SIZE_MAX >= MRB_INT_MAX
+        if (len >= (size_t)MRB_INT_MAX) {
             mrb_raise(mrb, E_RUNTIME_ERROR, "string capacity too large");
         }
+#endif
 
         mrb_int l = RSTR_LEN(str);
         mrb_str_resize(mrb, mrb_obj_value(str), len);
