@@ -24,7 +24,9 @@ mrbx_typename(enum mrb_vtype tt)
   case MRB_TT_STRING:     return "MRB_TT_STRING";
   case MRB_TT_RANGE:      return "MRB_TT_RANGE";
   case MRB_TT_EXCEPTION:  return "MRB_TT_EXCEPTION";
+#if MRUBY_RELEASE_NO < 20102
   case MRB_TT_FILE:       return "MRB_TT_FILE";
+#endif
   case MRB_TT_ENV:        return "MRB_TT_ENV";
   case MRB_TT_DATA:       return "MRB_TT_DATA";
   case MRB_TT_FIBER:      return "MRB_TT_FIBER";
