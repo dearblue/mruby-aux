@@ -28,8 +28,12 @@ resolve_method_missing(mrb_state *mrb, struct RClass **target_class, struct RPro
   }
 
   if (MRB_METHOD_PROC_P(me)) {
-    *cfunc = NULL;
     *proc = MRB_METHOD_PROC(me);
+    if (MRB_PROC_CFUNC_P(*proc)) {
+      *cfunc = MRBX_PROC_CFUNC(*proc);
+    } else {
+      *cfunc = NULL;
+    }
   } else {
     *cfunc = MRB_METHOD_FUNC(me);
     *proc = NULL;
@@ -48,6 +52,8 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RPr
   if (!proc) {
     original_mid = mid;
     mid = resolve_method_missing(mrb, &target_class, &proc, &cfunc);
+  } else if (MRB_PROC_CFUNC_P(proc)) {
+    cfunc = MRBX_PROC_CFUNC(proc);
   } else {
     cfunc = NULL;
   }
@@ -63,21 +69,17 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RPr
 
   mrb_callinfo *ci = mrb->c->ci;
   ci->mid = mid;
-  ci->proc = cfunc ? NULL : proc;
+  ci->proc = proc;
   ci->env = NULL;
   ci->target_class = target_class;
   int keeps = mrbx_vm_set_args(mrb, ci, self, argc, argv, block, original_mid);
 
   if (cfunc) {
-call_cfunc: ;
     int ai = mrb_gc_arena_save(mrb);
     mrb_value ret = cfunc(mrb, self);
     mrb_gc_arena_restore(mrb, ai);
     mrb_gc_protect(mrb, ret);
     return ret;
-  } else if (MRB_PROC_CFUNC_P(proc)) {
-    cfunc = MRBX_PROC_CFUNC(proc);
-    goto call_cfunc;
   } else if (ci->acc < 0 || ci == mrb->c->cibase || ci[-1].proc == NULL || MRB_PROC_CFUNC_P(ci[-1].proc)) {
     ptrdiff_t idx = mrb->c->ci - mrb->c->cibase;
     ci->acc = -1; /* ACC_SKIP */
