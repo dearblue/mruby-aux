@@ -38,6 +38,7 @@ typedef struct RProc *mrb_method_t;
 
 #if MRUBY_RELEASE_NO < 20100
 # define MRB_METHOD_NOARG_P(M)      FALSE
+# define MRB_METHOD_NOARG_SET(M)    do { } while (0)
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */
