@@ -8,24 +8,6 @@
 #include <mruby-aux/vmext.h>
 #include <mruby-aux/compat/mruby.h>
 
-#define STR_METHOD_MISSING      "method_missing"
-#define ID_METHOD_MISSING       mrb_intern_lit(mrb, STR_METHOD_MISSING)
-
-static mrb_sym
-resolve_method_missing(mrb_state *mrb, struct RClass **target_class, struct RProc **proc, mrb_func_t *cfunc)
-{
-  mrb_sym mid = ID_METHOD_MISSING;
-  mrb_method_t me = mrb_method_search_vm(mrb, target_class, mid);
-
-  if (MRB_METHOD_UNDEF_P(me)) {
-    mrb_raise(mrb, E_NOMETHOD_ERROR, "undefined method '" STR_METHOD_MISSING "'");
-  }
-
-  mrbx_method_extract(mrb, me, -1, proc, cfunc);
-
-  return mid;
-}
-
 mrb_value
 mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RProc *proc,
     mrb_value self, mrb_sym mid, mrb_int argc, const mrb_value argv[], mrb_value block)
@@ -35,7 +17,7 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RPr
 
   if (!proc) {
     original_mid = mid;
-    mid = resolve_method_missing(mrb, &target_class, &proc, &cfunc);
+    mid = mrbx_resolve_method_missing(mrb, &target_class, &proc, &cfunc);
   } else if (MRB_PROC_CFUNC_P(proc)) {
     cfunc = MRBX_PROC_CFUNC(proc);
   } else {
