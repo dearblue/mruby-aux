@@ -41,7 +41,7 @@ mrb_value mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, 
  * `mrb->c->ci` に追加します。
  */
 mrb_callinfo *mrbx_vm_cipush(mrb_state *mrb, const mrb_code *pc, int push_stacks, int acc,
-    struct RClass *target_class, mrb_sym mid, int argc);
+    struct RClass *target_class, struct RProc *proc, mrb_sym mid, int argc);
 
 /*
  * 現在の`mrb->c->ci` を削除します。

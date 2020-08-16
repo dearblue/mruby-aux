@@ -87,7 +87,7 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RPr
     mrb->c->ci = mrb->c->cibase + idx;
     return ret;
   } else {
-    mrbx_vm_cipush(mrb, proc->body.irep->iseq, 0, 0, NULL, 0, 0);
+    mrbx_vm_cipush(mrb, proc->body.irep->iseq, 0, 0, NULL, NULL, 0, 0);
     return self;
   }
 }
