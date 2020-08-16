@@ -1,3 +1,4 @@
+#define MRUBY_AUX_INTERNALS 1
 #include <mruby.h>
 #include <mruby/array.h>
 #include <mruby/class.h>
@@ -6,10 +7,6 @@
 #include <mruby-aux/proc.h>
 #include <mruby-aux/vmext.h>
 #include <mruby-aux/compat/mruby.h>
-
-#ifndef MRB_FUNCALL_ARGC_MAX
-# define MRB_FUNCALL_ARGC_MAX 16
-#endif
 
 #define STR_METHOD_MISSING      "method_missing"
 #define ID_METHOD_MISSING       mrb_intern_lit(mrb, STR_METHOD_MISSING)
@@ -45,36 +42,11 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RPr
     cfunc = NULL;
   }
 
-  /*
-   * 1. 呼び出し先が C 関数である
-   *    => 現在の callinfo を書き換えて、C 関数を呼ぶ
-   * 2. 呼び出し元が C 関数である
-   *    => 現在の callinfo を書き換えて、`mrb_vm_exec()` を呼ぶ
-   * 3. 呼び出し元が ruby 空間である
-   *    => callinfo を1つ積み増しして、戻った時に目的となるメソッドが実行されるようにする
-   */
-
   mrb_callinfo *ci = mrb->c->ci;
   ci->mid = mid;
   ci->proc = proc;
   ci->env = NULL;
   ci->target_class = target_class;
   int keeps = mrbx_vm_set_args(mrb, ci, self, argc, argv, block, original_mid);
-
-  if (cfunc) {
-    int ai = mrb_gc_arena_save(mrb);
-    mrb_value ret = cfunc(mrb, self);
-    mrb_gc_arena_restore(mrb, ai);
-    mrb_gc_protect(mrb, ret);
-    return ret;
-  } else if (ci->acc < 0 || ci == mrb->c->cibase || ci[-1].proc == NULL || MRB_PROC_CFUNC_P(ci[-1].proc)) {
-    ptrdiff_t idx = mrb->c->ci - mrb->c->cibase;
-    ci->acc = -1; /* ACC_SKIP */
-    mrb_value ret = mrb_vm_run(mrb, proc, self, keeps);
-    mrb->c->ci = mrb->c->cibase + idx;
-    return ret;
-  } else {
-    mrbx_vm_cipush(mrb, proc->body.irep->iseq, 0, 0, NULL, NULL, 0, 0);
-    return self;
-  }
+  return mrbx_vm_intercall(mrb, ci, proc, cfunc, self, keeps);
 }

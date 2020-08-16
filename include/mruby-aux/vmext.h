@@ -68,4 +68,8 @@ mrb_value *mrbx_vm_stack_extend(mrb_state *mrb, mrb_int room);
  */
 int mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, const mrb_value argv[], mrb_value block, mrb_sym mid);
 
+#ifdef MRUBY_AUX_INTERNALS
+mrb_value mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps);
+#endif
+
 #endif /* MRUBY_AUX_VMEXT_H */
