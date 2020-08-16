@@ -1,5 +1,6 @@
 #define MRUBY_AUX_INTERNALS 1
 #include <mruby-aux/vmext.h>
+#include <mruby-aux/compat/mruby.h>
 
 mrb_value
 mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps)
