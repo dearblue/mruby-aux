@@ -123,7 +123,7 @@ mruby_aux_test_value_init(mrb_state *mrb, struct RClass *test)
   mrb_define_class_method(mrb, test, "check_fixnum", value_s_check_fixnum, MRB_ARGS_NONE());
   mrb_define_class_method(mrb, test, "fixnum", value_s_fixnum, MRB_ARGS_REQ(1));
 
-#if MRUBY_RELEASE_NO > 20100 || !defined(MRB_NAN_BOXING)
+#if MRUBY_RELEASE_NO > 20101 || !defined(MRB_NAN_BOXING)
 # define CHECK_CPTR_SKIP FALSE
 #else
 # define CHECK_CPTR_SKIP TRUE
