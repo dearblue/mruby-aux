@@ -33,6 +33,10 @@ mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, con
   }
 
   memmove(ap, argv, sizeof(mrb_value) * argc);
+  if (ci->argc < 0) {
+    mrb_value splat_args = mrb->c->stack[1];
+    mrb_write_barrier(mrb, (struct RBasic *)mrb_obj_ptr(splat_args));
+  }
 
   *st ++ = block;
 
