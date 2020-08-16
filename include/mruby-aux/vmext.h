@@ -34,7 +34,7 @@ mrb_value mrbx_vm_call_by_proc(mrb_state *mrb, struct RClass *tc, struct RProc *
  * この関数は現在呼び出し中のコールスタックをすり替えて、
  * あたかも proc を呼び出したかのように観測者を騙します。
  */
-mrb_value mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RProc *proc,
+mrb_value mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, mrb_method_t m,
     mrb_value self, mrb_sym mid, mrb_int argc, const mrb_value argv[], mrb_value block);
 
 /*

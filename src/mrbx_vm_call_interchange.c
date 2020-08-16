@@ -9,19 +9,19 @@
 #include <mruby-aux/compat/mruby.h>
 
 mrb_value
-mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, struct RProc *proc,
+mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, mrb_method_t m,
     mrb_value self, mrb_sym mid, mrb_int argc, const mrb_value argv[], mrb_value block)
 {
   mrb_func_t cfunc;
-  mrb_sym original_mid = 0;
+  struct RProc *proc;
+  mrb_sym original_mid;
 
-  if (!proc) {
+  if (MRB_METHOD_UNDEF_P(m)) {
     original_mid = mid;
     mid = mrbx_resolve_method_missing(mrb, &target_class, &proc, &cfunc);
-  } else if (MRB_PROC_CFUNC_P(proc)) {
-    cfunc = MRBX_PROC_CFUNC(proc);
   } else {
-    cfunc = NULL;
+    original_mid = 0;
+    mrbx_method_extract(mrb, m, argc, &proc, &cfunc);
   }
 
   mrb_callinfo *ci = mrb->c->ci;
