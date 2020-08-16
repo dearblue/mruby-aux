@@ -20,7 +20,7 @@ mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, con
   if (argc_mod > MRB_FUNCALL_ARGC_MAX) {
     ci->argc = -1;
     *st = mrb_ary_new_capa(mrb, argc_mod);
-    ap = RARRAY_PTR((*st));
+    ap = (mrb_value *)RARRAY_PTR((*st));
     st ++;
   } else {
     ci->argc = argc_mod;
