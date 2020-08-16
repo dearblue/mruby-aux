@@ -3,6 +3,7 @@
 #include <mruby/class.h>
 #include <mruby/irep.h>
 #include <mruby/proc.h>
+#include <mruby-aux/proc.h>
 #include <mruby-aux/vmext.h>
 #include <mruby-aux/compat/mruby.h>
 
@@ -23,21 +24,7 @@ resolve_method_missing(mrb_state *mrb, struct RClass **target_class, struct RPro
     mrb_raise(mrb, E_NOMETHOD_ERROR, "undefined method '" STR_METHOD_MISSING "'");
   }
 
-  if (MRB_METHOD_NOARG_P(me)) {
-    mrb_argnum_error(mrb, -1, 0, 0);
-  }
-
-  if (MRB_METHOD_PROC_P(me)) {
-    *proc = MRB_METHOD_PROC(me);
-    if (MRB_PROC_CFUNC_P(*proc)) {
-      *cfunc = MRBX_PROC_CFUNC(*proc);
-    } else {
-      *cfunc = NULL;
-    }
-  } else {
-    *cfunc = MRB_METHOD_FUNC(me);
-    *proc = NULL;
-  }
+  mrbx_method_extract(mrb, me, -1, proc, cfunc);
 
   return mid;
 }
