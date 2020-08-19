@@ -12,8 +12,9 @@ EXTEND_SPACE_ERROR:                                                     \
       mrb_raise(mrb, E_RANGE_ERROR, "reached extend limits");           \
     }                                                                   \
                                                                         \
-    if (TRAITS(END) - TRAITS(POINTER) <= TRAITS(ROOM)) {                \
-      if ((TRAITS(END) - TRAITS(POINTER)) > TRAITS(MAX) ||              \
+    if ((size_t)(TRAITS(END) - TRAITS(POINTER)) <= TRAITS(ROOM)) {      \
+      if ((intptr_t)TRAITS(ROOM) < 1 ||                                 \
+          (TRAITS(END) - TRAITS(POINTER)) > TRAITS(MAX) ||              \
           (TRAITS(END) - TRAITS(POINTER)) + TRAITS(ROOM) > TRAITS(MAX)) { \
         goto EXTEND_SPACE_ERROR;                                        \
       }                                                                 \
