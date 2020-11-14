@@ -17,4 +17,9 @@ mrb_str_new_capa(mrb_state *mrb, size_t capa)
 # define RSTR_END(S) (RSTR_PTR(S) + RSTR_LEN(S))
 #endif
 
+/* RSTR_EMBED_PTR は mruby-2.1.0 で登場 */
+#ifndef RSTR_EMBED_PTR
+# define RSTR_EMBED_PTR(S) ((S)->as.ary)
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_STRING_H */

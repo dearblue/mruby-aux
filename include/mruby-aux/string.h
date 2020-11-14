@@ -280,6 +280,16 @@ MRB_API struct RString *mrbx_str_new_as_HEXDIGEST(mrb_state *mrb, uint64_t n, in
  */
 MRB_API mrb_value mrbx_str_new_static(mrb_state *mrb, const char *str, intptr_t len);
 
+#define MRBX_RSTR_EMBED_GETMEM(STR, LENP) (*(LENP) = RSTR_EMBED_LEN(STR), RSTR_EMBED_PTR(STR))
+#define MRBX_RSTR_HEAP_GETMEM(STR, LENP) (*(LENP) = (STR)->as.heap.len, (STR)->as.heap.ptr)
+#define MRBX_RSTR_GETMEM(STR, LENP) ((RSTR_EMBED_P(STR)) ? MRBX_RSTR_EMBED_GETMEM(STR, LENP) : MRBX_RSTR_HEAP_GETMEM(STR, LENP))
+
+MRB_INLINE char *
+mrbx_str_getmem(mrb_value str, mrb_int *lenp)
+{
+  return MRBX_RSTR_GETMEM(mrb_str_ptr(str), lenp);
+}
+
 MRB_END_DECL
 
 #include "string/growup.h"

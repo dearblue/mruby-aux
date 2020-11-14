@@ -5,6 +5,21 @@
 #include <mruby.h>
 #include <mruby/array.h>
 
+/* ARY_EMBED_P は 1.4.0 で追加 */
+#ifndef ARY_EMBED_P
+# define ARY_EMBED_P(A) FALSE
+#endif
+
+/* ARY_EMBED_LEN は 1.4.0 で追加 */
+#ifndef ARY_EMBED_LEN
+# define ARY_EMBED_LEN(A) 0
+#endif
+
+/* ARY_EMBED_PTR は 1.4.0 で追加 */
+#ifndef ARY_EMBED_PTR
+# define ARY_EMBED_PTR(A) ((mrb_value *)NULL)
+#endif
+
 /* ARY_PTR は 1.4.0 で追加 */
 #ifndef ARY_PTR
 #   define ARY_PTR(A)   ((const mrb_value*)(A)->ptr)
