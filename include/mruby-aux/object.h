@@ -112,4 +112,9 @@ MRBX_INLINE struct RIstruct *mrbx_freeze_istruct(struct RIstruct *p) { mrbx_free
 
 #endif /* __cplusplus */
 
+MRB_API mrb_bool mrbx_obj_is_kind_of_checked(mrb_state *mrb, mrb_value obj, const char *name);
+MRB_API mrb_bool mrbx_obj_is_kind_of_checked_dig(mrb_state *mrb, mrb_value obj, struct RClass *start_module, int num_path, const char *const *path);
+MRB_API mrb_bool mrbx_obj_is_kind_of_checked_id(mrb_state *mrb, mrb_value obj, mrb_sym name);
+MRB_API mrb_bool mrbx_obj_is_kind_of_checked_dig_id(mrb_state *mrb, mrb_value obj, struct RClass *start_module, int num_path, const mrb_sym *path);
+
 #endif /* MRUBY_AUX_OBJECT_H */
