@@ -18,6 +18,10 @@ module Internals
     def cxxabi?
       !!self["c++abi"]
     end
+
+    def cxxexc?
+      !!self["c++exc"]
+    end
   end
 end
 
@@ -40,12 +44,24 @@ config = YAML.load <<'YAML'
       defines: MRB_NAN_BOXING
     host-word:
       defines: MRB_WORD_BOXING
+    host++:
+      defines: MRB_NO_BOXING
+      c++abi: true
     host++-nan:
       defines: MRB_NAN_BOXING
       c++abi: true
     host++-word:
       defines: MRB_WORD_BOXING
       c++abi: true
+    host++exc:
+      defines: MRB_NO_BOXING
+      c++exc: true
+    host++exc-nan:
+      defines: MRB_NAN_BOXING
+      c++exc: true
+    host++exc-word:
+      defines: MRB_WORD_BOXING
+      c++exc: true
     host32:
       defines: MRB_NO_BOXING
       flags: -m32
@@ -58,7 +74,7 @@ config = YAML.load <<'YAML'
 YAML
 
 config["builds"].each_pair do |n, c|
-  next if (c.boxnan? || c.cxxabi?) && MRuby::Source::MRUBY_RELEASE_NO < 10300
+  next if (c.boxnan? || c.cxxabi? || c.cxxexc?) && MRuby::Source::MRUBY_RELEASE_NO < 10300
   next if (c.boxnan?) && MRuby::Source::MRUBY_RELEASE_NO == 20001
 
   MRuby::Build.new(n) do |conf|
@@ -87,7 +103,7 @@ config["builds"].each_pair do |n, c|
       if g.cc.command =~ /\\b(?:g?cc|clang)\\d*\\b/
         g.cc.flags << "-std=c11" unless c["c++abi"]
         g.cc.flags << "-pedantic"
-        g.cc.flags << "-Wall"
+        g.cc.flags << %w(-Wall -Wextra)
       end
     end
   end
