@@ -27,4 +27,8 @@
 #   define ARY_SET_LEN(A, L) ((A)->len = (L))
 #endif
 
+#if MRUBY_RELEASE_NO < 20001
+MRB_API mrb_value mrb_ary_splice(mrb_state *mrb, mrb_value self, mrb_int head, mrb_int len, mrb_value rpl);
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_ARRAY_H */
