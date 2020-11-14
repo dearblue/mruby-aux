@@ -33,11 +33,9 @@ config = YAML.load <<'YAML'
     - :core: "mruby-bin-mrbc"
   builds:
     host:
-      defines: MRB_INT64
+      defines: MRB_NO_BOXING
       gems:
       - :core: "mruby-fiber"
-    host-int32:
-      defines: MRB_INT32
     host-nan:
       defines: MRB_NAN_BOXING
     host-word:
@@ -49,10 +47,7 @@ config = YAML.load <<'YAML'
       defines: MRB_WORD_BOXING
       c++abi: true
     host32:
-      defines: MRB_INT64
-      flags: -m32
-    host32-int32:
-      defines: MRB_INT32
+      defines: MRB_NO_BOXING
       flags: -m32
     host32-nan:
       defines: MRB_NAN_BOXING

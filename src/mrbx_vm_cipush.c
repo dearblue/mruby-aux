@@ -1,5 +1,6 @@
 #include <mruby.h>
 #include <mruby-aux/vmext.h>
+#include <mruby/error.h>
 
 mrb_callinfo *
 mrbx_vm_cipush(mrb_state *mrb, const mrb_code *pc, int push_stacks, int acc,
@@ -15,11 +16,13 @@ mrbx_vm_cipush(mrb_state *mrb, const mrb_code *pc, int push_stacks, int acc,
 #if MRUBY_RELEASE_NO < 20000
     0,
 #endif
+#ifndef RBREAK_TAG_FOREACH
     ci->ridx,
-#if MRUBY_RELEASE_NO < 10300
+# if MRUBY_RELEASE_NO < 10300
     ci->eidx,
-#else
+# else
     mrb->c->eidx,
+# endif
 #endif
     NULL,
     (mrb_code *)pc,

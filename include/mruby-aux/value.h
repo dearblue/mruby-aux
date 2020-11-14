@@ -3,10 +3,17 @@
 
 #include "common.h"
 #include "compat/value.h"
+#include <mruby/version.h>
 
 /* The implant immediate values */
 
 #if defined(MRB_NAN_BOXING)
+
+#  define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                              \
+        (UINT64_C(0xfff0000000000000) |                                 \
+         ((((TT) + UINT64_C(1)) & 0x3f) << 46) |                        \
+         ((uint64_t)(HI) & UINT64_C(0x00003fffffffffff)))               \
+
 # ifdef __cplusplus
 
 struct mrbx_implant_value
@@ -14,35 +21,36 @@ struct mrbx_implant_value
   union {
     double f;
     uint64_t w;
+    mrb_value value;
   };
 
   mrbx_implant_value(enum mrb_vtype tt, int64_t v) :
-    w(UINT64_C(0xfff0000000000000) |
-      (((tt + UINT64_C(1)) & 0x3f) << 46) |
-      (uint64_t(v) & UINT64_C(0x00003fffffffffff)))
+    w(MRBX_BOXNAN_IMPLANT_TYPE(tt, v))
   {
   }
 
-  operator const mrb_value *(void) const
+  operator mrb_value(void) const
   {
-    return (const mrb_value *)this;
+    return value;
   }
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        (*(const mrb_value *)mrbx_implant_value(TT, (mrb_int)(V)))      \
+        ((mrb_value)mrbx_implant_value(TT, (mrb_int)(V)))               \
 
 # else
 
-#  define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                              \
-        (                                                               \
-          UINT32_C(0xfff00000) |                                        \
-          ((((TT) + UINT32_C(1)) & 0x3f) << 14) |                       \
-          ((HI) & UINT16_C(0x3fff))                                     \
-        )                                                               \
+#  if MRUBY_RELEASE_NO < 30000
 
-#  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        { .value.ttt = MRBX_BOXNAN_IMPLANT_TYPE(TT, V), .value.i = (V) } \
+#   define MRBX_IMPLANT_VALUE(TT, V)                                    \
+        { .value.ttt = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) >> 32, .value.i = (V) } \
+
+#  else
+
+#   define MRBX_IMPLANT_VALUE(TT, V)                                    \
+        { .u = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) }                        \
+
+#  endif
 
 # endif
 
@@ -64,21 +72,24 @@ struct mrbx_implant_value
 
 struct mrbx_implant_value
 {
-  unsigned long w;
+  union {
+    unsigned long w;
+    mrb_value value;
+  };
 
   mrbx_implant_value(enum mrb_vtype tt, mrb_int v) :
     w(MRBX_BOXWORD_MAKE(tt, v))
   {
   }
 
-  operator const mrb_value *(void) const
+  operator mrb_value(void) const
   {
-    return (const mrb_value *)this;
+    return value;
   }
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        (*(const mrb_value *)mrbx_implant_value(TT, V))                 \
+        ((mrb_value)mrbx_implant_value(TT, V))                          \
 
 # else
 
@@ -94,10 +105,15 @@ struct mrbx_implant_value
 struct mrbx_implant_value
 {
   union {
-    mrb_int i;
-    mrb_float f;
+    struct {
+      union {
+        mrb_int i;
+        mrb_float f;
+      };
+      enum mrb_vtype tt;
+    };
+    mrb_value value;
   };
-  enum mrb_vtype tt;
 
   mrbx_implant_value(enum mrb_vtype tt, mrb_int v) :
     i(v),
@@ -105,14 +121,14 @@ struct mrbx_implant_value
   {
   }
 
-  operator const mrb_value *(void) const
+  operator mrb_value(void) const
   {
-    return (const mrb_value *)this;
+    return value;
   }
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        (*(const mrb_value *)mrbx_implant_value(TT, V))                 \
+        ((mrb_value)mrbx_implant_value(TT, V))                          \
 
 # else
 
