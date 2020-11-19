@@ -96,9 +96,11 @@ MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { ret
 MRBX_INLINE struct RString *
 mrbx_str_set_len(mrb_state *mrb, struct RString *dest, size_t len)
 {
-    if (len >= MRB_INT_MAX) {
+#if SIZE_MAX >= MRB_INT_MAX
+    if (len >= (size_t)MRB_INT_MAX) {
             mrb_raise(mrb, E_RUNTIME_ERROR, "string length too large");
     }
+#endif
 
     RSTR_SET_LEN(dest, len);
 
@@ -135,9 +137,11 @@ MRBX_INLINE struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
 {
     if (RSTR_CAPA(str) < len) {
-        if (len >= MRB_INT_MAX) {
+#if SIZE_MAX >= MRB_INT_MAX
+        if (len >= (size_t)MRB_INT_MAX) {
             mrb_raise(mrb, E_RUNTIME_ERROR, "string capacity too large");
         }
+#endif
 
         mrb_int l = RSTR_LEN(str);
         mrb_str_resize(mrb, mrb_obj_value(str), len);
@@ -275,6 +279,16 @@ MRB_API struct RString *mrbx_str_new_as_HEXDIGEST(mrb_state *mrb, uint64_t n, in
  * len が0未満の場合、str から長さを取得します。
  */
 MRB_API mrb_value mrbx_str_new_static(mrb_state *mrb, const char *str, intptr_t len);
+
+#define MRBX_RSTR_EMBED_GETMEM(STR, LENP) (*(LENP) = RSTR_EMBED_LEN(STR), RSTR_EMBED_PTR(STR))
+#define MRBX_RSTR_HEAP_GETMEM(STR, LENP) (*(LENP) = (STR)->as.heap.len, (STR)->as.heap.ptr)
+#define MRBX_RSTR_GETMEM(STR, LENP) ((RSTR_EMBED_P(STR)) ? MRBX_RSTR_EMBED_GETMEM(STR, LENP) : MRBX_RSTR_HEAP_GETMEM(STR, LENP))
+
+MRB_INLINE char *
+mrbx_str_getmem(mrb_value str, mrb_int *lenp)
+{
+  return MRBX_RSTR_GETMEM(mrb_str_ptr(str), lenp);
+}
 
 MRB_END_DECL
 

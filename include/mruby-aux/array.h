@@ -47,4 +47,22 @@ MRB_API mrb_value mrbx_ary_delete(mrb_state *mrb, struct RArray *ary, mrb_value 
 MRB_API mrb_value mrbx_ary_delete_at(mrb_state *mrb, struct RArray *ary, mrb_int idx);
 MRB_API mrb_value mrbx_ary_delete_once(mrb_state *mrb, struct RArray *ary, mrb_value obj);
 
+#if MRUBY_RELEASE_NO < 10400
+# define MRBX_RARY_HEAP_LEN(A)  ((A)->len)
+# define MRBX_RARY_HEAP_PTR(A)  ((A)->ptr)
+#else
+# define MRBX_RARY_HEAP_LEN(A)  ((A)->as.heap.len)
+# define MRBX_RARY_HEAP_PTR(A)  ((A)->as.heap.ptr)
+#endif
+
+#define MRBX_RARY_EMBED_GETMEM(ARY, LENP) (*(LENP) = ARY_EMBED_LEN(ARY), (mrb_value *)ARY_EMBED_PTR(ARY))
+#define MRBX_RARY_HEAP_GETMEM(ARY, LENP) (*(LENP) = MRBX_RARY_HEAP_LEN(ARY), MRBX_RARY_HEAP_PTR(ARY))
+#define MRBX_RARY_GETMEM(ARY, LENP) (ARY_EMBED_P(ARY)?  MRBX_RARY_EMBED_GETMEM(ARY, LENP) : MRBX_RARY_HEAP_GETMEM(ARY, LENP))
+
+MRB_INLINE const mrb_value *
+mrbx_ary_getmem(mrb_value ary, size_t *len)
+{
+  return MRBX_RARY_GETMEM(mrb_ary_ptr(ary), len);
+}
+
 #endif /* MRUBY_AUX_ARRAY_H */

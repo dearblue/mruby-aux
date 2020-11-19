@@ -16,6 +16,10 @@ mrbx_num_from_int64(mrb_state *mrb, int64_t n, enum mrbx_num_behavior behavior)
         return mrb_nil_value();
       case MRBX_NUM_RAISE:
         mrb_raise(mrb, E_TYPE_ERROR, "out of numeric");
+      case MRBX_NUM_USE_LOWER_BIT:
+      case MRBX_NUM_DROP_PRECISION:
+      default:
+        break;
     }
   }
 
@@ -38,6 +42,10 @@ mrbx_num_from_uint64(mrb_state *mrb, uint64_t n, enum mrbx_num_behavior behavior
         return mrb_nil_value();
       case MRBX_NUM_RAISE:
         mrb_raise(mrb, E_TYPE_ERROR, "out of numeric");
+      case MRBX_NUM_USE_LOWER_BIT:
+      case MRBX_NUM_DROP_PRECISION:
+      default:
+        break;
     }
   }
 

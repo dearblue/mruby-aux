@@ -4,6 +4,10 @@
 #include <mruby.h>
 #include <mruby/proc.h>
 
+#if MRUBY_RELEASE_NO < 10300
+void mrb_env_unshare(mrb_state *mrb, struct REnv *e);
+#endif
+
 #if MRUBY_RELEASE_NO < 10400
 # include <mruby/value.h>
 # include <mruby/string.h>
@@ -12,7 +16,7 @@
 typedef struct RProc *mrb_method_t;
 
 # define MRB_METHOD_FUNC_P(M)       (FALSE)
-# define MRB_METHOD_FUNC(M)         (NULL)
+# define MRB_METHOD_FUNC(M)         ((mrb_value (*)(mrb_state *, mrb_value))NULL)
 # define MRB_METHOD_FROM_FUNC(M, F) do { (M) = mrb_proc_new_cfunc(mrb, F); } while (0)
 # define MRB_METHOD_FROM_PROC(M, P) do { (M) = (P); } while (0)
 # define MRB_METHOD_PROC_P(M)       (TRUE)
@@ -24,6 +28,17 @@ typedef struct RProc *mrb_method_t;
 # ifndef MRB_PROC_SET_TARGET_CLASS
 #  define MRB_PROC_SET_TARGET_CLASS(PROC, CLASS) ((PROC)->target_class = (CLASS))
 # endif
+
+# define MRB_PROC_ENV(P)            ((P)->env)
+
+# define MRBX_PROC_CFUNC(P)         ((P)->body.func)
+#else
+# define MRBX_PROC_CFUNC(P)         MRB_PROC_CFUNC(P)
+#endif
+
+#if MRUBY_RELEASE_NO < 20100
+# define MRB_METHOD_NOARG_P(M)      FALSE
+# define MRB_METHOD_NOARG_SET(M)    do { } while (0)
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */

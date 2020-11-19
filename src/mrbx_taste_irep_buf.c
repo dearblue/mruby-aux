@@ -1,5 +1,7 @@
 #include <mruby-aux/dump.h>
 #include <string.h>
+#include <mruby/version.h>
+#include <mruby/error.h>
 
 MRB_API mrb_bool
 mrbx_taste_irep_buf(mrb_state *mrb, const void *buf, size_t bufsize, mrb_value name, mrb_bool raise_if_error)
@@ -17,6 +19,7 @@ mrbx_taste_irep_buf(mrb_state *mrb, const void *buf, size_t bufsize, mrb_value n
     return FALSE;
   }
 
+#if MRUBY_RELEASE_NO < 30000 && !defined(mrb_integer)
   if (memcmp(bin->binary_version, RITE_BINARY_FORMAT_VER, sizeof(bin->binary_version)) != 0) {
     if (raise_if_error) {
       mrb_raisef(mrb, E_RUNTIME_ERROR,
@@ -27,6 +30,25 @@ mrbx_taste_irep_buf(mrb_state *mrb, const void *buf, size_t bufsize, mrb_value n
     }
     return FALSE;
   }
+#else
+  if (memcmp(bin->major_version, RITE_BINARY_MAJOR_VER, sizeof(bin->major_version)) != 0 ||
+      memcmp(bin->minor_version, RITE_BINARY_MINOR_VER, sizeof(bin->minor_version)) <= 0) {
+    if (raise_if_error) {
+      const char binver[5] = {
+        (char)bin->major_version[0], (char)bin->major_version[1],
+        (char)bin->minor_version[0], (char)bin->minor_version[1],
+        '\0'
+      };
+
+      mrb_raisef(mrb, E_RUNTIME_ERROR,
+                 "wrong binary version - %S (expected \"%s\", but given \"%s\")",
+                 name,
+                 RITE_BINARY_FORMAT_VER,
+                 binver);
+    }
+    return FALSE;
+  }
+#endif
 
   return TRUE;
 }

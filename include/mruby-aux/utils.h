@@ -19,11 +19,11 @@
 
 #define FUNCALL(MRB, RECV, MID, ...)                                        \
         mrb_funcall_argv((MRB), (RECV), SYMBOL((MID)),                      \
-                         MRBX_LIST(const mrb_value, __VA_ARGS__))           \
+                         -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
 
 #define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)                      \
         mrb_funcall_with_block((MRB), (RECV), SYMBOL((MID)),                \
-                               MRBX_LIST(const mrb_value, __VA_ARGS__),     \
+                               -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
                                (BLOCK))                                     \
 
 #define FOREACH_LIST(TYPE, I, ...)                                          \
@@ -187,6 +187,12 @@ MRB_API void mrbx_get_read_args(mrb_state *mrb, ssize_t *size, struct RString **
  * オブジェクトの確保に失敗した時は例外を発生させず、`mrb_nil_value()` を返します。
  */
 MRB_API mrb_value mrbx_cptr_value(mrb_state *mrb, void *ptr);
+
+MRB_API void mrbx_get_argset(mrb_state *mrb, mrb_int *argc, const mrb_value **argv, mrb_value *argkw, mrb_value *block);
+MRB_API mrb_int mrbx_get_argc(mrb_state *mrb);
+MRB_API const mrb_value *mrbx_get_argv(mrb_state *mrb);
+MRB_API mrb_value mrbx_get_arg1(mrb_state *mrb);
+MRB_API mrb_value mrbx_get_argblock(mrb_state *mrb);
 
 MRB_END_DECL
 
