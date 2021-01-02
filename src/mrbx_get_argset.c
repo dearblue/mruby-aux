@@ -91,3 +91,11 @@ mrbx_get_argblock(mrb_state *mrb)
   get_argset(mrb, NULL, NULL, NULL, &block);
   return block;
 }
+
+MRB_API mrb_bool
+mrbx_given_block_p(mrb_state *mrb)
+{
+  mrb_value block;
+  get_argset(mrb, NULL, NULL, NULL, &block);
+  return !mrb_nil_p(block);
+}

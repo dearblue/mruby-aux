@@ -193,6 +193,7 @@ MRB_API mrb_int mrbx_get_argc(mrb_state *mrb);
 MRB_API const mrb_value *mrbx_get_argv(mrb_state *mrb);
 MRB_API mrb_value mrbx_get_arg1(mrb_state *mrb);
 MRB_API mrb_value mrbx_get_argblock(mrb_state *mrb);
+MRB_API mrb_bool mrbx_given_block_p(mrb_state *mrb);
 
 MRB_END_DECL
 
