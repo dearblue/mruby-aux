@@ -32,17 +32,17 @@ skip_root_component(const char *path, const uintptr_t end)
       path += 2;
 
       /* 連続したパス区切り文字を読み飛ばす */
-      for (; (uintptr_t)path < end; path ++) {
+      for (; (uintptr_t)path < end; path++) {
         if (!mrbx_pathsep_p(*path)) {
           break;
         }
       }
 
-      for (; (uintptr_t)path < end; path ++) {
+      for (; (uintptr_t)path < end; path++) {
         if (*path == '\0') {
           break;
         } else if (mrbx_pathsep_p(*path)) {
-          path ++;
+          path++;
           break;
         }
       }
@@ -54,7 +54,7 @@ skip_root_component(const char *path, const uintptr_t end)
   }
 #endif
 
-  for (; (uintptr_t)path < end; path ++) {
+  for (; (uintptr_t)path < end; path++) {
     if (!mrbx_pathsep_p(path[0])) {
       break;
     }
@@ -66,7 +66,7 @@ skip_root_component(const char *path, const uintptr_t end)
 static const char *
 skip_separator(const char *path, uintptr_t end)
 {
-  for (; (uintptr_t)path < end; path ++) {
+  for (; (uintptr_t)path < end; path++) {
     if (!mrbx_pathsep_p(*path)) {
       break;
     }
@@ -78,7 +78,7 @@ skip_separator(const char *path, uintptr_t end)
 static const char *
 skip_leading_dot(const char *path, const uintptr_t end)
 {
-  for (; (uintptr_t)path < end && *path == '.'; path ++)
+  for (; (uintptr_t)path < end && *path == '.'; path++)
     ;
 
   return path;
@@ -87,7 +87,7 @@ skip_leading_dot(const char *path, const uintptr_t end)
 static const char *
 scan_component_name(const char *path, const uintptr_t end, mrbx_component_name *cp)
 {
-  for (; (uintptr_t)path < end; path ++) {
+  for (; (uintptr_t)path < end; path++) {
     if (*path == '\0' || mrbx_pathsep_p(*path)) {
       break;
     } else if (*path == '.') {
@@ -113,7 +113,7 @@ mrbx_split_path(const char *path, size_t len)
   path = skip_root_component(path, end);
   cp.rootterm = cp.dirterm = cp.extname = cp.nameterm = path;
 
-  for (; (uintptr_t)path < end && *path != '\0'; path ++) {
+  for (; (uintptr_t)path < end && *path != '\0'; path++) {
     path = skip_separator(path, end);
     if (path == NULL) { break; }
 

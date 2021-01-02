@@ -15,7 +15,7 @@ value_s_check_cptr(mrb_state *mrb, mrb_value mod)
     (void*)-13, (void*)-14, (void*)-15, (void*)-16
   };
 
-  for (int i = 0; i < sizeof(ptrs) / sizeof(ptrs[0]); i ++) {
+  for (int i = 0; i < sizeof(ptrs) / sizeof(ptrs[0]); i++) {
     mrb_value a = mrb_cptr_value(mrb, ptrs[i]);
     if (mrb_cptr(a) != ptrs[i]) { return mrb_fixnum_value(i); }
   }

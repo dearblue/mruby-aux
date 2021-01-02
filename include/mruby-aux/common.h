@@ -18,9 +18,9 @@
 # define MRBX_MOVE(E) E
 #endif
 
-#define MRBX_LIST(T, ...)                                                   \
-        ELEMENTOF(((T []){ __VA_ARGS__ })),                                 \
-        MRBX_MOVE(((T []){ __VA_ARGS__ }))                                  \
+#define MRBX_LIST(T, ...)                                               \
+        ELEMENTOF(((T []){ __VA_ARGS__ })),                             \
+        MRBX_MOVE(((T []){ __VA_ARGS__ }))                              \
 
 #ifndef MRB_WITHOUT_FLOAT
 # include <float.h>
@@ -105,9 +105,9 @@
 # endif
 #endif
 
-#define MRBX_TOKEN_2(X)     #X
-#define MRBX_TOKEN_1(X)     MRBX_TOKEN_2(X)
-#define MRBX_TOKEN(X)       MRBX_TOKEN_1(X)
+#define MRBX_TOKEN_2(X) #X
+#define MRBX_TOKEN_1(X) MRBX_TOKEN_2(X)
+#define MRBX_TOKEN(X)   MRBX_TOKEN_1(X)
 
 #ifndef MRBX_SMALL_TARGET
 # ifdef MRB_INT16
@@ -130,22 +130,22 @@ MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symb
 MRBX_INLINE mrb_sym mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
 MRBX_INLINE mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mrb_intern_static(mrb, str, strlen(str)); }
 
-#   define MRBX_SYMBOL_CSTR_FUNC(CSTR)                                      \
-        (MRBX_LITERAL_P(CSTR) ?                                             \
-         mrbx_intern_lit :                                                  \
-         mrb_intern_cstr)                                                   \
+# define MRBX_SYMBOL_CSTR_FUNC(CSTR)                                    \
+         (MRBX_LITERAL_P(CSTR) ?                                        \
+          mrbx_intern_lit :                                             \
+          mrb_intern_cstr)                                              \
 
-#   define mrbx_symbol(MRB, V)                                              \
-        _Generic((V),                                                       \
-                 mrb_value:     mrbx_symbol,                                \
-                 mrb_sym:       mrbx_symbol_sym,                            \
-                 const mrb_sym: mrbx_symbol_sym,                            \
-                 char *:        MRBX_SYMBOL_CSTR_FUNC(V),                   \
-                 const char *:  MRBX_SYMBOL_CSTR_FUNC(V))                   \
-            (MRB, V)                                                        \
+# define mrbx_symbol(MRB, V)                                            \
+         _Generic(V,                                                    \
+                  mrb_value:     mrbx_symbol,                           \
+                  mrb_sym:       mrbx_symbol_sym,                       \
+                  const mrb_sym: mrbx_symbol_sym,                       \
+                  char *:        MRBX_SYMBOL_CSTR_FUNC(V),              \
+                  const char *:  MRBX_SYMBOL_CSTR_FUNC(V)               \
+         )(MRB, V)                                                      \
 
 #endif
 
-#define SYMBOL(SYM)     mrbx_symbol(mrb, (SYM))
+#define SYMBOL(SYM)     mrbx_symbol(mrb, SYM)
 
 #endif /* MRUBY_AUX_COMMON_H */

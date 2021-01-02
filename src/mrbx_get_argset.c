@@ -39,7 +39,7 @@ get_argset(mrb_state *mrb, mrb_int *argc, const mrb_value **argv, mrb_value *arg
   if (argkw) {
     if (argc0 > 0 && match_kwarg_p(mrb, argv0[argc0 - 1])) {
       *argkw = argv0[argc0 - 1];
-      argc0 --;
+      argc0--;
     } else {
       *argkw = mrb_nil_value();
     }

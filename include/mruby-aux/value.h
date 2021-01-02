@@ -9,10 +9,10 @@
 
 #if defined(MRB_NAN_BOXING)
 
-#  define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                              \
-        (UINT64_C(0xfff0000000000000) |                                 \
-         ((((TT) + UINT64_C(1)) & 0x3f) << 46) |                        \
-         ((uint64_t)(HI) & UINT64_C(0x00003fffffffffff)))               \
+# define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                               \
+         (UINT64_C(0xfff0000000000000) |                                \
+          ((((TT) + UINT64_C(1)) & 0x3f) << 46) |                       \
+          ((uint64_t)(HI) & UINT64_C(0x00003fffffffffff)))              \
 
 # ifdef __cplusplus
 
@@ -36,19 +36,22 @@ struct mrbx_implant_value
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        ((mrb_value)mrbx_implant_value(TT, (mrb_int)(V)))               \
+          ((mrb_value)mrbx_implant_value(TT, (mrb_int)(V)))             \
 
 # else
 
 #  if MRUBY_RELEASE_NO < 30000
 
 #   define MRBX_IMPLANT_VALUE(TT, V)                                    \
-        { .value.ttt = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) >> 32, .value.i = (V) } \
+           {                                                            \
+             .value.ttt = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) >> 32,        \
+             .value.i = (V)                                             \
+           }                                                            \
 
 #  else
 
 #   define MRBX_IMPLANT_VALUE(TT, V)                                    \
-        { .u = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) }                        \
+           { .u = MRBX_BOXNAN_IMPLANT_TYPE(TT, V) }                     \
 
 #  endif
 
@@ -57,16 +60,15 @@ struct mrbx_implant_value
 #elif defined(MRB_WORD_BOXING)
 
 # define MRBX_BOXWORD_MAKE_FIXNUM(V)                                    \
-        (((unsigned long)(V) << BOXWORD_FIXNUM_SHIFT) | BOXWORD_FIXNUM_FLAG) \
+         (((unsigned long)(V) << BOXWORD_FIXNUM_SHIFT) |                \
+          BOXWORD_FIXNUM_FLAG)                                          \
 
 # define MRBX_BOXWORD_MAKE(TT, V)                                       \
-        (                                                               \
-          (TT) == MRB_TT_FIXNUM ? MRBX_BOXWORD_MAKE_FIXNUM(V) :         \
+         ((TT) == MRB_TT_FIXNUM ? MRBX_BOXWORD_MAKE_FIXNUM(V) :         \
           (TT) == MRB_TT_UNDEF ? (unsigned long)MRB_Qundef :            \
           (TT) == MRB_TT_TRUE ? (unsigned long)MRB_Qtrue :              \
           (TT) == MRB_TT_FALSE && (V) != 0 ? (unsigned long)MRB_Qfalse : \
-          (unsigned long)MRB_Qnil                                       \
-        )                                                               \
+          (unsigned long)MRB_Qnil)                                      \
 
 # ifdef __cplusplus
 
@@ -89,12 +91,12 @@ struct mrbx_implant_value
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        ((mrb_value)mrbx_implant_value(TT, V))                          \
+          ((mrb_value)mrbx_implant_value(TT, V))                        \
 
 # else
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        { .w = MRBX_BOXWORD_MAKE(TT, V) }                               \
+          { .w = MRBX_BOXWORD_MAKE(TT, V) }                             \
 
 # endif
 
@@ -128,12 +130,12 @@ struct mrbx_implant_value
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        ((mrb_value)mrbx_implant_value(TT, V))                          \
+          ((mrb_value)mrbx_implant_value(TT, V))                        \
 
 # else
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-        { .tt = (TT), .value.i = (V) }                                  \
+          { .tt = (TT), .value.i = (V) }                                \
 
 # endif
 

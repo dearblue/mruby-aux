@@ -53,7 +53,7 @@ mrb_stack_extend(mrb_state *mrb, mrb_int room)
     mrb_callinfo *ci = c->ci;
     size_t i;
 
-    for (i = (c->ci + 1) - c->cibase; i > 0; i --, ci ++) {
+    for (i = (c->ci + 1) - c->cibase; i > 0; i--, ci++) {
       ci->stackent += offset;
 
       struct REnv *e = ci->env;

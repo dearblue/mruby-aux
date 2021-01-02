@@ -11,7 +11,7 @@ mrbx_vm_cipop(mrb_state *mrb)
     mrb_env_unshare(mrb, c->ci->env);
   }
   c->stack = c->ci->stackent;
-  c->ci --;
+  c->ci--;
 
   return c->ci;
 }

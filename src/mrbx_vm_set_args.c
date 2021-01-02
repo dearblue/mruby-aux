@@ -14,14 +14,14 @@ mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, con
   int argc_mod = (mid != 0 ? 1 : 0) + argc;
   mrb_value *st = mrbx_vm_stack_extend(mrb, (argc_mod > MRB_FUNCALL_ARGC_MAX ? 3 : argc_mod + needblock));
 
-  *st ++ = recv;
+  *st++ = recv;
 
   mrb_value *ap;
   if (argc_mod > MRB_FUNCALL_ARGC_MAX) {
     ci->argc = -1;
     *st = mrb_ary_new_capa(mrb, argc_mod);
     ap = (mrb_value *)RARRAY_PTR((*st));
-    st ++;
+    st++;
   } else {
     ci->argc = argc_mod;
     ap = st;
@@ -29,7 +29,7 @@ mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, con
   }
 
   if (mid != 0) {
-    *ap ++ = mrb_symbol_value(mid);
+    *ap++ = mrb_symbol_value(mid);
   }
 
   memmove(ap, argv, sizeof(mrb_value) * argc);
@@ -38,7 +38,7 @@ mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, con
     mrb_write_barrier(mrb, (struct RBasic *)mrb_obj_ptr(splat_args));
   }
 
-  *st ++ = block;
+  *st++ = block;
 
   return st - mrb->c->stack;
 }

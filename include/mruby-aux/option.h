@@ -103,7 +103,7 @@ MRB_API void mrbx_option_usage(const mrbx_option *opt, int width, int indent, co
  * @retval MRBX_OPTION_UNKNOWN
  *      与えられたオプションが未知であることを意味します。<br>
  *      `mrbx_option o` である場合、`*o.opt` によってエラーとなったオプション文字を取得できます。<br>
- *      もし `mrbx_option_parse()` を継続したい場合、`o.opt ++` して処理を続けて下さい。
+ *      もし `mrbx_option_parse()` を継続したい場合、`o.opt++` して処理を続けて下さい。
  *
  * @retval MRBX_OPTION_UNKNOWN_LONG
  *      与えられたオプションが未知であることを意味します。<br>

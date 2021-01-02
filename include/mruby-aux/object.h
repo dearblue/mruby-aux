@@ -40,22 +40,22 @@ MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RIstruct *v) { r
 
 #else
 
-# define mrbx_obj_ptr(V)                                                    \
-        _Generic((V),                                                       \
-                 mrb_value:             mrbx_obj_ptr,                       \
-                 struct RBasic *:       mrbx_ptr_to_ptr,                    \
-                 struct RObject *:      mrbx_ptr_to_ptr,                    \
-                 struct RClass *:       mrbx_ptr_to_ptr,                    \
-                 struct RArray *:       mrbx_ptr_to_ptr,                    \
-                 struct RHash *:        mrbx_ptr_to_ptr,                    \
-                 struct RString *:      mrbx_ptr_to_ptr,                    \
-                 struct RProc *:        mrbx_ptr_to_ptr,                    \
-                 struct RRange *:       mrbx_ptr_to_ptr,                    \
-                 struct RFiber *:       mrbx_ptr_to_ptr,                    \
-                 struct RException *:   mrbx_ptr_to_ptr,                    \
-                 struct RData *:        mrbx_ptr_to_ptr,                    \
-                 struct RIstruct *:     mrbx_ptr_to_ptr)                    \
-            (mrb, (V))                                                      \
+# define mrbx_obj_ptr(V)                                                \
+         _Generic(V,                                                    \
+                  mrb_value:             mrbx_obj_ptr,                  \
+                  struct RBasic *:       mrbx_ptr_to_ptr,               \
+                  struct RObject *:      mrbx_ptr_to_ptr,               \
+                  struct RClass *:       mrbx_ptr_to_ptr,               \
+                  struct RArray *:       mrbx_ptr_to_ptr,               \
+                  struct RHash *:        mrbx_ptr_to_ptr,               \
+                  struct RString *:      mrbx_ptr_to_ptr,               \
+                  struct RProc *:        mrbx_ptr_to_ptr,               \
+                  struct RRange *:       mrbx_ptr_to_ptr,               \
+                  struct RFiber *:       mrbx_ptr_to_ptr,               \
+                  struct RException *:   mrbx_ptr_to_ptr,               \
+                  struct RData *:        mrbx_ptr_to_ptr,               \
+                  struct RIstruct *:     mrbx_ptr_to_ptr                \
+         )(mrb, V)                                                      \
 
 #endif
 
@@ -93,22 +93,22 @@ MRBX_INLINE struct RException *mrbx_freeze_exception(struct RException *p) { mrb
 MRBX_INLINE struct RData *mrbx_freeze_data(struct RData *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RIstruct *mrbx_freeze_istruct(struct RIstruct *p) { mrbx_freeze_ptr((void *)p); return p; }
 
-# define mrbx_obj_freeze(O)                                                 \
-        _Generic((O),                                                       \
-                 mrb_value:             mrbx_obj_freeze,                    \
-                 struct RBasic *:       mrbx_freeze_basic,                  \
-                 struct RObject *:      mrbx_freeze_object,                 \
-                 struct RClass *:       mrbx_freeze_class,                  \
-                 struct RArray *:       mrbx_freeze_array,                  \
-                 struct RHash *:        mrbx_freeze_hash,                   \
-                 struct RString *:      mrbx_freeze_string,                 \
-                 struct RProc *:        mrbx_freeze_proc,                   \
-                 struct RRange *:       mrbx_freeze_range,                  \
-                 struct RFiber *:       mrbx_freeze_fiber,                  \
-                 struct RException *:   mrbx_freeze_exception,              \
-                 struct RData *:        mrbx_freeze_data,                   \
-                 struct RIstruct *:     mrbx_freeze_istruct)                \
-            ((O))                                                           \
+# define mrbx_obj_freeze(O)                                             \
+         _Generic(O,                                                    \
+                  mrb_value:             mrbx_obj_freeze,               \
+                  struct RBasic *:       mrbx_freeze_basic,             \
+                  struct RObject *:      mrbx_freeze_object,            \
+                  struct RClass *:       mrbx_freeze_class,             \
+                  struct RArray *:       mrbx_freeze_array,             \
+                  struct RHash *:        mrbx_freeze_hash,              \
+                  struct RString *:      mrbx_freeze_string,            \
+                  struct RProc *:        mrbx_freeze_proc,              \
+                  struct RRange *:       mrbx_freeze_range,             \
+                  struct RFiber *:       mrbx_freeze_fiber,             \
+                  struct RException *:   mrbx_freeze_exception,         \
+                  struct RData *:        mrbx_freeze_data,              \
+                  struct RIstruct *:     mrbx_freeze_istruct            \
+         )(O)                                                           \
 
 #endif /* __cplusplus */
 
