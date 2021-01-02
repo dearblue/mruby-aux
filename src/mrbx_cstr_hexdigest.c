@@ -15,7 +15,7 @@ correct_bytesize(int bytesize)
 {
   if (bytesize < 1) {
     return sizeof(size_t);
-  } else if (bytesize > sizeof(uint64_t)) {
+  } else if ((size_t)bytesize > sizeof(uint64_t)) {
     return sizeof(uint64_t);
   } else {
     return bytesize;

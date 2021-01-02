@@ -48,7 +48,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
 
-# else
+# elif __STDC_VERSION__ >= 201112L
 
 #  define MRB_FROZEN_P(O)                                               \
           _Generic((O),                                                 \
@@ -65,6 +65,10 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
                    struct RRange *:       mrbx_false_always,            \
                    struct RString *:      mrbx_rstr_frozen_p            \
           )(O)                                                          \
+
+# else
+
+#  define MRB_FROZEN_P(O) ((O) && (O)->tt == MRB_TT_STRING && mrbx_rstr_frozen_p((struct RString *)(O)))
 
 # endif /* __cplusplus */
 

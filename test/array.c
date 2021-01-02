@@ -37,7 +37,10 @@ test_ary_ptr_double(mrb_state *mrb, mrb_value self)
   mrb_value obj;
   mrb_get_args(mrb, "A!", &obj);
 
-  struct RArray *ary = mrbx_ary_ptr(mrb, mrbx_ary_ptr(mrb, obj));
+  struct RArray *ary = mrbx_ary_ptr(mrb, obj);
+#if defined(__cplusplus) || __STDC_VERSION__ >= 201112L
+  ary = mrbx_ary_ptr(mrb, ary);
+#endif
 
   if (ary) {
     return mrb_obj_value(ary);

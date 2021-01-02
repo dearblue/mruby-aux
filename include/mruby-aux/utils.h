@@ -46,8 +46,8 @@
          &I++)                                                          \
 
 #define FOREACH_RARRAY(I, LIST)                                         \
-    for (const mrb_value I = ARY_PTR(RArray((LIST))),                   \
-                         *_list_end_ = (&I) + ARY_LEN(RArray((LIST)));  \
+    for (const mrb_value *_list_end_,                                   \
+                         I = mrbx_expect_ary_ptr_getmem_termed(mrb, LIST, &_list_end_); \
          &I < _list_end_;                                               \
          &I++)                                                          \
 
@@ -144,7 +144,7 @@ MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_value v) { retur
 MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, struct RString *str) { return mrbx_get_const_cstr_from_string(mrb, str); }
 MRBX_INLINE const char *mrbx_get_const_cstr(mrb_state *mrb, mrb_sym sym) { return mrb_sym_name(mrb, sym); }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_get_const_cstr(MRB, V)                                    \
          _Generic(V,                                                    \

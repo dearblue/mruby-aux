@@ -48,7 +48,7 @@ mrbx_class_ptr(mrb_state *mrb, struct RClass *p)
   return mrbx_by_class_ptr(mrb, p);
 }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 #define mrbx_class_ptr(MRB, V)                                          \
         _Generic(V,                                                     \

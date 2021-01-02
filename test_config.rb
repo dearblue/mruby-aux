@@ -40,6 +40,11 @@ config = YAML.load <<'YAML'
       defines: MRB_NO_BOXING
       gems:
       - :core: "mruby-fiber"
+    host-c99:
+      defines: MRB_NO_BOXING
+      c99: true
+      gems:
+      - :core: "mruby-fiber"
     host-nan:
       defines: MRB_NAN_BOXING
     host-word:
@@ -100,10 +105,21 @@ config["builds"].each_pair do |n, c|
     gem __dir__ do |g|
       include_testtools
 
-      if g.cc.command =~ /\\b(?:g?cc|clang)\\d*\\b/
-        g.cc.flags << "-std=c11" unless c["c++abi"]
-        g.cc.flags << "-pedantic"
-        g.cc.flags << %w(-Wall -Wextra)
+      if g.cc.command =~ /\b(?:g?cc|clang)\d*\b/
+        g.cxx.flags << "-std=c++11"
+        g.cxx.flags << %w(-Wpedantic -Wall -Wextra)
+        case
+        when c["c++abi"]
+          g.cc.flags << "-std=c++11"
+        when c["c99"]
+          g.cc.flags << "-std=c99"
+        else
+          g.cc.flags << "-std=c11"
+        end
+        g.cc.flags << %w(-Wpedantic -Wall -Wextra -Wno-unused-parameter)
+        unless ENV["CC"] =~ /gcc/
+          g.cc.flags << "-Wno-newline-eof"
+        end
       end
     end
   end

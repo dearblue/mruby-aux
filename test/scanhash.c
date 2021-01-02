@@ -30,10 +30,10 @@ scan_static_keywords(mrb_state *mrb, mrb_value mAuxScanHashTest)
   mrb_value req = mrb_const_get(mrb, mAuxScanHashTest, id_REQUIREMENT_KEYWORD);
 
   rest = MRBX_SCANHASH(mrb, target, rest,
-                       MRBX_SCANHASH_ARG("a", &a, get_default_value(mrb, defaults_ary, 0, req)),
-                       MRBX_SCANHASH_ARG("b", &b, get_default_value(mrb, defaults_ary, 1, req)),
-                       MRBX_SCANHASH_ARG("c", &c, get_default_value(mrb, defaults_ary, 2, req)),
-                       MRBX_SCANHASH_ARG("d", &d, get_default_value(mrb, defaults_ary, 3, req)));
+                       MRBX_SCANHASH_ARGS("a", &a, get_default_value(mrb, defaults_ary, 0, req)),
+                       MRBX_SCANHASH_ARGS("b", &b, get_default_value(mrb, defaults_ary, 1, req)),
+                       MRBX_SCANHASH_ARGS("c", &c, get_default_value(mrb, defaults_ary, 2, req)),
+                       MRBX_SCANHASH_ARGS("d", &d, get_default_value(mrb, defaults_ary, 3, req)));
 
   {
     mrb_value args[] = { rest, a, b, c, d };

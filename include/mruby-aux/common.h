@@ -37,6 +37,10 @@
 
 #include <mruby.h>
 
+#ifndef __STDC_VERSION__
+# define __STDC_VERSION__ 0
+#endif
+
 #ifndef mrbx_restrict
 # ifdef mrb_restrict
 #  define mrbx_restrict mrb_restrict
@@ -118,15 +122,15 @@
 #include "compat/object.h"
 #include <string.h>
 
+MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
+
 #ifdef __cplusplus
 
-MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
 MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_sym sym) { return sym; }
 MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, const char *sym) { return mrb_intern_cstr(mrb, sym); }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
-MRBX_INLINE mrb_sym mrbx_symbol(mrb_state *mrb, mrb_value sym) { return mrb_symbol(sym); }
 MRBX_INLINE mrb_sym mrbx_symbol_sym(mrb_state *mrb, mrb_sym sym) { return sym; }
 MRBX_INLINE mrb_sym mrbx_intern_lit(mrb_state *mrb, const char *str) { return mrb_intern_static(mrb, str, strlen(str)); }
 

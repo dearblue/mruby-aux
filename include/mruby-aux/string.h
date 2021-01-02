@@ -74,7 +74,7 @@ mrbx_str_new_cstr(mrb_state *mrb, const char *str)
 MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, struct RString *p) { return mrbx_by_str_ptr(mrb, p); }
 MRBX_INLINE struct RString * mrbx_str_ptr(mrb_state *mrb, const char *str) { return mrbx_str_new_cstr(mrb, str); }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define MRBX_STR_NEW_CSTR_FUNC(CSTR)                                   \
          (MRBX_LITERAL_P(CSTR) ?                                        \
@@ -123,7 +123,7 @@ mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
   return mrbx_str_set_len_value(mrb, dest, len);
 }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_str_set_len(MRB, DEST, LEN)                               \
          _Generic(DEST,                                                 \
@@ -136,7 +136,7 @@ mrbx_str_set_len(mrb_state *mrb, mrb_value dest, size_t len)
 MRBX_INLINE struct RString *
 mrbx_str_reserve(mrb_state *mrb, struct RString *str, size_t len)
 {
-  if (RSTR_CAPA(str) < len) {
+  if ((size_t)RSTR_CAPA(str) < len) {
 #if SIZE_MAX >= MRB_INT_MAX
     if (len >= (size_t)MRB_INT_MAX) {
       mrb_raise(mrb, E_RUNTIME_ERROR, "string capacity too large");
@@ -169,7 +169,7 @@ mrbx_str_reserve(mrb_state *mrb, mrb_value str, size_t len)
   return mrbx_str_reserve_value(mrb, str, len);
 }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_str_reserve(MRB, STR, LEN)                                \
          _Generic((STR),                                                \
@@ -208,7 +208,7 @@ mrbx_str_recycle(mrb_state *mrb, mrb_value str, size_t len)
   return mrbx_str_recycle_value(mrb, str, len);
 }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_str_recycle(MRB, STR, LEN)                                \
          _Generic((STR),                                                \
@@ -235,7 +235,7 @@ mrbx_str_force_recycle_value(mrb_state *mrb, mrb_value str, size_t len)
     return RSTRING(mrb_str_buf_new(mrb, len));
   } else {
     mrb_check_type(mrb, str, MRB_TT_STRING);
-    return mrbx_str_reserve(mrb, RString(str), len);
+    return mrbx_str_reserve(mrb, mrb_str_ptr(str), len);
   }
 }
 
@@ -247,7 +247,7 @@ mrbx_str_force_recycle(mrb_state *mrb, mrb_value str, size_t len)
   return mrbx_str_force_recycle_value(mrb, str, len);
 }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_str_force_recycle(MRB, STR, LEN)                          \
          _Generic(STR,                                                  \

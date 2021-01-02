@@ -35,7 +35,7 @@ mrbx_by_hash_ptr(mrb_state *mrb, struct RHash *hash)
 
 MRBX_INLINE struct RHash *mrbx_hash_ptr(mrb_state *mrb, struct RHash *p) { return mrbx_by_hash_ptr(mrb, p); }
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define mrbx_hash_ptr(MRB, V)                                          \
          _Generic((V),                                                  \

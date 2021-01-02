@@ -9,7 +9,7 @@ match_kwarg_p(mrb_state *mrb, mrb_value obj)
     return false;
   }
 
-  FOREACH_RARRAY(*k, mrb_hash_keys(mrb, obj)) {
+  FOREACH_RARRAY(*k, mrbx_expect_ary_ptr_value(mrb, mrb_hash_keys(mrb, obj))) {
     if (!mrb_symbol_p(*k)) {
       return false;
     }

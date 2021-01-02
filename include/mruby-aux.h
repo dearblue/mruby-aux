@@ -57,7 +57,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
 
 # define mrb_value(V)   mrbx_obj_value(mrb, (V))
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
 # define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR)                             \
          (MRBX_LITERAL_P(CSTR) ?                                        \

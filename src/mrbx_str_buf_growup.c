@@ -19,7 +19,7 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
   str = mrbx_str_force_recycle(mrb, str, first_growup);
 
   size_t off = RSTR_LEN(str);
-  mrb_int grow = (first_growup < maxsize ? first_growup : maxsize);
+  size_t grow = (first_growup < maxsize ? first_growup : maxsize);
 
   for (;;) {
     mrbx_str_reserve(mrb, str, off + grow);
@@ -28,7 +28,7 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
     intptr_t s = func(mrb, RSTR_PTR(str) + off, &step, user);
     off += step;
     if (s >= 0) {
-      if ((off + s) < s || (off + s) > maxsize) {
+      if ((off + s) < (size_t)s || (off + s) > maxsize) {
         RSTR_SET_LEN(str, off);
 
         mrb_raise(mrb, E_RUNTIME_ERROR,

@@ -69,8 +69,10 @@ MRB_API mrb_value mrbx_scanhash(mrb_state *mrb, mrb_value hash, mrb_value rest, 
  */
 #define MRBX_SCANHASH_ARG(name, dest, vdefault) { SYMBOL(name), (dest), (vdefault), }
 
-#define MRBX_SCANHASH_ARGS(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
+#define MRBX_SCANHASH_ARGS(name, dest, vdefault) { MRBX_INTERN_LIT(name), (dest), (vdefault) }
 #define MRBX_SCANHASH_ARGI(name, dest, vdefault) MRBX_SCANHASH_ARG((name), (dest), (vdefault))
+
+#define MRBX_INTERN_LIT(STR) mrb_intern_lit(mrb, STR)
 
 MRB_END_DECL
 
