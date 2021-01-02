@@ -68,6 +68,19 @@ mrb_value *mrbx_vm_stack_extend(mrb_state *mrb, mrb_int room);
  */
 int mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, const mrb_value argv[], mrb_value block, mrb_sym mid);
 
+/**
+ * 現在の `ci` の引数から先頭を取り除いて戻り値とします。
+ * 引数が空であれば `mrb_undef_value()` を返します。
+ */
+mrb_value mrbx_vm_shift_args(mrb_state *mrb);
+
+/**
+ * 現在の `ci` の引数の先頭に与えられたオブジェクトを追加します。
+ *
+ * 戻り値は専有したスタックの個数を意味します。`mrb_vm_run()` の第四引数 `stack_keep` としてそのまま渡すことを意図しています。
+ */
+int mrbx_vm_unshift_args(mrb_state *mrb, mrb_value obj);
+
 #ifdef MRUBY_AUX_INTERNALS
 mrb_value mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps);
 #endif
