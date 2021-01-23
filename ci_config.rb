@@ -15,6 +15,10 @@ module Internals
       [*self["defines"]].include?("MRB_NAN_BOXING")
     end
 
+    def boxword?
+      [*self["defines"]].include?("MRB_WORD_BOXING")
+    end
+
     def cxxabi?
       !!self["c++abi"]
     end
@@ -58,8 +62,7 @@ YAML
 MRuby::Lockfile.disable rescue nil
 
 config["builds"].each_pair do |n, c|
-  next if (c.boxnan? || c.cxxabi? || c.cxxexc?) && MRuby::Source::MRUBY_RELEASE_NO < 10300
-  next if (c.boxnan?) && MRuby::Source::MRUBY_RELEASE_NO == 20001
+  next if MRuby::Source::MRUBY_RELEASE_NO < 20100 && (c.boxnan? || c.boxword? || c.cxxabi? || c.cxxexc?)
 
   MRuby::Build.new(n) do |conf|
     toolchain (ENV["CC"] =~ /gcc/ ? "gcc" : "clang")
