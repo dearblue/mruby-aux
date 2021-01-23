@@ -30,6 +30,7 @@ using Internals
 config = YAML.load <<'YAML'
   common:
     gems:
+    - :core: mruby-print
   builds:
     host:
       defines: MRB_NO_BOXING
