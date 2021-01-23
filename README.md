@@ -123,16 +123,17 @@ mrbx_mob_cleanup(mrb, mob);   // mob オブジェクトに結び付けられた�
 
 ## Specification
 
-  * Package name: mruby-aux
-  * Version: 0.9
-  * Product quality: PROTOTYPE
-  * Author: [dearblue](https://github.com/dearblue)
-  * Project page: <https://github.com/dearblue/mruby-aux>
-  * Licensing: [Creative Commons Zero License (CC0 / Public Domain)](LICENSE)
-  * Requirement language features:
-      * generic selection (C11) or function overloading (C++)
-      * variadic macros (`__VA_ARGS__`) (C99 or C++11)
-      * compound literals (C99)
-      * flexible array member (C99)
-      * variable length arrays (C99)
-  * Dependency external mrbgems: (NONE)
+  - Package name: mruby-aux
+  - Version: 0.9.1
+  - Product quality: PROTOTYPE
+  - Author: [dearblue](https://github.com/dearblue)
+  - Project page: <https://github.com/dearblue/mruby-aux>
+  - Licensing: [Creative Commons Zero License (CC0 / Public Domain)](LICENSE)
+  - Requirement language features:
+      - variadic macros (`__VA_ARGS__`) (C99 or C++11)
+      - compound literals (C99)
+      - flexible array member (C99)
+      - variable length arrays (C99)
+  - Optional language features:
+      - generic selection (C11) or function overloading (C++)
+  - Dependency external mrbgems: (NONE)

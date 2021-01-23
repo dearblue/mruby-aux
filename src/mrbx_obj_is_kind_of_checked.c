@@ -12,20 +12,19 @@ module_dig_common(mrb_state *mrb, struct RClass *start_module, int num, void **p
   struct RClass *m = (start_module ? start_module : mrb->object_class);
   mrb_value v = mrb_obj_value(m);
 
-  for (; num > 0; num --, path ++) {
+  for (; num > 0; num--, path++) {
     v = mrb_const_get(mrb, v, intern(mrb, *path));
     switch (mrb_type(v)) {
-      case MRB_TT_CLASS:
-      case MRB_TT_MODULE:
-      case MRB_TT_SCLASS:
-        break;
-      default:
-        if (noraise) {
-          return NULL;
-        }
-        else {
-          mrb_raise(mrb, E_TYPE_ERROR, "not a class/module");
-        }
+    case MRB_TT_CLASS:
+    case MRB_TT_MODULE:
+    case MRB_TT_SCLASS:
+      break;
+    default:
+      if (noraise) {
+        return NULL;
+      } else {
+        mrb_raise(mrb, E_TYPE_ERROR, "not a class/module");
+      }
     }
     m = mrb_class_ptr(v);
   }

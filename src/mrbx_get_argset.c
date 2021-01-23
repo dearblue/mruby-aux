@@ -1,6 +1,7 @@
 #include <mruby-aux/utils.h>
 #include <mruby/hash.h>
 #include <stdbool.h>
+#include <mruby-aux/vmext.h>
 
 static bool
 match_kwarg_p(mrb_state *mrb, mrb_value obj)
@@ -9,7 +10,7 @@ match_kwarg_p(mrb_state *mrb, mrb_value obj)
     return false;
   }
 
-  FOREACH_RARRAY(*k, mrb_hash_keys(mrb, obj)) {
+  FOREACH_RARRAY(*k, mrbx_expect_ary_ptr_value(mrb, mrb_hash_keys(mrb, obj))) {
     if (!mrb_symbol_p(*k)) {
       return false;
     }
@@ -27,19 +28,19 @@ get_argset(mrb_state *mrb, mrb_int *argc, const mrb_value **argv, mrb_value *arg
   mrb_value block0;
 
   if (argc0 < 0) {
-    struct RArray *splat = mrb_ary_ptr(c->stack[1]);
+    struct RArray *splat = mrb_ary_ptr(mrbx_vm_top_stacks(c)[1]);
     argc0 = ARY_LEN(splat);
     argv0 = ARY_PTR(splat);
-    block0 = c->stack[2];
+    block0 = mrbx_vm_top_stacks(c)[2];
   } else {
-    argv0 = c->stack + 1;
-    block0 = c->stack[1 + argc0];
+    argv0 = mrbx_vm_top_stacks(c) + 1;
+    block0 = mrbx_vm_top_stacks(c)[1 + argc0];
   }
 
   if (argkw) {
     if (argc0 > 0 && match_kwarg_p(mrb, argv0[argc0 - 1])) {
       *argkw = argv0[argc0 - 1];
-      argc0 --;
+      argc0--;
     } else {
       *argkw = mrb_nil_value();
     }
@@ -90,4 +91,12 @@ mrbx_get_argblock(mrb_state *mrb)
   mrb_value block;
   get_argset(mrb, NULL, NULL, NULL, &block);
   return block;
+}
+
+MRB_API mrb_bool
+mrbx_given_block_p(mrb_state *mrb)
+{
+  mrb_value block;
+  get_argset(mrb, NULL, NULL, NULL, &block);
+  return !mrb_nil_p(block);
 }

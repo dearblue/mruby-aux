@@ -7,11 +7,14 @@ mrbx_vm_cipop(mrb_state *mrb)
 {
   struct mrb_context *c = mrb->c;
 
-  if (c->ci->env) {
-    mrb_env_unshare(mrb, c->ci->env);
+  struct REnv *e = mrb_vm_ci_env(c->ci);
+  if (e) {
+    mrb_env_unshare(mrb, e);
   }
+#if MRUBY_RELEASE_NO < 30000
   c->stack = c->ci->stackent;
-  c->ci --;
+#endif
+  c->ci--;
 
   return c->ci;
 }

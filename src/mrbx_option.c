@@ -195,8 +195,8 @@ option_parse_long(mrbx_option *o)
         if (term) {
           o->arg = term + 1;
         } else if (o->argc > 1) {
-          o->arg = *o->argv ++;
-          o->argc --;
+          o->arg = *o->argv++;
+          o->argc--;
         } else {
           o->arg = o->opt + optlen;
         }
@@ -223,14 +223,14 @@ option_parse(mrbx_option *o)
     int t = *o->opt;
 
     if (t == e->opt || t == -e->opt) {
-      o->opt ++;
+      o->opt++;
 
       if (e->arg) {
         if (*o->opt != '\0') {
           o->arg = o->opt;
         } else if (o->argc > 0) {
-          o->arg = *o->argv ++;
-          o->argc --;
+          o->arg = *o->argv++;
+          o->argc--;
         } else {
           o->arg = o->opt;
         }
@@ -267,12 +267,12 @@ mrbx_option_parse(mrbx_option *o)
       OPTION_COMPLETED(MRBX_OPTION_BREAK);
     }
 
-    o->opt ++;
-    o->argv ++;
-    o->argc --;
+    o->opt++;
+    o->argv++;
+    o->argc--;
 
     if (*o->opt == '-') {
-      o->opt ++;
+      o->opt++;
 
       if (*o->opt == '\0') {
         OPTION_COMPLETED(MRBX_OPTION_STOP);

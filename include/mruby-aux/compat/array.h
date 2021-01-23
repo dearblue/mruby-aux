@@ -22,24 +22,24 @@
 
 /* ARY_PTR は 1.4.0 で追加 */
 #ifndef ARY_PTR
-#   define ARY_PTR(A)   ((const mrb_value*)(A)->ptr)
+# define ARY_PTR(A)     ((const mrb_value*)(A)->ptr)
 #endif
 
 /* ARY_LEN は 1.4.0 で追加 */
 #ifndef ARY_LEN
-#   define ARY_LEN(A)   ((A)->len)
+# define ARY_LEN(A)     ((A)->len)
 #endif
 
 #ifndef RARY_PTR
-#   define RARY_PTR(A)  ARY_PTR((A))
+# define RARY_PTR(A)    ARY_PTR((A))
 #endif
 
 #ifndef RARY_LEN
-#   define RARY_LEN(A)  ARY_LEN((A))
+# define RARY_LEN(A)    ARY_LEN((A))
 #endif
 
 #ifndef ARY_SET_LEN
-#   define ARY_SET_LEN(A, L) ((A)->len = (L))
+# define ARY_SET_LEN(A, L) ((A)->len = (L))
 #endif
 
 #if MRUBY_RELEASE_NO < 20001

@@ -27,8 +27,8 @@
 
 #define MRB             mrb_state *mrb
 
-#define MRBX_OBJ_NEW(MRB, KLASS, ...)                                       \
-        mrb_obj_new(MRB, KLASS, MRBX_LIST(const mrb_value, __VA_ARGS__))    \
+#define MRBX_OBJ_NEW(MRB, KLASS, ...)                                   \
+        mrb_obj_new(MRB, KLASS, MRBX_LIST(const mrb_value, __VA_ARGS__)) \
 
 struct RIstruct;
 
@@ -57,35 +57,35 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
 
 # define mrb_value(V)   mrbx_obj_value(mrb, (V))
 
-#else
+#elif __STDC_VERSION__ >= 201112L
 
-# define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR)                                 \
-        (MRBX_LITERAL_P(CSTR) ?                                             \
-         mrbx_value_str_new_lit :                                           \
-         mrbx_value_str_new_cstr)                                           \
+# define MRBX_VALUE_STR_NEW_CSTR_FUNC(CSTR)                             \
+         (MRBX_LITERAL_P(CSTR) ?                                        \
+          mrbx_value_str_new_lit :                                      \
+          mrbx_value_str_new_cstr)                                      \
 
-# define mrb_value(V)                                                       \
-        _Generic((V),                                                       \
-                 mrb_value:             mrbx_value_to_value,                \
-                 struct RBasic *:       mrbx_ptr_to_value,                  \
-                 struct RObject *:      mrbx_ptr_to_value,                  \
-                 struct RClass *:       mrbx_ptr_to_value,                  \
-                 struct RArray *:       mrbx_ptr_to_value,                  \
-                 struct RHash *:        mrbx_ptr_to_value,                  \
-                 struct RString *:      mrbx_ptr_to_value,                  \
-                 struct RProc *:        mrbx_ptr_to_value,                  \
-                 struct RRange *:       mrbx_ptr_to_value,                  \
-                 struct RFiber *:       mrbx_ptr_to_value,                  \
-                 struct RException *:   mrbx_ptr_to_value,                  \
-                 struct RData *:        mrbx_ptr_to_value,                  \
-                 struct RIstruct *:     mrbx_ptr_to_value,                  \
-                 mrb_int:               mrbx_fixnum_value,                  \
-                 const mrb_int:         mrbx_fixnum_value,                  \
-                 mrb_float:             mrb_float_value,                    \
-                 const mrb_float:       mrb_float_value,                    \
-                 char *:                MRBX_VALUE_STR_NEW_CSTR_FUNC(V),    \
-                 const char *:          MRBX_VALUE_STR_NEW_CSTR_FUNC(V))    \
-            (mrb, (V))                                                      \
+# define mrb_value(V)                                                   \
+         _Generic(V,                                                    \
+                  mrb_value:             mrbx_value_to_value,           \
+                  struct RBasic *:       mrbx_ptr_to_value,             \
+                  struct RObject *:      mrbx_ptr_to_value,             \
+                  struct RClass *:       mrbx_ptr_to_value,             \
+                  struct RArray *:       mrbx_ptr_to_value,             \
+                  struct RHash *:        mrbx_ptr_to_value,             \
+                  struct RString *:      mrbx_ptr_to_value,             \
+                  struct RProc *:        mrbx_ptr_to_value,             \
+                  struct RRange *:       mrbx_ptr_to_value,             \
+                  struct RFiber *:       mrbx_ptr_to_value,             \
+                  struct RException *:   mrbx_ptr_to_value,             \
+                  struct RData *:        mrbx_ptr_to_value,             \
+                  struct RIstruct *:     mrbx_ptr_to_value,             \
+                  mrb_int:               mrbx_fixnum_value,             \
+                  const mrb_int:         mrbx_fixnum_value,             \
+                  mrb_float:             mrb_float_value,               \
+                  const mrb_float:       mrb_float_value,               \
+                  char *:                MRBX_VALUE_STR_NEW_CSTR_FUNC(V), \
+                  const char *:          MRBX_VALUE_STR_NEW_CSTR_FUNC(V) \
+         )(mrb, V)                                                      \
 
 #endif
 

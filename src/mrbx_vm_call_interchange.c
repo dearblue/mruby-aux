@@ -27,8 +27,12 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, mrb_method
   mrb_callinfo *ci = mrb->c->ci;
   ci->mid = mid;
   ci->proc = proc;
+#if MRUBY_RELEASE_NO < 30000
   ci->env = NULL;
   ci->target_class = target_class;
+#else
+  ci->u.target_class = target_class;
+#endif
   int keeps = mrbx_vm_set_args(mrb, ci, self, argc, argv, block, original_mid);
   return mrbx_vm_intercall(mrb, ci, proc, cfunc, self, keeps);
 }

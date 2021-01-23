@@ -13,7 +13,7 @@ detach_stack(mrb_state *mrb, const mrb_value *src, size_t num)
   }
 
   mrb_value *dest = (mrb_value *)mrb_malloc(mrb, sizeof(mrb_value) * num);
-  while (num -- > 0) {
+  while (num-- > 0) {
     dest[num] = src[num];
   }
 

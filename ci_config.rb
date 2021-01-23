@@ -15,6 +15,10 @@ module Internals
       [*self["defines"]].include?("MRB_NAN_BOXING")
     end
 
+    def boxword?
+      [*self["defines"]].include?("MRB_WORD_BOXING")
+    end
+
     def cxxabi?
       !!self["c++abi"]
     end
@@ -30,21 +34,16 @@ using Internals
 config = YAML.load <<'YAML'
   common:
     gems:
-    - :core: "mruby-sprintf"
-    - :core: "mruby-print"
-    - :core: "mruby-bin-mirb"
-    - :core: "mruby-bin-mruby"
-    - :core: "mruby-bin-mrbc"
+    - :core: mruby-print
   builds:
     host:
       defines: MRB_NO_BOXING
       gems:
-      - :core: "mruby-fiber"
+      - :core: mruby-bin-mrbc
     host-c99:
       defines: MRB_NO_BOXING
       c99: true
       gems:
-      - :core: "mruby-fiber"
     host-nan:
       defines: MRB_NAN_BOXING
     host-word:
@@ -58,37 +57,21 @@ config = YAML.load <<'YAML'
     host++-word:
       defines: MRB_WORD_BOXING
       c++abi: true
-    host++exc:
-      defines: MRB_NO_BOXING
-      c++exc: true
-    host++exc-nan:
-      defines: MRB_NAN_BOXING
-      c++exc: true
-    host++exc-word:
-      defines: MRB_WORD_BOXING
-      c++exc: true
-    host32:
-      defines: MRB_NO_BOXING
-      flags: -m32
-    host32-nan:
-      defines: MRB_NAN_BOXING
-      flags: -m32
-    host32-word:
-      defines: MRB_WORD_BOXING
-      flags: -m32
 YAML
 
+MRuby::Lockfile.disable rescue nil
+
 config["builds"].each_pair do |n, c|
-  next if (c.boxnan? || c.cxxabi? || c.cxxexc?) && MRuby::Source::MRUBY_RELEASE_NO < 10300
-  next if (c.boxnan?) && MRuby::Source::MRUBY_RELEASE_NO == 20001
+  next if MRuby::Source::MRUBY_RELEASE_NO < 20100 && (c.boxnan? || c.boxword? || c.cxxabi? || c.cxxexc?)
 
   MRuby::Build.new(n) do |conf|
-    toolchain :clang
+    toolchain (ENV["CC"] =~ /clang/ ? "clang" : "gcc")
 
     conf.build_dir = File.join("build", c["build_dir"] || name)
 
     enable_debug
     enable_test
+    enable_bintest
     enable_cxx_abi if c["c++abi"]
 
     cc.defines << [*c["defines"]] << [*c["cdefines"]]
@@ -99,8 +82,6 @@ config["builds"].each_pair do |n, c|
 
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
-
-    gem core: "mruby-io" if MRuby::Source::MRUBY_RELEASE_NO >= 10400
 
     gem __dir__ do |g|
       include_testtools
@@ -124,3 +105,4 @@ config["builds"].each_pair do |n, c|
     end
   end
 end
+

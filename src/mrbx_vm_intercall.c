@@ -14,7 +14,7 @@ mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func
    *    => callinfo を1つ積み増しして、戻った時に目的となるメソッドが実行されるようにする
    */
 
-  ci->env = NULL;
+  mrb_vm_ci_env_set(ci, NULL);
 
   if (cfunc) {
     int ai = mrb_gc_arena_save(mrb);
@@ -30,7 +30,10 @@ mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func
     mrb->c->ci = mrb->c->cibase + idx;
     return ret;
   } else {
-    mrbx_vm_cipush(mrb, proc->body.irep->iseq, 0, 0, NULL, NULL, 0, 0);
+    mrbx_vm_cipush(mrb, 0, 0, NULL, NULL, 0, 0);
+#if MRUBY_RELEASE_NO < 30000
+    ci->pc = proc->body.irep->iseq;
+#endif
     return recv;
   }
 }

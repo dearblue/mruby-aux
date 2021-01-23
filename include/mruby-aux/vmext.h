@@ -40,8 +40,8 @@ mrb_value mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, 
 /*
  * `mrb->c->ci` に追加します。
  */
-mrb_callinfo *mrbx_vm_cipush(mrb_state *mrb, const mrb_code *pc, int push_stacks, int acc,
-    struct RClass *target_class, struct RProc *proc, mrb_sym mid, int argc);
+mrb_callinfo *mrbx_vm_cipush(mrb_state *mrb, int push_stacks, int16_t acc,
+    struct RClass *target_class, struct RProc *proc, mrb_sym mid, int16_t argc);
 
 /*
  * 現在の`mrb->c->ci` を削除します。
@@ -68,8 +68,82 @@ mrb_value *mrbx_vm_stack_extend(mrb_state *mrb, mrb_int room);
  */
 int mrbx_vm_set_args(mrb_state *mrb, mrb_callinfo *ci, mrb_value recv, int argc, const mrb_value argv[], mrb_value block, mrb_sym mid);
 
+/**
+ * 現在の `ci` の引数から先頭を取り除いて戻り値とします。
+ * 引数が空であれば `mrb_undef_value()` を返します。
+ */
+mrb_value mrbx_vm_shift_args(mrb_state *mrb);
+
+/**
+ * 現在の `ci` の引数の先頭に与えられたオブジェクトを追加します。
+ *
+ * 戻り値は専有したスタックの個数を意味します。`mrb_vm_run()` の第四引数 `stack_keep` としてそのまま渡すことを意図しています。
+ */
+int mrbx_vm_unshift_args(mrb_state *mrb, mrb_value obj);
+
+/**
+ * 現在の呼び出しレベルのスタックポインタを取得します。
+ */
+static inline mrb_value *mrbx_vm_top_stacks(const struct mrb_context *c);
+
+/**
+ * コールスタックを遡ってスタックポインタを取得します。
+ * 0 を指定する場合、結果は `mrbx_vm_top_stacks()` と同じです。
+ */
+static inline mrb_value *mrbx_vm_stacks(const struct mrb_context *c, size_t backref);
+
+/**
+ *
+ */
+static inline mrb_value *mrbx_vm_stacks_nocheck(const struct mrb_context *c, size_t backref);
+
 #ifdef MRUBY_AUX_INTERNALS
 mrb_value mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps);
 #endif
+
+
+static inline mrb_value *
+mrbx_vm_top_stacks(const struct mrb_context *c)
+{
+#if MRUBY_RELEASE_NO >= 30000
+  if (c->ci) {
+    return c->ci->stack;
+  } else {
+    return c->stbase;
+  }
+#else
+  return c->stack;
+#endif
+}
+
+static inline mrb_value *
+mrbx_vm_stacks(const struct mrb_context *c, size_t backref)
+{
+  if (backref == 0) {
+    return mrbx_vm_top_stacks(c);
+  }
+
+  ptrdiff_t cinum = c->ci - c->cibase;
+  if (cinum <= 0 || (size_t)cinum < backref) {
+    return NULL;
+  }
+
+  return mrbx_vm_stacks_nocheck(c, backref);
+}
+
+static inline mrb_value *
+mrbx_vm_stacks_nocheck(const struct mrb_context *c, size_t backref)
+{
+  mrb_assert(backref > 0);
+  mrb_assert(c->cibase != NULL);
+  mrb_assert(c->ci - c->cibase > 0);
+  mrb_assert((size_t)(c->ci - c->cibase) < backref);
+
+#if MRUBY_RELEASE_NO < 30000
+  return c->ci[-(backref - 1)].stackent;
+#else
+  return c->ci[-backref].stack;
+#endif
+}
 
 #endif /* MRUBY_AUX_VMEXT_H */
