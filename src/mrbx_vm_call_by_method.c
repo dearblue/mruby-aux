@@ -14,7 +14,7 @@ mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t m,
   mrbx_method_extract(mrb, m, argc, &proc, &cfunc);
 
   int ai = mrb_gc_arena_save(mrb);
-  mrb_callinfo *ci = mrbx_vm_cipush(mrb, NULL, 0, -2 /* ACC_DIRECT */, tc, proc, mid, 0 /* dummy for argc */);
+  mrb_callinfo *ci = mrbx_vm_cipush(mrb, 0, -2 /* ACC_DIRECT */, tc, proc, mid, 0 /* dummy for argc */);
   int keeps = mrbx_vm_set_args(mrb, ci, recv, argc, argv, block, 0);
 
   mrb_value ret;

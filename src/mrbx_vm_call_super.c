@@ -1,6 +1,6 @@
 #include <mruby-aux/vmext.h>
 #include <mruby/class.h>
-#include <mruby/proc.h>
+#include <mruby-aux/proc.h>
 
 mrb_value
 mrbx_vm_call_super(mrb_state *mrb, mrb_value recv, int argc, const mrb_value argv[], mrb_value block)
@@ -14,7 +14,7 @@ nomethod_err:
               "super: no superclass method");
   }
 
-  struct RClass *tc = ci->target_class;
+  struct RClass *tc = mrb_vm_ci_target_class(ci);
   if (tc == NULL) { goto nomethod_err; }
   tc = tc->super;
   if (tc == NULL) { goto nomethod_err; }

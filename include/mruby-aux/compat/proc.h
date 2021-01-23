@@ -41,4 +41,31 @@ typedef struct RProc *mrb_method_t;
 # define MRB_METHOD_NOARG_SET(M)    do { } while (0)
 #endif
 
+#if MRUBY_RELEASE_NO < 30000
+static inline void
+mrb_vm_ci_proc_set(mrb_callinfo *ci, struct RProc *proc)
+{
+  ci->proc = proc;
+  ci[1].pc = (proc && !MRB_PROC_CFUNC_P(proc)) ? proc->body.irep->iseq : NULL;
+}
+
+static inline struct RClass *
+mrb_vm_ci_target_class(mrb_callinfo *ci)
+{
+  return ci->target_class;
+}
+
+static inline struct REnv *
+mrb_vm_ci_env(mrb_callinfo *ci)
+{
+  return ci->env;
+}
+
+static inline void
+mrb_vm_ci_env_set(mrb_callinfo *ci, struct REnv *env)
+{
+  ci->env = env;
+}
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_PROC_H */

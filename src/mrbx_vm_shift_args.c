@@ -4,7 +4,7 @@
 mrb_value
 mrbx_vm_shift_args(mrb_state *mrb)
 {
-  mrb_value *argp = mrb->c->stack + 1 /* skip self */;
+  mrb_value *argp = mrbx_vm_top_stacks(mrb->c) + 1 /* skip self */;
 
   if (mrb->c->ci->argc < 0) {
     if (RARRAY_LEN(*argp) > 0) {
