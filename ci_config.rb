@@ -65,12 +65,13 @@ config["builds"].each_pair do |n, c|
   next if MRuby::Source::MRUBY_RELEASE_NO < 20100 && (c.boxnan? || c.boxword? || c.cxxabi? || c.cxxexc?)
 
   MRuby::Build.new(n) do |conf|
-    toolchain (ENV["CC"] =~ /gcc/ ? "gcc" : "clang")
+    toolchain (ENV["CC"] =~ /clang/ ? "clang" : "gcc")
 
     conf.build_dir = File.join("build", c["build_dir"] || name)
 
     enable_debug
     enable_test
+    enable_bintest
     enable_cxx_abi if c["c++abi"]
 
     cc.defines << [*c["defines"]] << [*c["cdefines"]]
