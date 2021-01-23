@@ -33,7 +33,7 @@ config = YAML.load <<'YAML'
   builds:
     host:
       defines: MRB_NO_BOXING
-      gems:
+      gems: mruby-bin-mrbc
     host-c99:
       defines: MRB_NO_BOXING
       c99: true
