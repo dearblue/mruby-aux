@@ -118,6 +118,7 @@
 # endif
 #endif
 
+#include "version.h"
 #include "compat/object.h"
 #include <string.h>
 
