@@ -1,6 +1,7 @@
 #define MRUBY_AUX_INTERNALS 1
 #include <mruby-aux/vmext.h>
 #include <mruby-aux/compat/mruby.h>
+#include "vm-common.h"
 
 mrb_value
 mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps)
@@ -18,19 +19,19 @@ mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func
 
   if (cfunc) {
     int ai = mrb_gc_arena_save(mrb);
-    ci->acc = -2; /* ACC_DIRECT */
+    MRBX_CI_SET_CINFO_DIRECT(ci);
     mrb_value ret = cfunc(mrb, recv);
     mrb_gc_arena_restore(mrb, ai);
     mrb_gc_protect(mrb, ret);
     return ret;
-  } else if (ci->acc < 0 || ci == mrb->c->cibase || ci[-1].proc == NULL || MRB_PROC_CFUNC_P(ci[-1].proc)) {
+  } else if (!MRBX_CI_CINFO_NONE_P(ci) || ci == mrb->c->cibase || ci[-1].proc == NULL || MRB_PROC_CFUNC_P(ci[-1].proc)) {
     ptrdiff_t idx = mrb->c->ci - mrb->c->cibase;
-    ci->acc = -1; /* ACC_SKIP */
+    MRBX_CI_SET_CINFO_SKIP(ci);
     mrb_value ret = mrb_vm_run(mrb, proc, recv, keeps);
     mrb->c->ci = mrb->c->cibase + idx;
     return ret;
   } else {
-    mrbx_vm_cipush(mrb, 0, 0, NULL, NULL, 0, 0);
+    mrbx_vm_cipush(mrb, 0, MRBX_CI_CINFO_NONE, NULL, NULL, 0, 0);
 #if MRUBY_RELEASE_NO < 30000
     ci->pc = proc->body.irep->iseq;
 #endif
