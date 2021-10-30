@@ -1,6 +1,7 @@
 #ifndef MRUBY_AUX_COMMON_H
 #define MRUBY_AUX_COMMON_H 1
 
+#include <mruby.h>
 #include <sys/types.h> /* for ssize_t */
 
 #ifndef ELEMENTOF
@@ -34,8 +35,6 @@
 /* NOTE: キャストしているのは負数シフトで報告される警告を避けるため */
 # define MRBX_FLOAT_OUT_OF_INTEGER_P(N) (!((N) < (1LL << MRBX_FLOAT_MATN_DIG) && (N) > (int64_t)((uint64_t)-1LL << MRBX_FLOAT_MATN_DIG)))
 #endif
-
-#include <mruby.h>
 
 #ifndef __STDC_VERSION__
 # define __STDC_VERSION__ 0
