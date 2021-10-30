@@ -32,7 +32,7 @@ mrbx_taste_irep_buf(mrb_state *mrb, const void *buf, size_t bufsize, mrb_value n
   }
 #else
   if (memcmp(bin->major_version, RITE_BINARY_MAJOR_VER, sizeof(bin->major_version)) != 0 ||
-      memcmp(bin->minor_version, RITE_BINARY_MINOR_VER, sizeof(bin->minor_version)) <= 0) {
+      memcmp(bin->minor_version, RITE_BINARY_MINOR_VER, sizeof(bin->minor_version)) > 0) {
     if (raise_if_error) {
       const char binver[5] = {
         (char)bin->major_version[0], (char)bin->major_version[1],

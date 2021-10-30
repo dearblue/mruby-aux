@@ -290,6 +290,15 @@ mrbx_str_getmem(mrb_value str, mrb_int *lenp)
   return MRBX_RSTR_GETMEM(mrb_str_ptr(str), lenp);
 }
 
+MRB_API size_t mrbx_charlen_unsafe(const char *str, const char *end);
+MRB_API size_t mrbx_charlen(const char *str, const char *end);
+MRB_API size_t mrbx_utf8_charlen_unsafe(const char *str, const char *end);
+MRB_API size_t mrbx_utf8_charlen(const char *str, const char *end);
+MRB_API intptr_t mrbx_cstr_size_byte2char(const char *str, const char *end, size_t nbytes);
+MRB_API intptr_t mrbx_utf8_size_byte2char(const char *str, const char *end, size_t nbytes);
+MRB_API size_t mrbx_cstrlen(const char *str, const char *end);
+MRB_API size_t mrbx_utf8_cstrlen(const char *str, const char *end);
+
 MRB_END_DECL
 
 #include "string/growup.h"

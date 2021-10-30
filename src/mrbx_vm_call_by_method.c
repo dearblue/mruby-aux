@@ -2,6 +2,7 @@
 #include <mruby-aux/compat/mruby.h>
 #include <mruby-aux/compat/proc.h>
 #include <mruby-aux/proc.h>
+#include "vm-common.h"
 
 mrb_value
 mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t m,
@@ -14,7 +15,7 @@ mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t m,
   mrbx_method_extract(mrb, m, argc, &proc, &cfunc);
 
   int ai = mrb_gc_arena_save(mrb);
-  mrb_callinfo *ci = mrbx_vm_cipush(mrb, 0, -2 /* ACC_DIRECT */, tc, proc, mid, 0 /* dummy for argc */);
+  mrb_callinfo *ci = mrbx_vm_cipush(mrb, 0, MRBX_CI_CINFO_DIRECT, tc, proc, mid, 0 /* dummy for argc */);
   int keeps = mrbx_vm_set_args(mrb, ci, recv, argc, argv, block, 0);
 
   mrb_value ret;
@@ -22,7 +23,7 @@ mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t m,
     ret = cfunc(mrb, recv);
     mrbx_vm_cipop(mrb);
   } else {
-    ci->acc = -1; /* ACC_SKIP */
+    MRBX_CI_SET_CINFO_SKIP(ci);
     ret = mrb_vm_run(mrb, proc, recv, keeps);
   }
 

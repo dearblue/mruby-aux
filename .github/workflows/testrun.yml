@@ -7,13 +7,14 @@ on:
     branches: "*"
 
 jobs:
-  ubuntu-18-04:
-    runs-on: ubuntu-18.04
-    name: ubuntu-18.04 (mruby-${{matrix.TARGET_MRUBY}})
+  ubuntu-20-04:
+    runs-on: ubuntu-20.04
+    name: ubuntu-20.04 (mruby-${{matrix.TARGET_MRUBY}})
     strategy:
       matrix:
         TARGET_MRUBY:
         - master
+        - 3.0.0
         - 2.1.2
         - 2.1.1
         - 2.1.0
@@ -31,10 +32,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: fetch and extract mruby
-      run: wget -O wget -O- $MRUBY_URL | tar xzf -
+      run: wget -O- $MRUBY_URL | tar xzf -
     - name: build
       run: -|
         rake -vE 'Dir.chdir "mruby-${{matrix.TARGET_MRUBY}}"' clean
         rake -mvE 'Dir.chdir "mruby-${{matrix.TARGET_MRUBY}}"' || rake -vE 'Dir.chdir "mruby-${{matrix.TARGET_MRUBY}}"'
     - name: test
-      run: rake -vE 'Dir.chdir "mruby-${{matrix.TARGET_MRUBY}}"'
+      run: rake -vE 'Dir.chdir "mruby-${{matrix.TARGET_MRUBY}}"' test

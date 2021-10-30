@@ -195,6 +195,14 @@ MRB_API mrb_value mrbx_get_arg1(mrb_state *mrb);
 MRB_API mrb_value mrbx_get_argblock(mrb_state *mrb);
 MRB_API mrb_bool mrbx_given_block_p(mrb_state *mrb);
 
+MRB_INLINE int mrbx_out_of_pointer_p(const char *str, const char *end);
+
+MRB_INLINE int
+mrbx_out_of_pointer_p(const char *str, const char *end)
+{
+  return (str == NULL || str >= end || (end - str) <= 0);
+}
+
 MRB_END_DECL
 
 #endif /* MRUBY_AUX_UTILS_H */
