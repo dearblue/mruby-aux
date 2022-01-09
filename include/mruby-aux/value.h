@@ -3,16 +3,39 @@
 
 #include "common.h"
 #include "compat/value.h"
-#include <mruby/version.h>
+#include <mruby-aux/version.h>
 
 /* The implant immediate values */
 
 #if defined(MRB_NAN_BOXING)
 
-# define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                               \
-         (UINT64_C(0xfff0000000000000) |                                \
-          ((((TT) + UINT64_C(1)) & 0x3f) << 46) |                       \
-          ((uint64_t)(HI) & UINT64_C(0x00003fffffffffff)))              \
+# if MRBX_MRUBY_RELEASE_NO > 30000
+
+#  define MRBX_BOXNAN_IMPLANT_CODE(NANTT, N)                            \
+          (((uint64_t)(NANTT) << 48) |                                  \
+           ((uint64_t)(N) & UINT64_C(0x0000ffffffffffff)))              \
+
+#  define MRBX_BOXNAN_IMPLANT_MISC_CODE(TT, N)                          \
+          MRBX_BOXNAN_IMPLANT_CODE(MRB_NANBOX_TT_MISC,                  \
+                                   ((uint64_t)(TT) << 32) | ((uint32_t)(N) & UINT32_C(0xffffffff))) \
+
+#  define MRBX_BOXNAN_IMPLANT_TYPE(TT, N)                               \
+          ((TT) == MRB_TT_UNDEF ? MRBX_BOXNAN_IMPLANT_MISC_CODE(MRB_TT_UNDEF, 4) : \
+           (TT) == MRB_TT_TRUE ? MRBX_BOXNAN_IMPLANT_MISC_CODE(MRB_TT_TRUE, 1) : \
+           (TT) == MRB_TT_FALSE && (N) == 0 ? MRBX_BOXNAN_IMPLANT_CODE(MRB_NANBOX_TT_OBJECT, 0) : \
+           (TT) == MRB_TT_FALSE ? MRBX_BOXNAN_IMPLANT_MISC_CODE(MRB_TT_FALSE, 1) : \
+           (TT) == MRB_TT_FIXNUM ? MRBX_BOXNAN_IMPLANT_CODE(MRB_NANBOX_TT_INTEGER, N) : \
+           (TT) == MRB_TT_SYMBOL ? MRBX_BOXNAN_IMPLANT_MISC_CODE(MRB_TT_SYMBOL, N) : \
+           MRBX_BOXNAN_IMPLANT_CODE(MRB_NANBOX_TT_OBJECT, 0))           \
+
+# else
+
+#  define MRBX_BOXNAN_IMPLANT_TYPE(TT, HI)                              \
+          (UINT64_C(0xfff0000000000000) |                               \
+           ((((TT) + UINT64_C(1)) & 0x3f) << 46) |                      \
+           ((uint64_t)(HI) & UINT64_C(0x00003fffffffffff)))             \
+
+# endif
 
 # ifdef __cplusplus
 
@@ -36,11 +59,15 @@ struct mrbx_implant_value
 };
 
 #  define MRBX_IMPLANT_VALUE(TT, V)                                     \
-          ((mrb_value)mrbx_implant_value(TT, (mrb_int)(V)))             \
+          ((mrb_value)mrbx_implant_value(TT, (int64_t)(V)))             \
 
 # else
 
-#  if MRUBY_RELEASE_NO < 30000
+#  if MRBX_MRUBY_RELEASE_NO > 30000
+
+#   define MRBX_IMPLANT_VALUE(TT, V) { MRBX_BOXNAN_IMPLANT_TYPE(TT, V) }
+
+#  elif MRUBY_RELEASE_NO < 30000
 
 #   define MRBX_IMPLANT_VALUE(TT, V)                                    \
            {                                                            \
