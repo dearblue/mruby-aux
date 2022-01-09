@@ -9,10 +9,12 @@ value_s_check_cptr(mrb_state *mrb, mrb_value mod)
     (void*)4, (void*)5, (void*)6, (void*)7,
     (void*)8, (void*)9, (void*)10, (void*)11,
     (void*)12, (void*)13, (void*)14, (void*)15,
+#if MRBX_MRUBY_RELEASE_NO < 30001 || !defined(MRB_NAN_BOXING)
     (void*)-1, (void*)-2, (void*)-3, (void*)-4,
     (void*)-5, (void*)-6, (void*)-7, (void*)-8,
     (void*)-9, (void*)-10, (void*)-11, (void*)-12,
     (void*)-13, (void*)-14, (void*)-15, (void*)-16
+#endif
   };
 
   for (size_t i = 0; i < sizeof(ptrs) / sizeof(ptrs[0]); i++) {
@@ -27,7 +29,7 @@ static mrb_value
 value_s_check_undef(mrb_state *mrb, mrb_value mod)
 {
   static const mrb_value v = MRBX_UNDEF_VALUE();
-#ifndef MRB_WORD_BOXING
+#if !defined(MRB_WORD_BOXING) && (MRBX_MRUBY_RELEASE_NO < 30001 || !defined(MRB_NAN_BOXING))
   if (mrb_fixnum(v) != 0) { return mrb_false_value(); }
 #endif
   return mrb_bool_value(mrb_undef_p(v));
@@ -37,7 +39,7 @@ static mrb_value
 value_s_check_nil(mrb_state *mrb, mrb_value mod)
 {
   static const mrb_value v = MRBX_NIL_VALUE();
-#ifndef MRB_WORD_BOXING
+#if !defined(MRB_WORD_BOXING) && (MRBX_MRUBY_RELEASE_NO < 30001 || !defined(MRB_NAN_BOXING))
   if (mrb_fixnum(v) != 0) { return mrb_false_value(); }
 #endif
   return mrb_bool_value(mrb_nil_p(v));
@@ -54,7 +56,7 @@ static mrb_value
 value_s_check_false(mrb_state *mrb, mrb_value mod)
 {
   static const mrb_value v = MRBX_FALSE_VALUE();
-#ifndef MRB_WORD_BOXING
+#if !defined(MRB_WORD_BOXING) && (MRBX_MRUBY_RELEASE_NO < 30001 || !defined(MRB_NAN_BOXING))
   if (mrb_fixnum(v) != 1) { return mrb_false_value(); }
 #endif
   return mrb_bool_value(mrb_false_p(v));
@@ -71,7 +73,7 @@ static mrb_value
 value_s_check_true(mrb_state *mrb, mrb_value mod)
 {
   static const mrb_value v = MRBX_TRUE_VALUE();
-#ifndef MRB_WORD_BOXING
+#if !defined(MRB_WORD_BOXING) && (MRBX_MRUBY_RELEASE_NO < 30001 || !defined(MRB_NAN_BOXING))
   if (mrb_fixnum(v) != 1) { return mrb_false_value(); }
 #endif
   return mrb_bool_value(mrb_true_p(v));

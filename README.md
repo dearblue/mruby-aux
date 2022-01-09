@@ -2,7 +2,7 @@
 
 mruby ライブラリを作成する際の C の補助関数などを集めたライブラリです。
 
-また、mruby-1.2 から mruby-2.0 までのいくつかの非互換性部分を補うマクロ・関数を提供します。
+また、mruby-1.2 から mruby-3.1.0 までのいくつかの非互換性部分を補うマクロ・関数を提供します。
 
 
 ## HOW TO USAGE
@@ -124,7 +124,7 @@ mrbx_mob_cleanup(mrb, mob);   // mob オブジェクトに結び付けられた�
 ## Specification
 
   - Package name: mruby-aux
-  - Version: 0.9.2
+  - Version: 0.9.3
   - Product quality: PROTOTYPE
   - Author: [dearblue](https://github.com/dearblue)
   - Project page: <https://github.com/dearblue/mruby-aux>
