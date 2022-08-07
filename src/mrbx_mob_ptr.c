@@ -137,7 +137,7 @@ mrbx_mob_order_noraise(mrb_state *mrb, mrb_value mob, int order)
 }
 
 static void
-setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
+setentry(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 {
   if (data == NULL) { return; }
 
@@ -162,6 +162,8 @@ setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
       }
     }
   }
+
+  mrb_raise(mrb, mrb->eException_class, "[BUG] unexpected full entries (mruby-aux:mrbx_mob_ptr.c:setentry) [BUG]");
 }
 
 static struct mob_entry *
@@ -202,7 +204,7 @@ mob_push(mrb_state *mrb, mrb_value mob, void *data, mrbx_mob_free_f *dfree, int 
   } else {
     if (mob_order(mrb, mob, 1, noraise) != 0) { return 1; }
 
-    setentry(mob, data, dfree);
+    setentry(mrb, mob, data, dfree);
   }
 
   return 0;
@@ -351,7 +353,7 @@ mob_reallocarray(mrb_state *mrb, mrb_value mob, void *ptr, size_t oldnum, size_t
       goto nomem;
     }
 
-    setentry(mob, p, NULL);
+    setentry(mrb, mob, p, NULL);
     ptr = p;
   } else {
     struct mob_entry *e = findentry(mrb, mob, ptr, NULL, flags & MOB_MALLOC_NORAISE);
