@@ -83,26 +83,25 @@ config["builds"].each_pair do |n, c|
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
 
-    gem __dir__ do |g|
-      include_testtools
-
-      if g.cc.command =~ /\b(?:g?cc|clang)\d*\b/
-        g.cxx.flags << "-std=c++11"
-        g.cxx.flags << %w(-Wpedantic -Wall -Wextra)
-        case
-        when c["c++abi"]
-          g.cc.flags << "-std=c++11"
-        when c["c99"]
-          g.cc.flags << "-std=c99"
-        else
-          g.cc.flags << "-std=c11"
-        end
-        g.cc.flags << %w(-Wpedantic -Wall -Wextra -Wno-unused-parameter)
-        unless ENV["CC"] =~ /gcc/
-          g.cc.flags << "-Wno-newline-eof"
+    [__dir__, File.join(__dir__, "mruby-aux-test")].each do |gdir|
+      gem gdir do |g|
+        if g.cc.command =~ /\b(?:g?cc|clang)\d*\b/
+          g.cxx.flags << "-std=c++11"
+          g.cxx.flags << %w(-Wpedantic -Wall -Wextra)
+          case
+          when c["c++abi"]
+            g.cc.flags << "-std=c++11"
+          when c["c99"]
+            g.cc.flags << "-std=c99"
+          else
+            g.cc.flags << "-std=c11"
+          end
+          g.cc.flags << %w(-Wpedantic -Wall -Wextra -Wno-unused-parameter)
+          unless ENV["CC"] =~ /gcc/
+            g.cc.flags << "-Wno-newline-eof"
+          end
         end
       end
     end
   end
 end
-
