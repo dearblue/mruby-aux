@@ -14,6 +14,7 @@ jobs:
       matrix:
         TARGET_MRUBY:
         - master
+        - 3.1.0
         - 3.0.0
         - 2.1.2
         - 2.1.1
@@ -30,7 +31,7 @@ jobs:
       MRUBY_CONFIG: ../ci_config.rb
       CC: clang
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
     - name: fetch and extract mruby
       run: wget -O- $MRUBY_URL | tar xzf -
     - name: build
