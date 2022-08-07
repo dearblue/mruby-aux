@@ -11,15 +11,4 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
   if !build.cxx_abi_enabled? && cc.command =~ /\b(?:g?cc|clang)\d*\b/
     cc.flags << %w(-Wno-declaration-after-statement)
   end
-
-  class << self
-    def include_testtools
-      self.bins = %w(
-        mruby-aux-test-mob-create-only
-        mruby-aux-test-mob-push
-        mruby-aux-test-mob-push-pop
-        mruby-aux-test-mob-mix
-      )
-    end
-  end
 end
