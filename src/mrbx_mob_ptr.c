@@ -2,20 +2,16 @@
 #include <mruby/data.h>
 #include <mruby/variable.h>
 #include <mruby-aux/mobptr.h>
+#include <errno.h>
 #include <string.h>
 
-static void *
-aux_calloc_simple(mrb_state *mrb, size_t num, size_t size)
-{
-  if (num < 1 || size < 1 || num > SIZE_MAX / size) { return NULL; }
-
-  size *= num;
-  void *p = mrb_malloc_simple(mrb, size);
-
-  if (p) { memset(p, 0, size); }
-
-  return p;
-}
+static const struct {
+  void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *);
+  void *(*allocator)(mrb_state *, size_t len);
+} mruby_traits[] = {
+  { mrb_data_get_ptr, mrb_malloc },
+  { mrb_data_check_get_ptr, mrb_malloc_simple }
+};
 
 #ifdef MRUBY_AUX_MOB_ENTRIES
 # if MRUBY_AUX_MOB_ENTRIES < 3
@@ -94,18 +90,7 @@ mrbx_mob_create(mrb_state *mrb)
 static int
 mob_order(mrb_state *mrb, mrb_value mob, int order, int noraise)
 {
-  void *(*getdata)(mrb_state *, mrb_value, const mrb_data_type *);
-  void *(*allocator)(mrb_state *, size_t num, size_t len);
-
-  if (noraise) {
-    getdata = mrb_data_check_get_ptr;
-    allocator = aux_calloc_simple;
-  } else {
-    getdata = mrb_data_get_ptr;
-    allocator = mrb_calloc;
-  }
-
-  struct mob_holder *s = (struct mob_holder *)getdata(mrb, mob, &mob_type);
+  struct mob_holder *s = (struct mob_holder *)mruby_traits[noraise].getdata(mrb, mob, &mob_type);
   struct mob_holder *p = s;
 
   if (s == NULL) return 1;
@@ -125,10 +110,10 @@ mob_order(mrb_state *mrb, mrb_value mob, int order, int noraise)
   }
 
   for (; order > 0; order -= MOB_ENTRIES) {
-    p = (struct mob_holder *)allocator(mrb, 1, sizeof(struct mob_holder));
-
+    p = (struct mob_holder *)mruby_traits[noraise].allocator(mrb, sizeof(struct mob_holder));
     if (p == NULL) return 1;
 
+    memset(p, 0, sizeof(*p));
     p->next = s;
     s->prev = p;
     DATA_PTR(mob) = s = p;
@@ -182,9 +167,7 @@ setentry(mrb_value mob, void *data, mrbx_mob_free_f *dfree)
 static struct mob_entry *
 findentry(mrb_state *mrb, mrb_value mob, void *data, struct mob_holder **holder, int noraise)
 {
-  void *(*getptr)(mrb_state *mrb, mrb_value, const mrb_data_type *) =
-    noraise ? mrb_data_check_get_ptr : mrb_data_get_ptr;
-  struct mob_holder *p = (struct mob_holder *)getptr(mrb, mob, &mob_type);
+  struct mob_holder *p = (struct mob_holder *)mruby_traits[noraise].getdata(mrb, mob, &mob_type);
 
   if (holder) { *holder = NULL; }
 
@@ -328,104 +311,151 @@ mrbx_mob_cleanup(mrb_state *mrb, mrb_value mob)
   mrbx_mob_compact(mrb, mob);
 }
 
+#define MOB_MALLOC_NORAISE      (1 << 0)
+#define MOB_MALLOC_FAIL_TO_FREE (1 << 1)
+
 static void *
-mob_malloc(mrb_state *mrb, mrb_value mob, size_t size, int noraise)
+mob_reallocarray(mrb_state *mrb, mrb_value mob, void *ptr, size_t oldnum, size_t newnum, size_t size, int flags)
 {
-  void *(*allocator)(mrb_state *, size_t) =
-    noraise ? mrb_malloc_simple : mrb_malloc;
+  if (newnum == 0 || size == 0) {
+    mrbx_mob_free(mrb, mob, ptr);
+    errno = 0;
 
-  if (mob_order(mrb, mob, 1, noraise) != 0) { return NULL; }
-  void *p = allocator(mrb, size);
-  setentry(mob, p, NULL);
+    return NULL;
+  }
 
-  return p;
+  if (SIZE_MAX / newnum > size) {
+  nomem:
+    if (flags & MOB_MALLOC_FAIL_TO_FREE && ptr != NULL) {
+      mrbx_mob_free(mrb, mob, ptr);
+    }
+
+    if (!(flags & MOB_MALLOC_NORAISE)) {
+      mrb_exc_raise(mrb, mrb_obj_value(mrb->nomem_err));
+    }
+
+    errno = ENOMEM;
+
+    return NULL;
+  }
+
+  if (ptr == NULL) {
+    if (mob_order(mrb, mob, 1, flags & MOB_MALLOC_NORAISE) != 0) {
+      errno = ENOMEM;
+
+      return NULL;
+    }
+
+    void *p = mrb_malloc_simple(mrb, newnum * size);
+    if (p == NULL) {
+      goto nomem;
+    }
+
+    setentry(mob, p, NULL);
+    ptr = p;
+  } else {
+    struct mob_entry *e = findentry(mrb, mob, ptr, NULL, flags & MOB_MALLOC_NORAISE);
+    if (e == NULL) {
+      if (!(flags & MOB_MALLOC_NORAISE)) {
+        mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer");
+      }
+
+      errno = EINVAL;
+
+      return NULL;
+    }
+
+    void *p = mrb_realloc_simple(mrb, ptr, newnum * size);
+    if (p == NULL) {
+      goto nomem;
+    }
+
+    ptr = p;
+  }
+
+  if (oldnum < newnum) {
+    oldnum *= size;
+    newnum *= size;
+    memset((char *)ptr + oldnum, 0, newnum - oldnum);
+  }
+
+  return ptr;
 }
 
 MRB_API void *
 mrbx_mob_malloc(mrb_state *mrb, mrb_value mob, size_t size)
 {
-  return mob_malloc(mrb, mob, size, 0);
+  return mob_reallocarray(mrb, mob, NULL, 1, 1, size, 0);
 }
 
 MRB_API void *
 mrbx_mob_malloc_simple(mrb_state *mrb, mrb_value mob, size_t size)
 {
-  return mob_malloc(mrb, mob, size, 1);
+  return mob_reallocarray(mrb, mob, NULL, 1, 1, size, MOB_MALLOC_NORAISE);
 }
 
-static void *
-mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size, int noraise)
+MRB_API void *
+mrbx_mob_mallocarray(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
 {
-  void *(*allocator)(mrb_state *, size_t, size_t) =
-    noraise ? aux_calloc_simple : mrb_calloc;
+  return mob_reallocarray(mrb, mob, NULL, num, num, size, 0);
+}
 
-  if (mob_order(mrb, mob, 1, noraise) != 0) { return NULL; }
-  void *p = allocator(mrb, num, size);
-  setentry(mob, p, NULL);
-
-  return p;
+MRB_API void *
+mrbx_mob_malloccarray_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
+{
+  return mob_reallocarray(mrb, mob, NULL, num, num, size, MOB_MALLOC_NORAISE);
 }
 
 MRB_API void *
 mrbx_mob_calloc(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
 {
-  return mob_calloc(mrb, mob, num, size, 0);
+  return mob_reallocarray(mrb, mob, NULL, 0, num, size, 0);
 }
 
 MRB_API void *
 mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size)
 {
-  return mob_calloc(mrb, mob, num, size, 1);
-}
-
-static void *
-mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size, int noraise)
-{
-  void *(*allocator)(mrb_state *, void *, size_t) =
-    noraise ? mrb_realloc_simple : mrb_realloc;
-
-  struct mob_entry *e = findentry(mrb, mob, data, NULL, noraise);
-
-  if (e == NULL) {
-    if (noraise) {
-      return NULL;
-    } else {
-      mrb_raise(mrb, E_RUNTIME_ERROR, "not attached pointer");
-    }
-  }
-
-  if (size < 1) {
-    mrbx_mob_free(mrb, mob, data);
-    return NULL;
-  }
-
-  void *p = allocator(mrb, data, size);
-
-  if (p) { e->data = p; }
-
-  return p;
+  return mob_reallocarray(mrb, mob, NULL, 0, num, size, MOB_MALLOC_NORAISE);
 }
 
 MRB_API void *
 mrbx_mob_realloc(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-  return mob_realloc(mrb, mob, data, size, 0);
+  return mob_reallocarray(mrb, mob, data, 1, 1, size, 0);
 }
 
 MRB_API void *
 mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-  return mob_realloc(mrb, mob, data, size, 1);
+  return mob_reallocarray(mrb, mob, data, 1, 1, size, MOB_MALLOC_NORAISE);
+}
+
+MRB_API void *
+mrbx_mob_reallocarray(mrb_state *mrb, mrb_value mob, void *data, size_t num, size_t size)
+{
+  return mob_reallocarray(mrb, mob, data, num, num, size, 0);
+}
+
+MRB_API void *
+mrbx_mob_reallocarray_simple(mrb_state *mrb, mrb_value mob, void *data, size_t num, size_t size)
+{
+  return mob_reallocarray(mrb, mob, data, num, num, size, MOB_MALLOC_NORAISE);
+}
+
+MRB_API void *
+mrbx_mob_recallocarray(mrb_state *mrb, mrb_value mob, void *data, size_t oldnum, size_t newnum, size_t size)
+{
+  return mob_reallocarray(mrb, mob, data, oldnum, newnum, size, 0);
+}
+
+MRB_API void *
+mrbx_mob_recallocarray_simple(mrb_state *mrb, mrb_value mob, void *data, size_t oldnum, size_t newnum, size_t size)
+{
+  return mob_reallocarray(mrb, mob, data, oldnum, newnum, size, MOB_MALLOC_NORAISE);
 }
 
 MRB_API void *
 mrbx_mob_reallocf_simple(mrb_state *mrb, mrb_value mob, void *data, size_t size)
 {
-  void *newdata = mrbx_mob_realloc_simple(mrb, mob, data, size);
-
-  if (newdata == NULL && data && size > 0) {
-    mrbx_mob_free(mrb, mob, data);
-  }
-
-  return newdata;
+  return mob_reallocarray(mrb, mob, data, 1, 1, size, MOB_MALLOC_FAIL_TO_FREE);
 }
