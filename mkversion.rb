@@ -6,7 +6,7 @@ EXPORTPATH = BASEDIR + "include/mruby-aux/version.h"
 versions = [
   10200, 10300, 10400, 10401,
   20000, 20001, 20100, 20101, 20102,
-  30000
+  30000, 30100
 ]
 versions.sort!
 versions << versions[-1] + 1
@@ -23,6 +23,7 @@ out = <<~HEADER
 #ifndef MRUBY_AUX_VERSION_H
 #define MRUBY_AUX_VERSION_H 1
 
+#include <mruby.h>
 #include <mruby/version.h>
 
 HEADER
@@ -31,7 +32,7 @@ versions.each_with_index do |v, i|
   case
   when i == 0
     out << <<~IF
-      #if MRUBY_RELEASE_NO >= #{v} || defined(mrb_as_int)
+      #if MRUBY_RELEASE_NO >= #{v} || defined(mrb_bigint_p)
     IF
   when v == versions[-1]
     out << <<~ELSE
@@ -55,7 +56,7 @@ ENDIF
 versions.each do |v|
   out << <<~NEWER
 
-    #if MRUBY_RELEASE_NO >= #{v}
+    #if MRBX_MRUBY_RELEASE_NO >= #{v}
     # define MRBX_VERSION_NEWER_OR_#{v}_P 1
     #else
     # define MRBX_VERSION_NEWER_OR_#{v}_P 0
@@ -66,7 +67,7 @@ end
 versions.each do |v|
   out << <<~OLDER
 
-    #if MRUBY_RELEASE_NO <= #{v}
+    #if MRBX_MRUBY_RELEASE_NO <= #{v}
     # define MRBX_VERSION_OLDER_OR_#{v}_P 1
     #else
     # define MRBX_VERSION_OLDER_OR_#{v}_P 0

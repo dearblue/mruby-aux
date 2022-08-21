@@ -144,4 +144,27 @@ MRB_API void *mrbx_mob_calloc_simple(mrb_state *mrb, mrb_value mob, size_t num, 
 MRB_API void *mrbx_mob_realloc_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t size);
 MRB_API void *mrbx_mob_reallocf_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t size);
 
+/**
+ * OpenBSD の `mallocarray()`、`reallocarray()`、`recallocarray()` を模倣した関数です。
+ */
+MRB_API void *mrbx_mob_mallocarray(mrb_state *mrb, mrb_value mob, size_t num, size_t size);
+MRB_API void *mrbx_mob_reallocarray(mrb_state *mrb, mrb_value mob, void *ptr, size_t num, size_t size);
+MRB_API void *mrbx_mob_recallocarray(mrb_state *mrb, mrb_value mob, void *ptr, size_t oldnum, size_t num, size_t size);
+MRB_API void *mrbx_mob_mallocarray_simple(mrb_state *mrb, mrb_value mob, size_t num, size_t size);
+MRB_API void *mrbx_mob_reallocarray_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t num, size_t size);
+MRB_API void *mrbx_mob_recallocarray_simple(mrb_state *mrb, mrb_value mob, void *ptr, size_t oldnum, size_t num, size_t size);
+
+#define MRBX_MOB_MALLOCMOLD(MRB, MOB, NUM, TYPE)                        \
+  ((TYPE *)mrbx_mob_mallocarray(MRB, MOB, NUM, sizeof(TYPE)))
+#define MRBX_MOB_REALLOCMOLD(MRB, MOB, PTR, NUM, TYPE)                  \
+  ((TYPE *)mrbx_mob_reallocarray(MRB, MOB, PTR, NUM, sizeof(TYPE)))
+#define MRBX_MOB_RECALLOCMOLD(MRB, MOB, PTR, OLDNUM, NUM, TYPE)         \
+  ((TYPE *)mrbx_mob_recallocarray(MRB, MOB, PTR, OLDNUM, NUM, sizeof(TYPE)))
+#define MRBX_MOB_MALLOCMOLD_SIMPLE(MRB, MOB, NUM, TYPE)                 \
+  ((TYPE *)mrbx_mob_mallocarray_simple(MRB, MOB, NUM, sizeof(TYPE)))
+#define MRBX_MOB_REALLOCMOLD_SIMPLE(MRB, MOB, PTR, NUM, TYPE)           \
+  ((TYPE *)mrbx_mob_reallocarray_simple(MRB, MOB, PTR, NUM, sizeof(TYPE)))
+#define MRBX_MOB_RECALLOCMOLD_SIMPLE(MRB, MOB, PTR, OLDNUM, NUM, TYPE)  \
+  ((TYPE *)mrbx_mob_recallocarray_simple(MRB, MOB, PTR, OLDNUM, NUM, sizeof(TYPE)))
+
 #endif /* MRUBY_AUX_MOBPTR_H */
