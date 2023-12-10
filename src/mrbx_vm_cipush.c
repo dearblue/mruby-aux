@@ -17,6 +17,9 @@ mrbx_vm_cipush(mrb_state *mrb, int push_stacks, int16_t cci,
   (uint8_t)cci,                         // uint8_t cci;
   mid,                                  // mrb_sym mid;
   proc,                                 // const struct RProc *proc;
+# if MRBX_MRUBY_RELEASE_NO > 30100
+  NULL,                                 // struct RProc *blk;
+# endif
   ci->stack + push_stacks,              // mrb_value *stack;
   NULL,                                 // const mrb_code *pc;
   { (struct REnv *)target_class },      // union { struct REnv *env; }
