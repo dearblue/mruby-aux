@@ -5,10 +5,18 @@ MRB_API const char *
 mrbx_typename(enum mrb_vtype tt)
 {
   switch (tt) {
+#if MRUBY_RELEASE_NO >= 30100
+# define EXPAND_VTYPES(T, C, R) case T: return MRB_STRINGIZE(T);
+    MRB_VTYPE_FOREACH(EXPAND_VTYPES)
+#else
   case MRB_TT_FALSE:      return "MRB_TT_FALSE";
   case MRB_TT_TRUE:       return "MRB_TT_TRUE";
   case MRB_TT_FLOAT:      return "MRB_TT_FLOAT";
+# if MRUBY_RELEASE_NO < 30000
   case MRB_TT_FIXNUM:     return "MRB_TT_FIXNUM";
+# else
+  case MRB_TT_INTEGER:    return "MRB_TT_INTEGER";
+# endif
   case MRB_TT_SYMBOL:     return "MRB_TT_SYMBOL";
   case MRB_TT_UNDEF:      return "MRB_TT_UNDEF";
   case MRB_TT_CPTR:       return "MRB_TT_CPTR";
@@ -24,15 +32,16 @@ mrbx_typename(enum mrb_vtype tt)
   case MRB_TT_STRING:     return "MRB_TT_STRING";
   case MRB_TT_RANGE:      return "MRB_TT_RANGE";
   case MRB_TT_EXCEPTION:  return "MRB_TT_EXCEPTION";
-#if MRUBY_RELEASE_NO < 20102
+# if MRUBY_RELEASE_NO < 20102
   case MRB_TT_FILE:       return "MRB_TT_FILE";
-#endif
+# endif
   case MRB_TT_ENV:        return "MRB_TT_ENV";
   case MRB_TT_DATA:       return "MRB_TT_DATA";
   case MRB_TT_FIBER:      return "MRB_TT_FIBER";
-#if MRUBY_RELEASE_NO >= 10300
+# if MRUBY_RELEASE_NO >= 10300
   case MRB_TT_ISTRUCT:    return "MRB_TT_ISTRUCT";
   case MRB_TT_BREAK:      return "MRB_TT_BREAK";
+# endif
 #endif
   default:                return NULL;
   }
