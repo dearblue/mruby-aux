@@ -57,9 +57,8 @@ mrbx_str_buf_growup(mrb_state *mrb, struct RString *str, size_t maxsize, mrb_boo
       if (is_partial) { *is_partial = FALSE; }
       break;
     } else {
-      mrb_gc_arena_restore(mrb, 0);
-      mrb_bug(mrb, "invalid expand operation for %S",
-              mrb_str_new_cstr(mrb, __func__));
+      mrb_raise(mrb, E_RUNTIME_ERROR,
+                "invalid expand operation for mrbx_str_buf_growup()");
     }
   }
 

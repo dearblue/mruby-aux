@@ -11,4 +11,8 @@
 # endif
 #endif /* MRB_WORD_BOXING */
 
+#if !defined(MRB_TT_FIXNUM) /* for mruby-2.1.2 or older */
+# define MRB_TT_INTEGER MRB_TT_FIXNUM
+#endif
+
 #endif /* MRUBY_AUX_COMPAT_VALUE_H */
