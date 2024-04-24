@@ -4,7 +4,7 @@
 #define ID_METHOD_MISSING       mrb_intern_lit(mrb, STR_METHOD_MISSING)
 
 MRB_API mrb_sym
-mrbx_resolve_method_missing(mrb_state *mrb, struct RClass **target_class, struct RProc **proc, mrb_func_t *cfunc)
+mrbx_resolve_method_missing(mrb_state *mrb, struct RClass **target_class, const struct RProc **proc, mrb_func_t *cfunc)
 {
   mrb_sym mid = ID_METHOD_MISSING;
   mrb_method_t m = mrb_method_search_vm(mrb, target_class, mid);

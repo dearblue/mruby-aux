@@ -45,6 +45,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RFiber *p) { return mrbx_false_always(
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RHash *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_robj_frozen_p(p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(const struct RProc *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
 
@@ -62,6 +63,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
                    struct RFiber *:       mrbx_false_always,            \
                    struct RHash *:        mrbx_false_always,            \
                    struct RProc *:        mrbx_false_always,            \
+                   const struct RProc *:  mrbx_false_always,            \
                    struct RRange *:       mrbx_false_always,            \
                    struct RString *:      mrbx_rstr_frozen_p            \
           )(O)                                                          \

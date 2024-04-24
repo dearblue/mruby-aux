@@ -9,7 +9,7 @@ mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t m,
     mrb_sym mid, mrb_value recv, int argc, const mrb_value argv[], mrb_value block)
 {
   mrb_func_t cfunc;
-  struct RProc *proc;
+  const struct RProc *proc;
 
   mrb_assert(!MRB_METHOD_UNDEF_P(m));
   mrbx_method_extract(mrb, m, argc, &proc, &cfunc);

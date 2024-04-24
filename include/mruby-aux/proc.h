@@ -4,11 +4,11 @@
 #include "common.h"
 #include "compat/proc.h"
 
-MRB_API void mrbx_method_extract(mrb_state *mrb, mrb_method_t m, int argc, struct RProc **proc, mrb_func_t *cfunc);
-MRB_API mrb_sym mrbx_resolve_method_missing(mrb_state *mrb, struct RClass **target_class, struct RProc **proc, mrb_func_t *cfunc);
+MRB_API void mrbx_method_extract(mrb_state *mrb, mrb_method_t m, int argc, const struct RProc **proc, mrb_func_t *cfunc);
+MRB_API mrb_sym mrbx_resolve_method_missing(mrb_state *mrb, struct RClass **target_class, const struct RProc **proc, mrb_func_t *cfunc);
 
 MRB_INLINE mrb_method_t
-mrbx_method_wrap_proc(struct RProc *proc, mrb_aspec aspec)
+mrbx_method_wrap_proc(const struct RProc *proc, mrb_aspec aspec)
 {
   mrb_method_t m;
   MRB_METHOD_FROM_PROC(m, proc);

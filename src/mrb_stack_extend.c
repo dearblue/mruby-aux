@@ -61,7 +61,7 @@ mrb_stack_extend(mrb_state *mrb, mrb_int room)
         e->stack += offset;
       }
 
-      struct RProc *p = ci->proc;
+      const struct RProc *p = ci->proc;
       struct REnv *pe = p ? MRB_PROC_ENV(p) : NULL;
       if (pe != e && MRB_ENV_STACK_SHARED_P(pe) && pe->stack) {
         pe->stack += offset;

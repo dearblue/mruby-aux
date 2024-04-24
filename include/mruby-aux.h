@@ -46,6 +46,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RArray *v) { return 
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RHash *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RString *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RProc *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
+MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const struct RProc *v) { return mrbx_ptr_to_value(mrb, (void *)(uintptr_t)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RRange *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RFiber *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
 MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, struct RException *v) { return mrbx_ptr_to_value(mrb, (void *)v); }
@@ -74,6 +75,7 @@ MRBX_INLINE mrb_value mrbx_obj_value(mrb_state *mrb, const char *v) { return mrb
                   struct RHash *:        mrbx_ptr_to_value,             \
                   struct RString *:      mrbx_ptr_to_value,             \
                   struct RProc *:        mrbx_ptr_to_value,             \
+                  const struct RProc *:  mrbx_ptr_to_value,             \
                   struct RRange *:       mrbx_ptr_to_value,             \
                   struct RFiber *:       mrbx_ptr_to_value,             \
                   struct RException *:   mrbx_ptr_to_value,             \
