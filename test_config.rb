@@ -89,6 +89,7 @@ config["builds"].each_pair do |n, c|
 
     enable_debug
     enable_test
+    enable_bintest
     enable_cxx_abi if c["c++abi"]
 
     cc.defines << [*c["defines"]] << [*c["cdefines"]]
@@ -106,7 +107,7 @@ config["builds"].each_pair do |n, c|
 
     gem core: "mruby-io" if MRuby::Source::MRUBY_RELEASE_NO >= 10400
 
-    [__dir__, File.join(__dir__, "mruby-aux-test")].each do |gdir|
+    [__dir__].each do |gdir|
       gem gdir do |g|
         if g.cc.command =~ /\b(?:g?cc|clang)\d*\b/
           g.cxx.flags << "-std=c++11"

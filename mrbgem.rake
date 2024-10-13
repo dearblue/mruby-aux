@@ -7,4 +7,8 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
   s.homepage = "https://github.com/dearblue/mruby-aux"
 
   add_dependency "mruby-error", core: "mruby-error"
+
+  if build.bintest_enabled?
+    s.bins.concat Dir.children(File.join(s.dir, "tools"))
+  end
 end
