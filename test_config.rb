@@ -97,6 +97,10 @@ config["builds"].each_pair do |n, c|
     cxx.flags << [*c["flags"]] << [*c["c++flags"]]
     linker.flags << [*c["flags"]] << [*c["ldflags"]]
 
+    if MRuby::Source::MRUBY_RELEASE_NO < 30000 && !cxx_abi_enabled? && cc.command =~ /\b(?:g?cc|clang)\d*\b/
+      cc.flags << %w(-Wno-declaration-after-statement)
+    end
+
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
 
