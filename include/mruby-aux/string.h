@@ -299,6 +299,14 @@ MRB_API intptr_t mrbx_utf8_size_byte2char(const char *str, const char *end, size
 MRB_API size_t mrbx_cstrlen(const char *str, const char *end);
 MRB_API size_t mrbx_utf8_cstrlen(const char *str, const char *end);
 
+MRB_INLINE void
+mrbx_str_check_null_byte(mrb_state *mrb, struct RString *s)
+{
+  if (memchr(RSTR_PTR(s), RSTR_LEN(s), '\0')) {
+    mrb_raise(mrb, E_ARGUMENT_ERROR, "string contains null byte");
+  }
+}
+
 MRB_END_DECL
 
 #include "string/growup.h"
