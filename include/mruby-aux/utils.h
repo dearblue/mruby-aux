@@ -203,6 +203,8 @@ mrbx_out_of_pointer_p(const char *str, const char *end)
   return (str == NULL || str >= end || (end - str) <= 0);
 }
 
+MRB_API void *mrbx_alloca(mrb_state *mrb, size_t size);
+
 MRB_END_DECL
 
 #endif /* MRUBY_AUX_UTILS_H */
