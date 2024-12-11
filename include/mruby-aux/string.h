@@ -299,6 +299,10 @@ MRB_API intptr_t mrbx_utf8_size_byte2char(const char *str, const char *end, size
 MRB_API size_t mrbx_cstrlen(const char *str, const char *end);
 MRB_API size_t mrbx_utf8_cstrlen(const char *str, const char *end);
 
+MRB_API mrb_value mrbx_str_new_locale_cstr(mrb_state *mrb, const char *locale_cstr);
+MRB_API const char *mrbx_string_locale_cstr(mrb_state *mrb, mrb_value str);
+MRB_API char *mrbx_str_to_locale_cstr(mrb_state *mrb, mrb_value str);
+
 MRB_INLINE void
 mrbx_str_check_null_byte(mrb_state *mrb, struct RString *s)
 {
