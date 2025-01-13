@@ -74,8 +74,15 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 
 # endif /* __cplusplus */
 
-#else
+#elif !defined(MRB_FROZEN_P)
+
+# define MRB_FROZEN_P(O) mrb_frozen_p(O)
+
 #endif /* MRUBY_RELEASE_NO */
+
+#if MRUBY_RELEASE_NO >= 30300 && !defined(MRB_SET_FROZEN_FLAG)
+# define MRB_SET_FROZEN_FLAG(O) ((O)->frozen = 1)
+#endif
 
 /* RCLASS_SUPER は mruby-2.0 (dev) で削除 */
 #include <mruby/class.h>
