@@ -45,6 +45,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RFiber *p) { return mrbx_false_always(
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RHash *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RObject *p) { return mrbx_robj_frozen_p(p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RProc *p) { return mrbx_false_always((void *)p); }
+MRBX_INLINE mrb_bool mrbx_frozen_p(const struct RProc *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RRange *p) { return mrbx_false_always((void *)p); }
 MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_p((p)); }
 
@@ -62,6 +63,7 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
                    struct RFiber *:       mrbx_false_always,            \
                    struct RHash *:        mrbx_false_always,            \
                    struct RProc *:        mrbx_false_always,            \
+                   const struct RProc *:  mrbx_false_always,            \
                    struct RRange *:       mrbx_false_always,            \
                    struct RString *:      mrbx_rstr_frozen_p            \
           )(O)                                                          \
@@ -72,8 +74,15 @@ MRBX_INLINE mrb_bool mrbx_frozen_p(struct RString *p) { return mrbx_rstr_frozen_
 
 # endif /* __cplusplus */
 
-#else
+#elif !defined(MRB_FROZEN_P)
+
+# define MRB_FROZEN_P(O) mrb_frozen_p(O)
+
 #endif /* MRUBY_RELEASE_NO */
+
+#if MRUBY_RELEASE_NO >= 30300 && !defined(MRB_SET_FROZEN_FLAG)
+# define MRB_SET_FROZEN_FLAG(O) ((O)->frozen = 1)
+#endif
 
 /* RCLASS_SUPER は mruby-2.0 (dev) で削除 */
 #include <mruby/class.h>

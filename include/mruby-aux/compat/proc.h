@@ -43,9 +43,9 @@ typedef struct RProc *mrb_method_t;
 
 #if MRUBY_RELEASE_NO < 30000
 static inline void
-mrb_vm_ci_proc_set(mrb_callinfo *ci, struct RProc *proc)
+mrb_vm_ci_proc_set(mrb_callinfo *ci, const struct RProc *proc)
 {
-  ci->proc = proc;
+  ci->proc = (struct RProc *)(uintptr_t)proc;
   ci[1].pc = (proc && !MRB_PROC_CFUNC_P(proc)) ? proc->body.irep->iseq : NULL;
 }
 

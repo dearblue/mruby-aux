@@ -18,7 +18,7 @@ mrb_value mrbx_vm_call_by_method(mrb_state *mrb, struct RClass *tc, mrb_method_t
 /*
  * 引数 `p` をメソッド呼び出しします。
  */
-mrb_value mrbx_vm_call_by_proc(mrb_state *mrb, struct RClass *tc, struct RProc *p,
+mrb_value mrbx_vm_call_by_proc(mrb_state *mrb, struct RClass *tc, const struct RProc *p,
     mrb_sym mid, mrb_value recv, int argc, const mrb_value argv[], mrb_value block);
 
 /*
@@ -41,7 +41,7 @@ mrb_value mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, 
  * `mrb->c->ci` に追加します。
  */
 mrb_callinfo *mrbx_vm_cipush(mrb_state *mrb, int push_stacks, int16_t cci,
-    struct RClass *target_class, struct RProc *proc, mrb_sym mid, int16_t argc);
+    struct RClass *target_class, const struct RProc *proc, mrb_sym mid, int16_t argc);
 
 /*
  * 現在の`mrb->c->ci` を削除します。
@@ -98,7 +98,7 @@ static inline mrb_value *mrbx_vm_stacks(const struct mrb_context *c, size_t back
 static inline mrb_value *mrbx_vm_stacks_nocheck(const struct mrb_context *c, size_t backref);
 
 #ifdef MRUBY_AUX_INTERNALS
-mrb_value mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps);
+mrb_value mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, const struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps);
 #endif
 
 

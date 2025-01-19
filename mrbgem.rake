@@ -8,7 +8,7 @@ MRuby::Gem::Specification.new("mruby-aux") do |s|
 
   add_dependency "mruby-error", core: "mruby-error"
 
-  if !build.cxx_abi_enabled? && cc.command =~ /\b(?:g?cc|clang)\d*\b/
-    cc.flags << %w(-Wno-declaration-after-statement)
+  if build.bintest_enabled?
+    s.bins.concat Dir.children(File.join(s.dir, "tools"))
   end
 end

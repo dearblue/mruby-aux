@@ -13,7 +13,7 @@ mrbx_vm_call_interchange(mrb_state *mrb, struct RClass *target_class, mrb_method
     mrb_value self, mrb_sym mid, mrb_int argc, const mrb_value argv[], mrb_value block)
 {
   mrb_func_t cfunc;
-  struct RProc *proc;
+  const struct RProc *proc;
   mrb_sym original_mid;
 
   if (MRB_METHOD_UNDEF_P(m)) {

@@ -32,6 +32,7 @@ MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RArray *v) { ret
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RHash *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RString *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RProc *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
+MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, const struct RProc *v) { return mrbx_ptr_to_ptr(mrb, (void *)(uintptr_t)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RRange *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RFiber *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
 MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RException *v) { return mrbx_ptr_to_ptr(mrb, (void *)v); }
@@ -50,6 +51,7 @@ MRBX_INLINE struct RObject *mrbx_obj_ptr(mrb_state *mrb, struct RIstruct *v) { r
                   struct RHash *:        mrbx_ptr_to_ptr,               \
                   struct RString *:      mrbx_ptr_to_ptr,               \
                   struct RProc *:        mrbx_ptr_to_ptr,               \
+                  const struct RProc *:  mrbx_ptr_to_ptr,               \
                   struct RRange *:       mrbx_ptr_to_ptr,               \
                   struct RFiber *:       mrbx_ptr_to_ptr,               \
                   struct RException *:   mrbx_ptr_to_ptr,               \
@@ -72,6 +74,7 @@ MRBX_INLINE struct RArray *mrbx_obj_freeze(struct RArray *p) { mrbx_freeze_ptr((
 MRBX_INLINE struct RHash *mrbx_obj_freeze(struct RHash *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RString *mrbx_obj_freeze(struct RString *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RProc *mrbx_obj_freeze(struct RProc *p) { mrbx_freeze_ptr((void *)p); return p; }
+MRBX_INLINE const struct RProc *mrbx_obj_freeze(const struct RProc *p) { mrbx_freeze_ptr((void *)(uintptr_t)p); return p; }
 MRBX_INLINE struct RRange *mrbx_obj_freeze(struct RRange *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RFiber *mrbx_obj_freeze(struct RFiber *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RException *mrbx_obj_freeze(struct RException *p) { mrbx_freeze_ptr((void *)p); return p; }
@@ -87,6 +90,7 @@ MRBX_INLINE struct RArray *mrbx_freeze_array(struct RArray *p) { mrbx_freeze_ptr
 MRBX_INLINE struct RHash *mrbx_freeze_hash(struct RHash *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RString *mrbx_freeze_string(struct RString *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RProc *mrbx_freeze_proc(struct RProc *p) { mrbx_freeze_ptr((void *)p); return p; }
+MRBX_INLINE const struct RProc *mrbx_freeze_proc_const(const struct RProc *p) { mrbx_freeze_ptr((void *)(uintptr_t)p); return p; }
 MRBX_INLINE struct RRange *mrbx_freeze_range(struct RRange *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RFiber *mrbx_freeze_fiber(struct RFiber *p) { mrbx_freeze_ptr((void *)p); return p; }
 MRBX_INLINE struct RException *mrbx_freeze_exception(struct RException *p) { mrbx_freeze_ptr((void *)p); return p; }
@@ -103,6 +107,7 @@ MRBX_INLINE struct RIstruct *mrbx_freeze_istruct(struct RIstruct *p) { mrbx_free
                   struct RHash *:        mrbx_freeze_hash,              \
                   struct RString *:      mrbx_freeze_string,            \
                   struct RProc *:        mrbx_freeze_proc,              \
+                  const struct RProc *:  mrbx_freeze_proc_const,        \
                   struct RRange *:       mrbx_freeze_range,             \
                   struct RFiber *:       mrbx_freeze_fiber,             \
                   struct RException *:   mrbx_freeze_exception,         \

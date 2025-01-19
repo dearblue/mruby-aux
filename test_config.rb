@@ -31,7 +31,6 @@ config = YAML.load <<'YAML'
   common:
     gems:
     - :core: "mruby-sprintf"
-    - :core: "mruby-print"
     - :core: "mruby-bin-mirb"
     - :core: "mruby-bin-mruby"
     - :core: "mruby-bin-mrbc"
@@ -89,6 +88,7 @@ config["builds"].each_pair do |n, c|
 
     enable_debug
     enable_test
+    enable_bintest
     enable_cxx_abi if c["c++abi"]
 
     cc.defines << [*c["defines"]] << [*c["cdefines"]]
@@ -97,12 +97,20 @@ config["builds"].each_pair do |n, c|
     cxx.flags << [*c["flags"]] << [*c["c++flags"]]
     linker.flags << [*c["flags"]] << [*c["ldflags"]]
 
+    if MRuby::Source::MRUBY_RELEASE_NO < 30000 && !cxx_abi_enabled? && cc.command =~ /\b(?:g?cc|clang)\d*\b/
+      cc.flags << %w(-Wno-declaration-after-statement)
+    end
+
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
 
-    gem core: "mruby-io" if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+    if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+      gem core: "mruby-io"
+    else
+      gem core: "mruby-print"
+    end
 
-    [__dir__, File.join(__dir__, "mruby-aux-test")].each do |gdir|
+    [__dir__].each do |gdir|
       gem gdir do |g|
         if g.cc.command =~ /\b(?:g?cc|clang)\d*\b/
           g.cxx.flags << "-std=c++11"

@@ -4,7 +4,7 @@
 #include "vm-common.h"
 
 mrb_value
-mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps)
+mrbx_vm_intercall(mrb_state *mrb, mrb_callinfo *ci, const struct RProc *proc, mrb_func_t cfunc, mrb_value recv, int keeps)
 {
   /*
    * 1. 呼び出し先が C 関数である

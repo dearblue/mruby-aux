@@ -1,11 +1,12 @@
 #include <mruby.h>
 #include <mruby/error.h>
+#include <mruby/proc.h>
 #include <mruby-aux/vmext.h>
 #include <mruby-aux/version.h>
 
 mrb_callinfo *
 mrbx_vm_cipush(mrb_state *mrb, int push_stacks, int16_t cci,
-    struct RClass *target_class, struct RProc *proc, mrb_sym mid, int16_t argc)
+    struct RClass *target_class, const struct RProc *proc, mrb_sym mid, int16_t argc)
 {
   struct mrb_context *c = mrb->c;
   mrb_callinfo *ci = c->ci;

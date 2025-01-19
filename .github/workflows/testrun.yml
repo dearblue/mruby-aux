@@ -8,12 +8,13 @@ on:
 
 jobs:
   ubuntu:
-    runs-on: ubuntu-22.04
-    name: ubuntu-22.04 (mruby-${{matrix.TARGET_MRUBY}})
+    runs-on: ubuntu-24.04
+    name: ubuntu-24.04 (mruby-${{matrix.TARGET_MRUBY}})
     strategy:
       matrix:
         TARGET_MRUBY:
         - master
+        - 3.3.0
         - 3.2.0
         - 3.1.0
         - 3.0.0

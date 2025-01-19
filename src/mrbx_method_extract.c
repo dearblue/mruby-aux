@@ -2,7 +2,7 @@
 #include <mruby-aux/proc.h>
 
 MRB_API void
-mrbx_method_extract(mrb_state *mrb, mrb_method_t m, int argc, struct RProc **proc, mrb_func_t *cfunc)
+mrbx_method_extract(mrb_state *mrb, mrb_method_t m, int argc, const struct RProc **proc, mrb_func_t *cfunc)
 {
   if (MRB_METHOD_UNDEF_P(m)) {
     mrb_raise(mrb, E_NOMETHOD_ERROR, "undefined method");
