@@ -31,7 +31,6 @@ config = YAML.load <<'YAML'
   common:
     gems:
     - :core: "mruby-sprintf"
-    - :core: "mruby-print"
     - :core: "mruby-bin-mirb"
     - :core: "mruby-bin-mruby"
     - :core: "mruby-bin-mrbc"
@@ -105,7 +104,11 @@ config["builds"].each_pair do |n, c|
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
 
-    gem core: "mruby-io" if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+    if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+      gem core: "mruby-io"
+    else
+      gem core: "mruby-print"
+    end
 
     [__dir__].each do |gdir|
       gem gdir do |g|

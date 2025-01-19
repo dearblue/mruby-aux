@@ -34,7 +34,6 @@ using Internals
 config = YAML.load <<'YAML'
   common:
     gems:
-    - :core: mruby-print
   builds:
     host:
       defines: MRB_NO_BOXING
@@ -86,6 +85,12 @@ config["builds"].each_pair do |n, c|
 
     Array(config.dig("common", "gems")).each { |*g| gem *g }
     Array(c["gems"]).each { |*g| gem *g }
+
+    if MRuby::Source::MRUBY_RELEASE_NO >= 10400
+      gem core: "mruby-io"
+    else
+      gem core: "mruby-print"
+    end
 
     [__dir__].each do |gdir|
       gem gdir do |g|
