@@ -13,19 +13,22 @@ mrbx_vm_cipush(mrb_state *mrb, int push_stacks, int16_t cci,
 
   const mrb_callinfo ci_init = {
 #if MRBX_MRUBY_RELEASE_NO > 30000
-  (uint8_t)argc,                        // uint8_t n:4;
-  0,                                    // uint8_t nk:4;
-  (uint8_t)cci,                         // uint8_t cci;
-  mid,                                  // mrb_sym mid;
-  proc,                                 // const struct RProc *proc;
-# if MRBX_MRUBY_RELEASE_NO > 30100
-  NULL,                                 // struct RProc *blk;
+    (uint8_t)argc,                      // uint8_t n:4;
+    0,                                  // uint8_t nk:4;
+    (uint8_t)cci,                       // uint8_t cci;
+# ifdef MRB_METHOD_VISIBILITY_MASK // for mruby-3.4 dev or newer
+    0,                                  // uint8_t vis;
 # endif
-  ci->stack + push_stacks,              // mrb_value *stack;
-  NULL,                                 // const mrb_code *pc;
-  { (struct REnv *)target_class },      // union { struct REnv *env; }
+    mid,                                // mrb_sym mid;
+    proc,                               // const struct RProc *proc;
+# if MRBX_MRUBY_RELEASE_NO > 30100
+    NULL,                               // struct RProc *blk;
+# endif
+    ci->stack + push_stacks,            // mrb_value *stack;
+    NULL,                               // const mrb_code *pc;
+    { (struct REnv *)target_class },    // union { struct REnv *env; }
 # ifdef MRB_USE_REFINEMENT
-  NULL,                                 // struct RArray *activated_refinements;
+    NULL,                               // struct RArray *activated_refinements;
 # endif
 #elif MRBX_MRUBY_RELEASE_NO >= 30000
     mid,
