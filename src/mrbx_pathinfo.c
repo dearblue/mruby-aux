@@ -1,7 +1,6 @@
-#include <stdint.h>
-#include <stdlib.h>
+#include <mruby-aux/pathinfo.h>
 #include <ctype.h>
-#include <mruby-aux/component-name.h>
+#include <stdlib.h>
 
 //#define MRUBY_AUX_DEBUG_FORCE_WITH_WINDOWS_CODE
 
@@ -83,53 +82,53 @@ skip_leading_dot(const char *path, const uintptr_t end)
 }
 
 static const char *
-scan_component_name(const char *path, const uintptr_t end, mrbx_component_name *cp)
+scan_pathinfo(const char *path, const uintptr_t end, mrbx_pathinfo *pi)
 {
   for (; (uintptr_t)path < end; path++) {
     if (*path == '\0' || mrbx_pathsep_p(*path)) {
       break;
     } else if (*path == '.') {
-      cp->extname = path - cp->path;
+      pi->extname = path - pi->path;
     }
   }
 
-  if ((path - cp->path) - cp->extname < 2) {
-    cp->extname = path - cp->path;
+  if ((path - pi->path) - pi->extname < 2) {
+    pi->extname = path - pi->path;
   }
-  cp->nameterm = path - cp->path;
+  pi->nameterm = path - pi->path;
 
   return path;
 }
 
-MRB_API mrbx_component_name
+MRB_API mrbx_pathinfo
 mrbx_split_path(const char *path, uint16_t len)
 {
-  mrbx_component_name cp = { path, len };
+  mrbx_pathinfo pi = { path, len };
   if (len > UINT16_MAX) {
-    cp.len = 0;
-    return cp;
+    pi.len = 0;
+    return pi;
   }
 
   const uintptr_t end = (uintptr_t)path + len;
 
-  cp.basename = path - cp.path;
+  pi.basename = path - pi.path;
   path = skip_root_component(path, end);
-  cp.rootterm = cp.dirterm = cp.extname = cp.nameterm = path - cp.path;
+  pi.rootterm = pi.dirterm = pi.extname = pi.nameterm = path - pi.path;
 
   for (; (uintptr_t)path < end && *path != '\0'; path++) {
     path = skip_separator(path, end);
     if ((uintptr_t)path >= end) { break; }
 
-    cp.dirterm = cp.nameterm;
-    cp.basename = path - cp.path;
-    cp.extname = path - cp.path;
+    pi.dirterm = pi.nameterm;
+    pi.basename = path - pi.path;
+    pi.extname = path - pi.path;
 
     path = skip_leading_dot(path, end);
-    path = scan_component_name(path, end, &cp);
-    if (cp.extname == cp.basename) { cp.extname = path - cp.path; }
+    path = scan_pathinfo(path, end, &pi);
+    if (pi.extname == pi.basename) { pi.extname = path - pi.path; }
   }
 
-  return cp;
+  return pi;
 }
 
 MRB_API mrb_bool

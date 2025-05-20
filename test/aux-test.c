@@ -1,8 +1,8 @@
 #include <mruby.h>
 
 void mruby_aux_test_array_init(mrb_state *mrb, struct RClass *test);
-void mruby_aux_test_component_name_init(mrb_state *mrb, struct RClass *test);
 void mruby_aux_test_fakedin_init(mrb_state *mrb, struct RClass *test);
+void mruby_aux_test_pathinfo_init(mrb_state *mrb, struct RClass *test);
 void mruby_aux_test_scanhash_init(mrb_state *mrb, struct RClass *test);
 void mruby_aux_test_string_init(mrb_state *mrb, struct RClass *test);
 void mruby_aux_test_value_init(mrb_state *mrb, struct RClass *test);
@@ -25,8 +25,8 @@ mrb_mruby_aux_gem_test(mrb_state *mrb)
   mrb_define_class_method(mrb, mAuxTest, "windows?", auxtest_s_windows_p, MRB_ARGS_NONE());
 
   mruby_aux_test_array_init(mrb, mAuxTest);
-  mruby_aux_test_component_name_init(mrb, mAuxTest);
   mruby_aux_test_fakedin_init(mrb, mAuxTest);
+  mruby_aux_test_pathinfo_init(mrb, mAuxTest);
   mruby_aux_test_scanhash_init(mrb, mAuxTest);
   mruby_aux_test_string_init(mrb, mAuxTest);
   mruby_aux_test_value_init(mrb, mAuxTest);

@@ -1,7 +1,7 @@
 #include <mruby.h>
 #include <mruby/array.h>
 #include <mruby-aux.h>
-#include <mruby-aux/component-name.h>
+#include <mruby-aux/pathinfo.h>
 
 static mrb_value
 test_need_pathsep_p(mrb_state *mrb, mrb_value self)
@@ -39,19 +39,19 @@ test_split_path(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_RANGE_ERROR, "out of path length");
   }
 
-  mrbx_component_name cn = mrbx_split_path(path, len);
+  mrbx_pathinfo pi = mrbx_split_path(path, len);
   mrb_value ret = mrb_ary_new_capa(mrb, 5);
-  mrb_ary_push(mrb, ret, mrb_fixnum_value(cn.rootterm));
-  mrb_ary_push(mrb, ret, mrb_fixnum_value(cn.dirterm));
-  mrb_ary_push(mrb, ret, mrb_fixnum_value(cn.basename));
-  mrb_ary_push(mrb, ret, mrb_fixnum_value(cn.extname));
-  mrb_ary_push(mrb, ret, mrb_fixnum_value(cn.nameterm));
+  mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.rootterm));
+  mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.dirterm));
+  mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.basename));
+  mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.extname));
+  mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.nameterm));
 
   return ret;
 }
 
 void
-mruby_aux_test_component_name_init(mrb_state *mrb, struct RClass *test)
+mruby_aux_test_pathinfo_init(mrb_state *mrb, struct RClass *test)
 {
   mrb_define_class_method(mrb, test, "need_pathsep?", test_need_pathsep_p, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, test, "pathsep?", test_pathsep_p, MRB_ARGS_REQ(1));
