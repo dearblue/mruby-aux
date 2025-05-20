@@ -7,15 +7,21 @@ MRB_BEGIN_DECL
 
 typedef struct mrbx_pathinfo mrbx_pathinfo;
 
+#ifdef MRUBY_AUX_USE_PATHINFO_SIZE32
+typedef uint32_t mrbx_pathinfo_size;
+#else
+typedef uint16_t mrbx_pathinfo_size;
+#endif
+
 struct mrbx_pathinfo
 {
   const char *path;
-  uint16_t len;
-  uint16_t rootterm;
-  uint16_t dirterm;
-  uint16_t basename;
-  uint16_t extname;
-  uint16_t nameterm;
+  mrbx_pathinfo_size len;
+  mrbx_pathinfo_size rootterm;
+  mrbx_pathinfo_size dirterm;
+  mrbx_pathinfo_size basename;
+  mrbx_pathinfo_size extname;
+  mrbx_pathinfo_size nameterm;
 };
 
 MRB_API void mrbx_pathinfo_parse(mrbx_pathinfo *pinfo);
