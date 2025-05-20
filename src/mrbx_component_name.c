@@ -6,7 +6,7 @@
 //#define MRUBY_AUX_DEBUG_FORCE_WITH_WINDOWS_CODE
 
 #if !defined(__CYGWIN__) && (defined(_WIN32) || defined(_WIN64)) || defined(MRUBY_AUX_DEBUG_FORCE_WITH_WINDOWS_CODE)
-# define WITHIN_WINDOWS_CODE
+# define WITHIN_WINDOWS_CODE 1
 # define CASE_PATH_SEPARATOR '/': case '\\'
 #else
 # define CASE_PATH_SEPARATOR '/'
@@ -54,10 +54,8 @@ skip_root_component(const char *path, const uintptr_t end)
   }
 #endif
 
-  for (; (uintptr_t)path < end; path++) {
-    if (!mrbx_pathsep_p(path[0])) {
-      break;
-    }
+  if ((uintptr_t)path < end && mrbx_pathsep_p(path[0])) {
+    path++;
   }
 
   return path;
@@ -120,7 +118,7 @@ mrbx_split_path(const char *path, uint16_t len)
 
   for (; (uintptr_t)path < end && *path != '\0'; path++) {
     path = skip_separator(path, end);
-    if (path == NULL) { break; }
+    if ((uintptr_t)path >= end) { break; }
 
     cp.dirterm = cp.nameterm;
     cp.basename = path - cp.path;

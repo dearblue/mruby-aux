@@ -32,4 +32,14 @@ assert "mrbx_split_path" do
                AuxTest.split_path("a/b..c")
   assert_equal [0, 1, 2, 4, 6],
                AuxTest.split_path("a/b..c/")
+  assert_equal [0, 1, 2, 4, 6],
+               AuxTest.split_path("a/b..c//")
+end
+
+if AuxTest.windows?
+else
+  assert "mrbx_split_path (generic)" do
+    assert_equal [1, 1, 0, 1, 1],
+                 AuxTest.split_path("///")
+  end
 end
