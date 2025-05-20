@@ -2,9 +2,6 @@
 #define MRUBY_AUX_COMPONENT_NAME_H 1
 
 #include <mruby.h>
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 
 MRB_BEGIN_DECL
 
@@ -21,8 +18,8 @@ struct mrbx_component_name
   uint16_t nameterm;
 };
 
-MRB_API bool mrbx_pathsep_p(int ch);
-MRB_API bool mrbx_need_pathsep_p(const char *path, uint16_t len);
+MRB_API mrb_bool mrbx_pathsep_p(int ch);
+MRB_API mrb_bool mrbx_need_pathsep_p(const char *path, uint16_t len);
 MRB_API mrbx_component_name mrbx_split_path(const char *path, uint16_t len);
 
 MRB_END_DECL

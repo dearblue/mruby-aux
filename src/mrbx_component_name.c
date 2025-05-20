@@ -12,14 +12,14 @@
 # define CASE_PATH_SEPARATOR '/'
 #endif
 
-MRB_API bool
+MRB_API mrb_bool
 mrbx_pathsep_p(int ch)
 {
   switch (ch) {
   case CASE_PATH_SEPARATOR:
-    return true;
+    return TRUE;
   default:
-    return false;
+    return FALSE;
   }
 }
 
@@ -134,14 +134,13 @@ mrbx_split_path(const char *path, uint16_t len)
   return cp;
 }
 
-MRB_API bool
+MRB_API mrb_bool
 mrbx_need_pathsep_p(const char *path, uint16_t len)
 {
-  if (len == 0) { return true; }
+  if (len == 0) { return TRUE; }
 
   const uintptr_t end = (uintptr_t)path + len;
   path = skip_root_component(path, end);
 
-  return !((uintptr_t)path == end ||
-           mrbx_pathsep_p(((const char *)end)[-1]));
+  return !((uintptr_t)path == end || mrbx_pathsep_p(((const char *)end)[-1]));
 }
