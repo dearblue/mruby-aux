@@ -91,46 +91,51 @@ scan_component_name(const char *path, const uintptr_t end, mrbx_component_name *
     if (*path == '\0' || mrbx_pathsep_p(*path)) {
       break;
     } else if (*path == '.') {
-      cp->extname = path;
+      cp->extname = path - cp->path;
     }
   }
 
-  if (cp->extname && path - cp->extname < 2) {
-    cp->extname = path;
+  if ((path - cp->path) - cp->extname < 2) {
+    cp->extname = path - cp->path;
   }
-  cp->nameterm = path;
+  cp->nameterm = path - cp->path;
 
   return path;
 }
 
 MRB_API mrbx_component_name
-mrbx_split_path(const char *path, size_t len)
+mrbx_split_path(const char *path, uint16_t len)
 {
-  mrbx_component_name cp = { path };
+  mrbx_component_name cp = { path, len };
+  if (len > UINT16_MAX) {
+    cp.len = 0;
+    return cp;
+  }
+
   const uintptr_t end = (uintptr_t)path + len;
 
-  cp.basename = path;
+  cp.basename = path - cp.path;
   path = skip_root_component(path, end);
-  cp.rootterm = cp.dirterm = cp.extname = cp.nameterm = path;
+  cp.rootterm = cp.dirterm = cp.extname = cp.nameterm = path - cp.path;
 
   for (; (uintptr_t)path < end && *path != '\0'; path++) {
     path = skip_separator(path, end);
     if (path == NULL) { break; }
 
     cp.dirterm = cp.nameterm;
-    cp.basename = path;
-    cp.extname = path;
+    cp.basename = path - cp.path;
+    cp.extname = path - cp.path;
 
     path = skip_leading_dot(path, end);
     path = scan_component_name(path, end, &cp);
-    if (cp.extname == cp.basename) { cp.extname = path; }
+    if (cp.extname == cp.basename) { cp.extname = path - cp.path; }
   }
 
   return cp;
 }
 
 MRB_API bool
-mrbx_need_pathsep_p(const char *path, size_t len)
+mrbx_need_pathsep_p(const char *path, uint16_t len)
 {
   if (len == 0) { return true; }
 
