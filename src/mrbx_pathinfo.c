@@ -7,137 +7,190 @@
 #if !defined(__CYGWIN__) && (defined(_WIN32) || defined(_WIN64)) || defined(MRUBY_AUX_DEBUG_FORCE_WITH_WINDOWS_CODE)
 # define WITHIN_WINDOWS_CODE 1
 # define CASE_PATH_SEPARATOR '/': case '\\'
+# define ISDIRSEP(CH) ((CH) == '/' || (CH) == '\\')
 #else
 # define CASE_PATH_SEPARATOR '/'
+# define ISDIRSEP(CH) ((CH) == '/')
 #endif
 
-MRB_API mrb_bool
-mrbx_pathsep_p(int ch)
+#define SKIPDIRSEP(P, E)        for (; ISDIRSEP(*(P)); (P)++)
+#define NEXTDIRSEP(P, E)        for (; (P) < (E) && !ISDIRSEP(*(P)); (P)++)
+#define SKIPDOT(P, E)           for (; (P) < (E) && (*(P)) == '.'; (P)++)
+
+MRB_API void
+mrbx_pathinfo_parse(mrbx_pathinfo *pinfo)
 {
-  switch (ch) {
-  case CASE_PATH_SEPARATOR:
-    return TRUE;
-  default:
-    return FALSE;
+  const char *path = pinfo->path;
+  const char *end = path + pinfo->len;
+
+  pinfo->basename = 0;
+  path = mrbx_path_skip_root(path, end);
+  pinfo->rootterm = pinfo->dirterm = pinfo->extname = pinfo->nameterm = path - pinfo->path;
+
+  for (; path < end && *path != '\0'; path++) {
+    SKIPDIRSEP(path, end);
+    if (path >= end) {
+      break;
+    }
+
+    pinfo->dirterm = pinfo->nameterm;
+    pinfo->basename = path - pinfo->path;
+    pinfo->extname = path - pinfo->path;
+
+    const char *extname;
+    path = mrbx_path_skip_name(path, end, &extname);
+    pinfo->extname = extname - pinfo->path;
+    pinfo->nameterm = path - pinfo->path;
   }
 }
 
-static const char *
-skip_root_component(const char *path, const uintptr_t end)
+MRB_API const char *
+mrbx_pathinfo_root(const mrbx_pathinfo *pinfo, size_t *len)
+{
+  *len = pinfo->rootterm;
+
+  if (*len > 0) {
+    return pinfo->path;
+  } else {
+    return NULL;
+  }
+}
+
+MRB_API const char *
+mrbx_pathinfo_parent(const mrbx_pathinfo *pinfo, size_t *len)
+{
+  if (pinfo->rootterm > 0 && pinfo->rootterm == pinfo->nameterm) {
+    *len = pinfo->rootterm;
+    return pinfo->path;
+  } else if (pinfo->dirterm == 0) {
+    *len = 1;
+    return ".";
+  } else {
+    *len = pinfo->dirterm;
+    return pinfo->path;
+  }
+}
+
+MRB_API const char *
+mrbx_pathinfo_dirname(const mrbx_pathinfo *pinfo, size_t *len)
+{
+  *len = pinfo->dirterm;
+
+  if (*len > 0) {
+    return pinfo->path;
+  } else {
+    *len = 1;
+    return ".";
+  }
+}
+
+MRB_API const char *
+mrbx_pathinfo_basename(const mrbx_pathinfo *pinfo, size_t *len)
+{
+  *len = pinfo->nameterm - pinfo->basename;
+
+  if (*len > 0) {
+    return pinfo->path + pinfo->basename;
+  } else {
+    *len = 1;
+    return ".";
+  }
+}
+
+MRB_API const char *
+mrbx_pathinfo_extname(const mrbx_pathinfo *pinfo, size_t *len)
+{
+  *len = pinfo->nameterm - pinfo->extname;
+
+  if (*len > 0) {
+    return pinfo->path + pinfo->extname;
+  } else {
+    return "";
+  }
+}
+
+MRB_API mrb_bool
+mrbx_path_separator_p(int32_t ch)
+{
+  return ISDIRSEP(ch);
+}
+
+MRB_API mrb_bool
+mrbx_path_need_separator_p(const char path[], const char *end)
+{
+  if (path >= end) {
+    return TRUE;
+  }
+
+  path = mrbx_path_skip_root(path, end);
+
+  return !(path == end || ISDIRSEP(end[-1]));
+}
+
+MRB_API const char *
+mrbx_path_skip_root(const char path[], const char *end)
 {
 #ifdef WITHIN_WINDOWS_CODE
-  if (end - (uintptr_t)path >= 2) {
-    if (mrbx_pathsep_p(path[0]) && mrbx_pathsep_p(path[1])) {
+  if (end - path >= 2) {
+    if (isalpha((uint8_t)path[0]) && path[1] == ':') {
+      path += 2;
+    } else if (ISDIRSEP(path[0]) && ISDIRSEP(path[1])) {
       path += 2;
 
-      /* 連続したパス区切り文字を読み飛ばす */
-      for (; (uintptr_t)path < end; path++) {
-        if (!mrbx_pathsep_p(*path)) {
+      // 連続したディレクトリ区切り文字を読み飛ばす
+      for (; path < end && *path != '\0'; path++) {
+        if (!ISDIRSEP(*path)) {
           break;
         }
       }
 
-      for (; (uintptr_t)path < end; path++) {
-        if (*path == '\0') {
-          break;
-        } else if (mrbx_pathsep_p(*path)) {
+      // ホスト名
+      for (; path < end && *path != '\0'; path++) {
+        if (ISDIRSEP(*path)) {
           path++;
           break;
         }
       }
 
       return path;
-    } else if (isalpha((uint8_t)path[0]) && path[1] == ':') {
-      path += 2;
     }
   }
 #endif
 
-  if ((uintptr_t)path < end && mrbx_pathsep_p(path[0])) {
+  if (path < end && ISDIRSEP(path[0])) {
     path++;
   }
 
   return path;
 }
 
-static const char *
-skip_separator(const char *path, uintptr_t end)
+MRB_API const char *
+mrbx_path_skip_separator(const char path[], const char *end)
 {
-  for (; (uintptr_t)path < end; path++) {
-    if (!mrbx_pathsep_p(*path)) {
-      break;
-    }
-  }
+  SKIPDIRSEP(path, end);
 
   return path;
 }
 
-static const char *
-skip_leading_dot(const char *path, const uintptr_t end)
+MRB_API const char *
+mrbx_path_skip_name(const char path[], const char *end, const char **extname)
 {
-  for (; (uintptr_t)path < end && *path == '.'; path++)
+  *extname = NULL;
+
+  for (; path < end && *path == '.'; path++)
     ;
 
-  return path;
-}
-
-static const char *
-scan_pathinfo(const char *path, const uintptr_t end, mrbx_pathinfo *pi)
-{
-  for (; (uintptr_t)path < end; path++) {
-    if (*path == '\0' || mrbx_pathsep_p(*path)) {
+  for (; path < end && *path != '\0'; path++) {
+    if (*path == '.') {
+      *extname = path;
+    } else if (ISDIRSEP(*path)) {
       break;
-    } else if (*path == '.') {
-      pi->extname = path - pi->path;
     }
   }
 
-  if ((path - pi->path) - pi->extname < 2) {
-    pi->extname = path - pi->path;
+  if (!*extname || path - *extname < 2) {
+    *extname = path;
   }
-  pi->nameterm = path - pi->path;
 
   return path;
-}
-
-MRB_API mrbx_pathinfo
-mrbx_split_path(const char *path, uint16_t len)
-{
-  mrbx_pathinfo pi = { path, len };
-  if (len > UINT16_MAX) {
-    pi.len = 0;
-    return pi;
-  }
-
-  const uintptr_t end = (uintptr_t)path + len;
-
-  pi.basename = path - pi.path;
-  path = skip_root_component(path, end);
-  pi.rootterm = pi.dirterm = pi.extname = pi.nameterm = path - pi.path;
-
-  for (; (uintptr_t)path < end && *path != '\0'; path++) {
-    path = skip_separator(path, end);
-    if ((uintptr_t)path >= end) { break; }
-
-    pi.dirterm = pi.nameterm;
-    pi.basename = path - pi.path;
-    pi.extname = path - pi.path;
-
-    path = skip_leading_dot(path, end);
-    path = scan_pathinfo(path, end, &pi);
-    if (pi.extname == pi.basename) { pi.extname = path - pi.path; }
-  }
-
-  return pi;
-}
-
-MRB_API mrb_bool
-mrbx_need_pathsep_p(const char *path, uint16_t len)
-{
-  if (len == 0) { return TRUE; }
-
-  const uintptr_t end = (uintptr_t)path + len;
-  path = skip_root_component(path, end);
-
-  return !((uintptr_t)path == end || mrbx_pathsep_p(((const char *)end)[-1]));
 }

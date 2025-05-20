@@ -4,7 +4,7 @@
 #include <mruby-aux/pathinfo.h>
 
 static mrb_value
-test_need_pathsep_p(mrb_state *mrb, mrb_value self)
+test_path_need_separator_p(mrb_state *mrb, mrb_value self)
 {
   const char *path;
   mrb_get_args(mrb, "z", &path);
@@ -13,11 +13,11 @@ test_need_pathsep_p(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_RANGE_ERROR, "out of path length");
   }
 
-  return mrb_bool_value(mrbx_need_pathsep_p(path, len));
+  return mrb_bool_value(mrbx_path_need_separator_p(path, path + len));
 }
 
 static mrb_value
-test_pathsep_p(mrb_state *mrb, mrb_value self)
+test_path_separator_p(mrb_state *mrb, mrb_value self)
 {
   const char *ch;
   mrb_get_args(mrb, "z", &ch);
@@ -26,11 +26,11 @@ test_pathsep_p(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_RANGE_ERROR, "need one character");
   }
 
-  return mrb_bool_value(mrbx_pathsep_p((int)(unsigned char)ch[0]));
+  return mrb_bool_value(mrbx_path_separator_p((unsigned char)ch[0]));
 }
 
 static mrb_value
-test_split_path(mrb_state *mrb, mrb_value self)
+test_pathinfo_parse(mrb_state *mrb, mrb_value self)
 {
   const char *path;
   mrb_get_args(mrb, "z", &path);
@@ -39,7 +39,8 @@ test_split_path(mrb_state *mrb, mrb_value self)
     mrb_raise(mrb, E_RANGE_ERROR, "out of path length");
   }
 
-  mrbx_pathinfo pi = mrbx_split_path(path, len);
+  mrbx_pathinfo pi = { path, (uint16_t)len };
+  mrbx_pathinfo_parse(&pi);
   mrb_value ret = mrb_ary_new_capa(mrb, 5);
   mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.rootterm));
   mrb_ary_push(mrb, ret, mrb_fixnum_value(pi.dirterm));
@@ -53,7 +54,7 @@ test_split_path(mrb_state *mrb, mrb_value self)
 void
 mruby_aux_test_pathinfo_init(mrb_state *mrb, struct RClass *test)
 {
-  mrb_define_class_method(mrb, test, "need_pathsep?", test_need_pathsep_p, MRB_ARGS_REQ(1));
-  mrb_define_class_method(mrb, test, "pathsep?", test_pathsep_p, MRB_ARGS_REQ(1));
-  mrb_define_class_method(mrb, test, "split_path", test_split_path, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, test, "path_need_separator?", test_path_need_separator_p, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, test, "path_separator?", test_path_separator_p, MRB_ARGS_REQ(1));
+  mrb_define_class_method(mrb, test, "pathinfo_parse", test_pathinfo_parse, MRB_ARGS_REQ(1));
 }
