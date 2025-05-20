@@ -9,6 +9,7 @@
 #include <mruby/data.h>
 #include <mruby/string.h>
 #include <mruby/gc.h>
+#include "supplement.h"
 
 #define IMPLEMENT_ME                                                    \
         mrb_raisef(mrb, E_NOTIMP_ERROR,                                 \
@@ -17,14 +18,8 @@
                    mrb_fixnum_value(__LINE__),                          \
                    mrb_str_new_cstr(mrb, __func__))                     \
 
-#define FUNCALL(MRB, RECV, MID, ...)                                    \
-        mrb_funcall_argv((MRB), (RECV), SYMBOL((MID)),                  \
-                         -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
-
-#define FUNCALL_WITH_BLOCK(MRB, RECV, MID, BLOCK, ...)                  \
-        mrb_funcall_with_block((MRB), (RECV), SYMBOL((MID)),            \
-                               -1 + MRBX_LIST(const mrb_value, mrb_nil_value(), __VA_ARGS__) + 1) \
-                               (BLOCK))                                 \
+#define FUNCALL(...)                    MRBX_FUNCALL(__VA_ARGS__)
+#define FUNCALL_WITH_BLOCK(...)         MRBX_FUNCALL_WITH_BLOCK(__VA_ARGS__)
 
 #define FOREACH_LIST(TYPE, I, ...)                                      \
     for (TYPE _list_[] = { __VA_ARGS__ },                               \
