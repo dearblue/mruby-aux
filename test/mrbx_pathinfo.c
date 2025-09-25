@@ -4,6 +4,24 @@
 #include <mruby-aux/pathinfo.h>
 
 static mrb_value
+test_path_normalize(mrb_state *mrb, mrb_value self)
+{
+  mrb_value path;
+  mrb_get_args(mrb, "S", &path);
+  path = mrb_str_dup(mrb, path);
+  mrb_string_cstr(mrb, path);
+
+  struct RString *s = mrb_str_ptr(path);
+  mrb_str_modify(mrb, s);
+
+  const char *end = RSTR_PTR(s) + RSTR_LEN(s);
+  mrbx_path_normalize(RSTR_PTR(s), &end);
+  RSTR_SET_LEN(s, end - RSTR_PTR(s));
+
+  return path;
+}
+
+static mrb_value
 test_path_need_separator_p(mrb_state *mrb, mrb_value self)
 {
   const char *path;
@@ -54,6 +72,7 @@ test_pathinfo_parse(mrb_state *mrb, mrb_value self)
 void
 mruby_aux_test_pathinfo_init(mrb_state *mrb, struct RClass *test)
 {
+  mrb_define_class_method(mrb, test, "path_normalize", test_path_normalize, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, test, "path_need_separator?", test_path_need_separator_p, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, test, "path_separator?", test_path_separator_p, MRB_ARGS_REQ(1));
   mrb_define_class_method(mrb, test, "pathinfo_parse", test_pathinfo_parse, MRB_ARGS_REQ(1));
