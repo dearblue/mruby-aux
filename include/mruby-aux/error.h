@@ -1,3 +1,7 @@
+/**
+ *  @file include/mruby-aux/error.h
+ */
+
 #ifndef MRUBY_AUX_ERROR_H
 #define MRUBY_AUX_ERROR_H 1
 
@@ -17,32 +21,49 @@ mrbx_protect_exceptions(
         mrb_int len, struct RClass *classes[]);
 
 /**
- *  引数 `FUNC` を呼び出し、その結果を変数 `RESULT_VAR` に代入します。
+ *  `FUNC` を `mrb_protect_error()` 経由で呼び出し、その直後に必ずユーザーブロックを一度だけ実行します。
+ *  `FUNC` 内で Ruby の例外のような大域ジャンプが発生した場合でもブロックは実行され、
+ *  ブロック終了後に大域ジャンプが再送出されます。
  *
- *  `FUNC` の実行による大域ジャンプの発生にかかわらず、指定されたブロックが実行されます。
+ *  ブロック内で `mrb->exc != NULL` をチェックすると、`FUNC` で大域ジャンプが発生したかを判定できます。
  *
- *  大域ジャンプが発生しなければ、コードの書かれた順序にそってブロックの外側が実行されます。
- *  大域ジャンプが発生すれば、ブロックが終わると大域ジャンプが再開され、ブロックの外側は実行されません。
+ *  大域ジャンプを抑止して処理を継続したい場合は、`MRBX_ENSURE_BREAK()` を使ってください。
+ *
+ *  - `MRB`: mrb_state ポインタ
+ *  - `RESULT_VAR`: 事前定義された mrb_value 型の変数 (`FUNC` の戻り値を受け取る)
+ *  - `FUNC`: 呼び出す関数 (`mrb_protect_error_func` 互換)
+ *  - `DATA`: `FUNC` に渡すユーザーデータ
+ *
+ *  Example:
  *
  *      mrb_value result;
- *      MRBX_ENSURE(mrb, result, func, userdata) {
- *        // func が正常に制御を返しても、例外などの帯域ジャンプが発生しても、常に実行される。
- *        // Ruby の ensure ブロックと同等。
+ *      MRBX_ENSURE(mrb, result, body_func, userdata) {
+ *        // このブロックは必ず実行される (Ruby の ensure 相当)
  *
- *        ...
+ *        if (mrb->exc) {
+ *          // 例外発生時の後処理
+ *        }
  *
- *        // 例外などの大域ジャンプが発生している場合、このブロックが普通に終わると大域ジャンプが再開される。
- *        // もし大域ジャンプを無視したい場合、`mrb->exc = NULL; break;` を行うとよい。
+ *        // 大域ジャンプを無視する場合はここで `MRBX_ENSURE_BREAK()` を使う
  *      }
  */
 #define MRBX_ENSURE(MRB, RESULT_VAR, FUNC, DATA) \
-        for (mrb_bool MRBX_TMPVAR(_break_) = FALSE; \
-             !MRBX_TMPVAR(_break_) && \
-                (((RESULT_VAR) = mrb_protect_error(MRB, (FUNC), (DATA), &MRBX_TMPVAR(_break_))), \
-                 ((MRB)->exc = (MRBX_TMPVAR(_break_) ? mrb_obj_ptr((RESULT_VAR)) : NULL)), \
+        for (mrb_bool MRBX_UNIQNAME(_break_) = FALSE; \
+             !MRBX_UNIQNAME(_break_) && \
+                (((RESULT_VAR) = mrb_protect_error(MRB, FUNC, DATA, &MRBX_UNIQNAME(_break_))), \
+                 ((MRB)->exc = (MRBX_UNIQNAME(_break_) ? mrb_obj_ptr((RESULT_VAR)) : NULL)), \
                  TRUE); \
-             (void)(MRBX_TMPVAR(_break_) && (mrb_exc_raise(mrb, RESULT_VAR), TRUE)), \
-                MRBX_TMPVAR(_break_) = TRUE)
+             (void)(MRBX_UNIQNAME(_break_) && (mrb_exc_raise(MRB, RESULT_VAR), TRUE)), \
+                MRBX_UNIQNAME(_break_) = TRUE)
+
+/**
+ *  `MRBX_ENSURE()` のユーザーブロック内で大域ジャンプを無視します。
+ *  これは大域ジャンプが発生していない場合でも有効です。
+ *
+ *  @note 実装の都合で `break` を使っています。
+ *        ブロック内で `for/while` ループや `switch` を使う場合、干渉しないように注意してください。
+ */
+#define MRBX_ENSURE_BREAK(MRB) (MRB)->exc = NULL; break
 
 MRB_END_DECL
 

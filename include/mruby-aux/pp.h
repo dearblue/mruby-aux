@@ -112,6 +112,6 @@
  */
 #define MRBX_PP_EXPAND(...)             __VA_ARGS__
 
-#define MRBX_TMPVAR(VAR)                MRBX_PP_JOIN(VAR, __LINE__)
+#define MRBX_UNIQNAME(NAME)             MRBX_PP_JOIN(NAME, __LINE__)
 
 #endif /* MRUBY_AUX_PP_H */
