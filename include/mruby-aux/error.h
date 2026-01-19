@@ -53,7 +53,7 @@ mrbx_protect_exceptions(
                 (((RESULT_VAR) = mrb_protect_error(MRB, FUNC, DATA, &MRBX_UNIQNAME(_break_))), \
                  ((MRB)->exc = (MRBX_UNIQNAME(_break_) ? mrb_obj_ptr((RESULT_VAR)) : NULL)), \
                  TRUE); \
-             (void)(MRBX_UNIQNAME(_break_) && (mrb_exc_raise(MRB, RESULT_VAR), TRUE)), \
+             (void)(MRBX_UNIQNAME(_break_) && (MRB)->jmp && (mrb_exc_raise(MRB, RESULT_VAR), TRUE)), \
                 MRBX_UNIQNAME(_break_) = TRUE)
 
 /**
