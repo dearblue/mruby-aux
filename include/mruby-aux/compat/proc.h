@@ -3,6 +3,7 @@
 
 #include <mruby.h>
 #include <mruby/proc.h>
+#include <mruby-aux/version.h>
 
 #if MRUBY_RELEASE_NO < 10300
 void mrb_env_unshare(mrb_state *mrb, struct REnv *e);
@@ -66,6 +67,10 @@ mrb_vm_ci_env_set(mrb_callinfo *ci, struct REnv *env)
 {
   ci->env = env;
 }
+#endif
+
+#if MRBX_MRUBY_RELEASE_NO > 30400
+# define MRB_METHOD_NOARG_P(M)   (((M).flags & 0x3ffffeUL) == 0)
 #endif
 
 #endif /* MRUBY_AUX_COMPAT_PROC_H */

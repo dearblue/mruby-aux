@@ -12,9 +12,13 @@ mrbx_method_wrap_proc(const struct RProc *proc, mrb_aspec aspec)
 {
   mrb_method_t m;
   MRB_METHOD_FROM_PROC(m, proc);
+#if MRBX_MRUBY_RELEASE_NO > 30400
+  m.flags |= MRB_MT_ASPEC(aspec);
+#else
   if ((aspec & ~MRB_ARGS_BLOCK()) == 0) {
     MRB_METHOD_NOARG_SET(m);
   }
+#endif
   return m;
 }
 
