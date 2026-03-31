@@ -66,6 +66,17 @@ MRB_API const char *mrbx_path_skip_separator(const char path[], const char *end)
  */
 MRB_API const char *mrbx_path_skip_name(const char path[], const char *end, const char **extname);
 
+/**
+ * 引数 `path` で示されるパスの冗長表現を手直しして、最短表現にします。
+ * 具体的に言うと、連続する `/` を単一にし、相対ディレクトリのセグメント表記 (`.` や `..`) を削除します。
+ * また、Windows の場合は `\` ではなく `/` に置き換えます。
+ *
+ * `end` 引数には、`path` の終端位置となるポインタ変数のポインタを与えます。
+ * また、関数から戻ると、補正済みの終端位置を受け取ります。
+ * ポインタ変数に `NULL` が代入されている、または引数として直接 `NULL` が与えられた場合、`path` の NUL 記号までを処理することになります。
+ */
+MRB_API void mrbx_path_normalize(char path[], const char **end);
+
 MRB_END_DECL
 
 #endif /* MRUBY_AUX_PATHINFO_H */
